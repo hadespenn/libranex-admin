@@ -15,12 +15,12 @@ export default defineConfig({
   server: {
     port: 8000,
     host: true,
-    open: '/admin.html',
+    open: '/index.html',
   },
   build: {
     rollupOptions: {
-      // index.html 是产品原型（参考文档），不作为构建入口
-      input: resolve(root, 'admin.html'),
+      // prototype.html 是产品原型（参考文档），不作为构建入口
+      input: resolve(root, 'prototype.html'),
     },
   },
 });

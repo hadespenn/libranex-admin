@@ -1,0 +1,82 @@
+import { Modal, Button, App as AntdApp } from "antd";
+import { DataList } from "@/components/OpsUI";
+import { BTN } from "./shared";
+
+/** 实时交易监控 · 交易回执弹框 */
+export function TxReceiptModal({
+  open,
+  onClose,
+  txId = "TX-849200",
+  partnerReference = "SEPA-CLH-77881",
+  settlementStatus = "Confirmed",
+  valueDate = "2026-07-30",
+}: {
+  open: boolean;
+  onClose: () => void;
+  txId?: string;
+  partnerReference?: string;
+  settlementStatus?: string;
+  valueDate?: string;
+}) {
+  const { message } = AntdApp.useApp();
+
+  const handleDownload = () => {
+    const lines = [
+      `Transaction Receipt`,
+      `====================`,
+      `Transaction: ${txId}`,
+      `Partner reference: ${partnerReference}`,
+      `Settlement status: ${settlementStatus}`,
+      `Value date: ${valueDate}`,
+    ];
+    const blob = new Blob([lines.join("\n")], {
+      type: "text/plain;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${txId}-receipt.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    message.success("回执已下载");
+  };
+
+  return (
+    <Modal
+      open={open}
+      onCancel={onClose}
+      footer={null}
+      width={520}
+      centered
+      destroyOnClose
+      title={`交易回执 · ${txId}`}
+      closable
+    >
+      <DataList
+        cols={2}
+        items={[
+          { label: "Partner reference", value: partnerReference },
+          { label: "Settlement status", value: settlementStatus },
+          { label: "Value date", value: valueDate },
+        ]}
+      />
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginTop: 16,
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button style={BTN} onClick={handleDownload}>
+          下载回执
+        </Button>
+        <Button type="primary" style={BTN} onClick={onClose}>
+          关闭
+        </Button>
+      </div>
+    </Modal>
+  );
+}

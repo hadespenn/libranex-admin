@@ -214,6 +214,35 @@ a {
   gap: 10px;
 }
 
+/* 只针对语言选择框 */
+.lang-select .ant-select-selector {
+   border: 1px solid #d9d9d9 !important;        /* 去掉所有边框 */
+  box-shadow: 0 4px 14px rgba(6,45,83,.04) !important;   /* 去掉 focus 发光框 */
+  background: #fffdf8 !important; 
+  height: 44px !important;       /* 强制调整高度 */
+  padding: 10px 14px !important;    /* 强制调整 padding */
+  display: flex;
+  align-items: center;
+  border-radius: 999px !important;
+}
+
+.lang-select.ant-select {
+  height: 44px !important;
+}
+
+.top-dropdown {
+  border: 1px solid #d9d9d9 !important;        /* 去掉所有边框 */
+  box-shadow: 0 4px 14px rgba(6,45,83,.04) !important;   /* 去掉 focus 发光框 */
+  background: #fffdf8 !important; 
+  border-radius: 999px !important;
+  padding: 10px 14px !important;    /* 强制调整 padding */
+
+}
+
+.lang-select .ant-select-selection-item {
+  line-height: 44px !important; /* 保证文字垂直居中 */
+}
+
 .ops-content {
   padding: 24px;
   max-width: 1600px;
@@ -365,6 +394,7 @@ a {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  margin-bottom: 16px;
 }
 .ops-card-row-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -411,12 +441,11 @@ a {
 }
 .ops-timeline b {
   display: block;
-  font-size: 13px;
   color: #142d42;
 }
-.ops-timeline span {
-  font-size: 12px;
+.ops-timeline p {
   color: #708190;
+  margin-top: 1em;
 }
 
 .ops-empty {
@@ -429,7 +458,7 @@ a {
 
 .ops-data-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
 }
 .ops-data {
@@ -499,9 +528,9 @@ a {
   color: #27516f;
 }
 .ops-note-box.warn {
-  background: #fff7e6;
-  border: 1px solid #f4d48d;
-  color: #a16207;
+  background: #f0f8ff;
+  border: 1px solid #cce8ff;
+  color: #27516f;
 }
 
 /* 按钮（沿用原型语义） */
@@ -549,12 +578,15 @@ a {
 }
 
 .link {
-  border: 0;
-  background: transparent;
-  color: #378add;
   cursor: pointer;
   font-size: 12px;
-  padding: 2px 4px;
+  padding: 7px 10px;
+  border-radius: 999px;
+    border: 1px solid #d8e0e5;
+    background: #fffdf8;
+    color: #12283d;
+    box-shadow: 0 4px 14px rgba(6, 45, 83, .04);
+    
 }
 .link:hover {
   text-decoration: underline;
@@ -599,9 +631,26 @@ a {
   border-color: #d9e2e8 !important;
   font-size: 12px !important;
 }
-.ops-top .ant-select-selector {
-  border-radius: 999px !important;
-}
+
 .ops-drawer .ant-drawer-body {
   padding: 22px;
+}
+
+.ant-modal-content {
+  background: rgba(255, 253, 248, .9) !important;
+    border: 1px solid rgba(216, 224, 229, .8) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 12px 35px rgba(6,45,83,.09) !important;
+}
+
+.ant-modal-header {
+background: none !important;
+}
+
+.ant-modal-title {
+  color: #062d53 !important;
+  font-size: 1.5em !important;
+  border-bottom: 1px solid #d8e0e5;
+  padding-bottom: 12px;
+      margin-bottom: 14px !important;
 }

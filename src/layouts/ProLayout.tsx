@@ -62,15 +62,22 @@ export default function ProLayout() {
             <Select
               size="small"
               defaultValue="zh"
-              style={{ width: 110 }}
+              style={{ width: 110}}
+              className="lang-select"
+              labelRender={(props) => (
+        <span>
+         🌐 {props.label}
+        </span>
+      )}
               options={[
                 { value: 'zh', label: '中文' },
                 { value: 'zh-TW', label: '繁體中文' },
                 { value: 'en', label: 'English' },
               ]}
             />
-
+           
             <Dropdown
+              
               menu={{
                 items: [
                   { key: 'profile', label: '个人资料' },
@@ -81,7 +88,7 @@ export default function ProLayout() {
                 onClick: ({ key }) => message.info(`已选择：${key}`),
               }}
             >
-              <Button className="mini btn-ghost" style={{ borderRadius: 999 }}>
+              <Button className="mini btn-ghost top-dropdown" style={{ borderRadius: 999 }}>
                 切换至用户平台
               </Button>
             </Dropdown>

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Button, Input, Select, App as AntdApp } from 'antd';
 import { Metrics, Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
-import { KycDrawer } from '@/drawers/Drawers';
+import { KycDrawer, ReleaseModal } from '@/drawers';
 
 const MERCHANTS = [
   { value: 'atlas', label: 'Atlas Commerce Ltd. · KY-202607-1042' },
@@ -110,6 +110,7 @@ export default function Customers() {
   const [status, setStatus] = useState('__all__');
   const [kw, setKw] = useState('');
   const [detail, setDetail] = useState<CustomerRow | null>(null);
+  const [freezeOpen, setFreezeOpen] = useState(false);
 
   const rows = useMemo(() => {
     const q = kw.trim().toLowerCase();
@@ -151,10 +152,7 @@ export default function Customers() {
             <Button
               className="mini btn-danger"
               style={{ borderRadius: 999 }}
-              onClick={() => {
-                setFrozen(true);
-                message.warning('商户整体冻结已提交，需双人复核。');
-              }}
+              onClick={() => setFreezeOpen(true)}
             >
               冻结商户整体
             </Button>
@@ -259,6 +257,51 @@ export default function Customers() {
         name={detail?.name}
         kyId={detail?.key === 'atlas' ? 'KY-202607-1042' : 'KY-202607-1038'}
         jurisdiction="Singapore"
+      />
+
+      <ReleaseModal
+        open={freezeOpen}
+        onClose={() => {
+          setFreezeOpen(false);
+          setFrozen(true);
+        }}
+        title="冻结商户整体"
+        toast="商户整体冻结已提交，需双人复核与跨系统生效。"
+        note="商户整体冻结将暂停所有账户的出金、付款、兑换、收款接入及虚拟币转出；已入资金仍保留在账上，法定义务与退款按策略处理。"
+        summary={[
+          { label: 'Merchant', value: 'Atlas Commerce Ltd.' },
+          { label: 'KY ID', value: 'KY-202607-1042' },
+          { label: 'Status', value: 'Active · EDD · High' },
+        ]}
+        submitText="确认冻结商户"
+        fields={[
+          {
+            name: 'scope',
+            label: '冻结范围',
+            type: 'select',
+            initial: '全面冻结',
+            options: ['全面冻结', '仅出金/兑换', '仅收款接入', '仅虚拟币转出'],
+          },
+          {
+            name: 'caseId',
+            label: '关联案件',
+            type: 'text',
+            initial: 'RC-202607-1009',
+          },
+          {
+            name: 'reason',
+            label: '冻结依据',
+            type: 'textarea',
+            initial: '',
+          },
+          {
+            name: 'confirm',
+            label: '我确认该操作会影响商户全部账户，并已获得相应权限。',
+            type: 'checkbox',
+            initial: false,
+            span: 2,
+          },
+        ]}
       />
     </>
   );

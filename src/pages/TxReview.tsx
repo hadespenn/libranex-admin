@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, App as AntdApp } from 'antd';
 import { Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
-import { RiskDrawer } from '@/drawers/Drawers';
+import { RiskDrawer } from '@/drawers';
 
 type Row = {
   key: string;
@@ -40,6 +40,7 @@ export default function TxReview() {
 
   return (
     <>
+    <div className="ops-layout">
       <Panel title="交易复核队列">
         <OpsTable<Row>
           columns={[
@@ -90,6 +91,7 @@ export default function TxReview() {
       </Panel>
 
       <RiskDrawer open={!!detail} onClose={() => setDetail(null)} caseId="RC-202607-1009" />
+        </div>
     </>
   );
 }

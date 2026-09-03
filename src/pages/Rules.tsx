@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, Chip, OpsTable, CardGrid } from '@/components/OpsUI';
-import { ReleaseModal, type ReleaseField } from '@/drawers/Drawers';
+import { ReleaseModal, type ReleaseField } from '@/drawers';
 
 type Row = {
   key: string;

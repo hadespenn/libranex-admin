@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, App as AntdApp } from 'antd';
 import { Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
-import { TicketDrawer } from '@/drawers/Drawers';
+import { TicketDrawer } from '@/drawers';
 
 type Row = {
   key: string;
@@ -40,6 +40,7 @@ export default function Tickets() {
 
   return (
     <>
+    <div className="ops-layout">
       <Panel title="工单管理">
         <OpsTable<Row>
           columns={[
@@ -86,6 +87,7 @@ export default function Tickets() {
         }
         sla={detail?.sla.replace(' left', ' remaining')}
       />
+      </div>
     </>
   );
 }

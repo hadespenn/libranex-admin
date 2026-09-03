@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, App as AntdApp } from 'antd';
 import { Panel, Chip, OpsTable, DataList } from '@/components/OpsUI';
-import { ReleaseModal, type ReleaseField } from '@/drawers/Drawers';
+import { ReleaseModal, type ReleaseField } from '@/drawers';
 
 type Row = {
   key: string;

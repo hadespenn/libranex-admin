@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, Chip, OpsTable, CardGrid, NoteBox } from '@/components/OpsUI';
-import { SettlementDrawer, ReleaseModal, type ReleaseField } from '@/drawers/Drawers';
+import { SettlementDrawer, ReleaseModal, type ReleaseField } from '@/drawers';
 
 type Row = {
   key: string;
@@ -180,8 +180,8 @@ export default function Settlement() {
 
       <Panel
         title="资金放行与释放"
-        desc="对结算、隔离与 Crypto 资金执行放行 / 释放，受双人复核与审计约束。"
-        actions={<Chip tone="blue">受双人复核与审计约束</Chip>}
+        desc=""
+        actions={<Chip tone="blue">对结算、隔离与 Crypto 资金执行放行 / 释放，受双人复核与审计约束。</Chip>}
         wide
       >
         <CardGrid

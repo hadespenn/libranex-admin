@@ -132,7 +132,7 @@ export function Timeline({ items }: { items: { title: string; desc?: string }[] 
       {items.map((it, i) => (
         <div key={i}>
           <b>{it.title}</b>
-          {it.desc && <span>{it.desc}</span>}
+          {it.desc && <p>{it.desc}</p>}
         </div>
       ))}
     </div>
@@ -140,9 +140,21 @@ export function Timeline({ items }: { items: { title: string; desc?: string }[] 
 }
 
 /* ---------------- 键值数据 ---------------- */
-export function DataList({ items }: { items: { label: string; value: ReactNode }[] }) {
+export function DataList({
+  items,
+  cols = 2,
+}: {
+  items: { label: string; value: ReactNode }[];
+  cols?: 2 | 3;
+}) {
   return (
-    <div className="ops-data-list">
+    <div
+      className="ops-data-list"
+      style={{
+        gridTemplateColumns:
+          cols === 3 ? 'repeat(3, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))',
+      }}
+    >
       {items.map((it) => (
         <div className="ops-data" key={it.label}>
           <small>{it.label}</small>

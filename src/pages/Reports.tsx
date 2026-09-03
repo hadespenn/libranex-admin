@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, Chip, OpsTable, CardGrid } from '@/components/OpsUI';
-import { ReleaseModal, type ReleaseField } from '@/drawers/Drawers';
+import { ReleaseModal, type ReleaseField } from '@/drawers';
 
 const CARDS = [
   {
@@ -68,14 +68,7 @@ export default function Reports() {
             <p className="ops-card-sub">{c.desc}</p>
             <Button
               block
-              style={{
-                marginTop: 8,
-                borderRadius: 999,
-                background: '#b8932e',
-                borderColor: '#b8932e',
-                color: '#fff',
-                fontSize: 12,
-              }}
+              className="link"
               onClick={() => setModal(c.kind)}
             >
               {c.btn}

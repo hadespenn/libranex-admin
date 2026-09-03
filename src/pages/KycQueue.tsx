@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Button, Input, Select, App as AntdApp } from 'antd';
 import { Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
-import { KycDrawer } from '@/drawers/Drawers';
+import { KycDrawer } from '@/drawers';
 
 type Row = {
   key: string;

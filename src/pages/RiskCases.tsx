@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Button, Input, Select, App as AntdApp } from 'antd';
 import { Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
-import { RiskDrawer } from '@/drawers/Drawers';
+import { RiskDrawer } from '@/drawers';
 
 type Row = {
   key: string;
