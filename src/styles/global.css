@@ -1,0 +1,607 @@
+:root {
+  --navy: #062d53;
+  --navy-2: #0c447c;
+  --ink: #12283d;
+  --muted: #66788b;
+  --gold: #b8932e;
+  --gold-bright: #d9b95d;
+  --cream: #f7f5ef;
+  --paper: #fffdf8;
+  --line: #d8e0e5;
+  --success: #16825d;
+  --warn: #b7791f;
+  --danger: #b42318;
+  --blue: #378add;
+  --radius: 20px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--ink);
+  background: #f4f7fa;
+  font-family: Inter, 'DM Sans', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  max-width: 100%;
+  min-width: 0;
+}
+button {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bfbfbf;
+}
+
+@keyframes opsFade {
+  from {
+    opacity: 0.4;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   运营后台外壳 (对应原型 .ops-shell)
+   ============================================================ */
+.ops-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background: #f4f7fa;
+}
+
+.ops-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  background: #102435;
+  color: #d6e3ed;
+  padding: 18px 14px;
+}
+
+.ops-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.ops-brand .logo {
+  width: 38px;
+  height: 38px;
+  background: #fff;
+  border-radius: 11px;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  color: var(--navy);
+  font-weight: 800;
+  flex: 0 0 auto;
+}
+.ops-brand strong {
+  color: #fff;
+  font-size: 18px;
+  display: block;
+}
+.ops-brand small {
+  font-size: 10px;
+  color: #85b7d5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ops-role {
+  margin: 18px 8px;
+  background: rgba(55, 138, 221, 0.15);
+  border: 1px solid rgba(112, 183, 231, 0.25);
+  border-radius: 12px;
+  padding: 10px;
+}
+.ops-role small {
+  display: block;
+  color: #9ec9e3;
+  font-size: 11px;
+}
+.ops-role b {
+  color: #fff;
+  font-size: 13px;
+}
+
+.ops-nav-label {
+  margin: 18px 10px 6px;
+  color: #7fa1b8;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ops-nav {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #cbd9e5;
+  padding: 10px 11px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-align: left;
+  font-size: 13px;
+  transition: background 0.18s, color 0.18s;
+}
+.ops-nav:hover {
+  background: #1b3950;
+  color: #fff;
+}
+.ops-nav.active {
+  background: #1b3950;
+  color: #fff;
+  box-shadow: inset 3px 0 0 #66b4e9;
+}
+.ops-nav .ico {
+  width: 18px;
+  text-align: center;
+  flex: 0 0 auto;
+  color: var(--gold-bright, #d9b95d);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.ops-main {
+  min-width: 0;
+}
+
+.ops-top {
+  height: 70px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 26px;
+  border-bottom: 1px solid #dce4ea;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+.ops-top h1 {
+  font-size: 18px;
+  color: #142d42;
+  margin: 0;
+}
+.ops-top p {
+  margin: 2px 0 0;
+  color: #748493;
+  font-size: 12px;
+}
+.ops-top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ops-content {
+  padding: 24px;
+  max-width: 1600px;
+  margin: auto;
+}
+.ops-page {
+  animation: opsFade 0.2s;
+}
+
+/* ============================================================
+   指标 / 面板 / 表格 / 卡片
+   ============================================================ */
+.ops-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 13px;
+  margin-bottom: 16px;
+}
+.ops-metrics.cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.ops-metric {
+  background: #fff;
+  border: 1px solid #dde6ed;
+  border-radius: 13px;
+  padding: 14px;
+}
+.ops-metric small {
+  display: block;
+  color: #718190;
+  font-size: 12px;
+}
+.ops-metric strong {
+  display: block;
+  font-size: 24px;
+  color: #142d42;
+  margin: 5px 0;
+  line-height: 1.2;
+}
+.ops-kpi {
+  font-size: 11px;
+  color: #13845b;
+}
+
+.ops-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.ops-panel {
+  background: #fff;
+  border: 1px solid #dde6ed;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  min-width: 0;
+}
+.ops-panel h2 {
+  margin: 0 0 13px;
+  font-size: 16px;
+  color: #142d42;
+}
+.ops-panel-wide {
+  grid-column: 1 / -1;
+}
+
+.ops-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 13px;
+  flex-wrap: wrap;
+}
+.ops-panel-head h2 {
+  margin: 0;
+}
+
+.ops-note {
+  color: #8a94a6;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.ops-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.ops-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ops-table th {
+  text-align: left;
+  color: #6f8190;
+  font-size: 11px;
+  font-weight: 600;
+  border-bottom: 1px solid #e6edf2;
+  padding: 8px;
+  white-space: nowrap;
+}
+.ops-table td {
+  padding: 11px 8px;
+  border-bottom: 1px solid #eef2f5;
+  font-size: 12px;
+  vertical-align: middle;
+}
+.ops-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.ops-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ops-chip.blue {
+  background: #e8f2fc;
+  color: #1a66a3;
+}
+.ops-chip.green {
+  background: #e9f8f0;
+  color: #13845b;
+}
+.ops-chip.yellow {
+  background: #fff5da;
+  color: #a66d00;
+}
+.ops-chip.red {
+  background: #fff0ef;
+  color: #bb352d;
+}
+.ops-chip.gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.ops-card-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.ops-card-row-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.ops-card {
+  border: 1px solid #e1e8ed;
+  border-radius: 12px;
+  padding: 13px;
+  background: #fff;
+}
+.ops-card b {
+  display: block;
+  color: #173c59;
+}
+.ops-card p {
+  font-size: 12px;
+  color: #708190;
+  margin: 6px 0;
+}
+.ops-card-sub {
+  font-size: 12px;
+  color: #708190;
+  margin: 6px 0 8px;
+}
+
+.ops-timeline {
+  border-left: 2px solid #dce7ee;
+  margin-left: 7px;
+  padding-left: 16px;
+}
+.ops-timeline > div {
+  position: relative;
+  padding: 0 0 14px;
+}
+.ops-timeline > div::before {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  left: -22px;
+  top: 3px;
+  background: #378add;
+}
+.ops-timeline b {
+  display: block;
+  font-size: 13px;
+  color: #142d42;
+}
+.ops-timeline span {
+  font-size: 12px;
+  color: #708190;
+}
+
+.ops-empty {
+  padding: 24px;
+  text-align: center;
+  color: #768899;
+  border: 1px dashed #d6e0e7;
+  border-radius: 12px;
+}
+
+.ops-data-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.ops-data {
+  border: 1px solid #e5ecf1;
+  border-radius: 10px;
+  padding: 10px;
+}
+.ops-data small {
+  color: #778998;
+  display: block;
+  font-size: 11px;
+}
+.ops-data b {
+  color: #173c59;
+  font-size: 13px;
+}
+
+.ops-release-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* 柱状图（运营总览） */
+.ops-chart {
+  height: 190px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+}
+.ops-bar {
+  flex: 1;
+  background: linear-gradient(180deg, #378add, #0c447c);
+  border-radius: 10px 10px 3px 3px;
+  min-height: 20px;
+  position: relative;
+}
+.ops-bar::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #66788b;
+}
+.ops-chart-wrap {
+  padding-bottom: 26px;
+}
+
+/* 提示条 */
+.ops-note-box {
+  margin: 14px 0;
+  padding: 13px 15px;
+  border-radius: 13px;
+  background: #f5f8fb;
+  border: 1px solid #dce6ee;
+  color: #708190;
+  font-size: 12px;
+}
+.ops-note-box.info {
+  background: #f0f8ff;
+  border: 1px solid #cce8ff;
+  color: #27516f;
+}
+.ops-note-box.warn {
+  background: #fff7e6;
+  border: 1px solid #f4d48d;
+  color: #a16207;
+}
+
+/* 按钮（沿用原型语义） */
+.pill,
+.btn-primary,
+.btn-ghost,
+.btn-danger,
+.btn-success {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  color: var(--ink);
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.btn-primary {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+  font-weight: 700;
+}
+.btn-primary:hover {
+  background: #9f7d20;
+}
+.btn-ghost {
+  background: #fff;
+}
+.btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.btn-danger {
+  background: #fff4f2;
+  border-color: #ffd5cf;
+  color: var(--danger);
+}
+.btn-success {
+  background: #f0fff8;
+  border-color: #c2f1df;
+  color: var(--success);
+}
+.mini {
+  font-size: 12px;
+  padding: 7px 10px;
+}
+
+.link {
+  border: 0;
+  background: transparent;
+  color: #378add;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* 响应式 */
+@media (max-width: 1200px) {
+  .ops-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ops-layout {
+    grid-template-columns: 1fr;
+  }
+  .ops-card-row-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .ops-shell {
+    grid-template-columns: 1fr;
+  }
+  .ops-sidebar {
+    display: none;
+  }
+  .ops-metrics,
+  .ops-metrics.cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ops-card-row,
+  .ops-card-row-4 {
+    grid-template-columns: 1fr;
+  }
+  .ops-data-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* antd 局部覆盖，使其贴合原型配色 */
+.ops-content .ant-select-selector,
+.ops-content .ant-input {
+  border-radius: 9px !important;
+  border-color: #d9e2e8 !important;
+  font-size: 12px !important;
+}
+.ops-top .ant-select-selector {
+  border-radius: 999px !important;
+}
+.ops-drawer .ant-drawer-body {
+  padding: 22px;
+}
