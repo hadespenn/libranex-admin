@@ -1,4 +1,5 @@
 import { Empty, Tag, Button } from 'antd';
+import { useI18n } from '@/i18n';
 
 export default function Stub({
   title,
@@ -11,6 +12,8 @@ export default function Stub({
   primaryBtn?: string;
   count?: string;
 }) {
+  const { t } = useI18n();
+
   return (
     <div>
       <div className="mb-4">
@@ -21,7 +24,7 @@ export default function Stub({
         <div className="text-[13px] text-[#8c8c8c]">{desc}</div>
       </div>
       <div className="section-card min-h-[360px]">
-        <Empty description="该模块骨架已就绪，可对接 API 后填充列表与表单">
+        <Empty description={t('page.stub.empty')}>
           {primaryBtn && <Button type="primary">{primaryBtn}</Button>}
         </Empty>
       </div>

@@ -9,6 +9,7 @@ import {
   App as AntdApp,
 } from "antd";
 import { DataList, NoteBox } from "@/components/OpsUI";
+import { useI18n } from "@/i18n";
 
 /**
  * 通用「资金放行 / 释放 / 冻结」类弹框。
@@ -101,6 +102,7 @@ export function ReleaseModal({
   onSubmit?: () => void;
 }) {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
   const [form] = Form.useForm();
 
   return (
@@ -119,7 +121,7 @@ export function ReleaseModal({
         });
       }}
       okText={submitText}
-      cancelText="取消"
+      cancelText={t("common.cancel")}
       width={width}
     >
       {summary && <DataList items={summary} cols={cols} />}
@@ -165,7 +167,7 @@ export function ReleaseModal({
                     name={f.name}
                     label={f.label}
                     initialValue={f.initial}
-                    rules={[{ required: true, message: `请填写${f.label}` }]}
+                    rules={[{ required: true, message: t('common.required') + f.label }]}
                   >
                     {f.type === "select" ? (
                       <Select

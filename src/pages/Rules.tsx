@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, Chip, OpsTable, CardGrid } from '@/components/OpsUI';
 import { ReleaseModal, type ReleaseField } from '@/drawers';
+import { useI18n } from '@/i18n';
 
 type Row = {
   key: string;
@@ -18,36 +19,36 @@ type Row = {
 const DATA: Row[] = [
   {
     key: '1',
-    name: '24h 交易聚合',
+    name: 'rule24h',
     version: 'v1.8',
     status: 'Production',
     tone: 'green',
     policy: 'CAD 10,000',
     hits: 24,
     approval: 'Dual approved',
-    action: '模拟 / 编辑',
+    action: 'edit',
   },
   {
     key: '2',
-    name: '制裁筛查',
+    name: 'ruleSanction',
     version: 'v3.4',
     status: 'Production',
     tone: 'green',
     policy: 'Potential match → pause',
     hits: 6,
     approval: 'CCO approved',
-    action: '查看',
+    action: 'view',
   },
   {
     key: '3',
-    name: '设备关联欺诈',
+    name: 'ruleDevice',
     version: 'v2.1',
     status: 'Grey rollout',
     tone: 'blue',
     policy: 'Shared device graph',
     hits: 18,
     approval: 'Pending review',
-    action: '审批',
+    action: 'approve',
   },
 ];
 
@@ -58,6 +59,7 @@ const VERSIONS = [
 ];
 
 export default function Rules() {
+  const { t } = useI18n();
   const [modal, setModal] = useState<null | 'create' | 'edit' | 'view' | 'approve'>(null);
   const [row, setRow] = useState<Row | null>(null);
 
@@ -67,44 +69,44 @@ export default function Rules() {
   };
 
   const SIM_METRICS = [
-    { title: '0.14%', sub: '命中率' },
-    { title: '评估中', sub: '误报评估' },
-    { title: '< 5 分钟', sub: '回滚耗时' },
+    { title: '0.14%', sub: t('page.rules.simHitRate') },
+    { title: t('page.rules.simFpVal'), sub: t('page.rules.simFp') },
+    { title: t('page.reports.view.refresh5m'), sub: t('page.rules.simRollback') },
   ];
 
   return (
     <>
       <Panel
-        title="规则策略与名单"
+        title={t('page.rules.panelTitle')}
         actions={
           <Button
             className="mini btn-primary"
             onClick={() => open('create')}
           >
-            新建规则版本
+            {t('page.rules.createBtn')}
           </Button>
         }
       >
         <OpsTable<Row>
           columns={[
-            { title: '规则', key: 'name', render: (r) => <b>{r.name}</b> },
-            { title: '版本', key: 'version', render: (r) => r.version },
-            { title: '状态', key: 'status', render: (r) => <Chip tone={r.tone}>{r.status}</Chip> },
-            { title: '策略', key: 'policy', render: (r) => r.policy },
-            { title: '最近命中', key: 'hits', render: (r) => r.hits },
-            { title: '审批', key: 'approval', render: (r) => r.approval },
+            { title: t('page.rules.colList.name'), key: 'name', render: (r) => <b>{t(`page.rules.${r.name}`)}</b> },
+            { title: t('page.rules.colVer.version'), key: 'version', render: (r) => r.version },
+            { title: t('page.rules.colVer.status'), key: 'status', render: (r) => <Chip tone={r.tone}>{r.status}</Chip> },
+            { title: t('page.rules.colPolicy'), key: 'policy', render: (r) => r.policy },
+            { title: t('page.rules.colHits'), key: 'hits', render: (r) => r.hits },
+            { title: t('page.rules.colApproval'), key: 'approval', render: (r) => r.approval },
             {
-              title: '操作',
+              title: t('page.rules.colList.action'),
               key: 'action',
-              render: (r) => {
-                const kind =
-                  r.action === '模拟 / 编辑' ? 'edit' : r.action === '查看' ? 'view' : 'approve';
-                return (
-                  <button className="link" onClick={() => open(kind, r)}>
-                    {r.action}
-                  </button>
-                );
-              },
+              render: (r) => (
+                <button className="link" onClick={() => open(r.action as 'edit' | 'view' | 'approve', r)}>
+                  {r.action === 'edit'
+                    ? t('page.rules.actionSimulate')
+                    : r.action === 'view'
+                      ? t('action.view')
+                      : t('page.rules.actionApprove')}
+                </button>
+              ),
             },
           ]}
           data={DATA}
@@ -114,35 +116,58 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'create'}
         onClose={() => setModal(null)}
-        title="新建规则版本"
-        submitText="提交并进入审批"
-        toast="规则草稿已提交，进入审批链路。"
+        title={t('page.rules.create.title')}
+        submitText={t('page.rules.create.submit')}
+        toast={t('page.rules.create.toast')}
         fields={
           [
             {
               name: 'type',
-              label: '规则类型',
+              label: t('page.rules.create.labelType'),
               type: 'select',
-              options: ['交易聚合', '制裁筛查', '设备关联', '行为异常'],
+              options: [
+                t('page.rules.rule24h'),
+                t('page.rules.create.typeSanction'),
+                t('page.rules.create.typeDevice'),
+                t('page.rules.create.typeBehavior'),
+              ],
+              initial: t('page.rules.rule24h')
             },
-            { name: 'name', label: '规则名称', type: 'text' },
-            { name: 'scope', label: '适用场景', type: 'select', options: ['全部交易', '法币出款', 'Crypto 出款', '兑换'] },
-            { name: 'threshold', label: '阈值参数', type: 'text', initial: 'CAD 10,000 / 24h' },
+            { name: 'name', label: t('page.rules.create.labelName'), type: 'text', placeholder: t('page.rules.create.placerule') },
+            {
+              name: 'scope',
+              label: t('page.rules.create.labelScope'),
+              type: 'input',
+              placeholder: t('txReceipt.fieldCcy') + '/' + t('txReceipt.fieldChannel') + '/' + t('txReceipt.fieldCust')
+            },
+            // {
+            //   name: 'scope',
+            //   label: t('page.rules.create.labelScope'),
+            //   type: 'select',
+            //   options: [
+            //     t('page.rules.create.scopeAll'),
+            //     t('page.rules.create.scopeFiat'),
+            //     t('page.rules.create.scopeCrypto'),
+            //     t('page.rules.create.scopeFx'),
+            //   ],
+            //   initial: t('page.rules.create.scopeAll')
+            // },
+            { name: 'threshold', label: t('page.rules.create.labelThreshold'), type: 'text', placeholder: t('page.rules.create.placeThreshold') },
             {
               name: 'hitAction',
-              label: '命中动作',
+              label: t('page.rules.create.labelHitAction'),
               type: 'select',
               options: ['Pause', 'Hold', 'Alert'],
               initial: 'Hold',
             },
             {
               name: 'chain',
-              label: '审批链路',
+              label: t('page.rules.create.labelChain'),
               type: 'select',
               options: ['Dual approved', 'CCO approved', 'CCO / MLRO + Legal'],
               initial: 'Dual approved',
             },
-            { name: 'impact', label: '已评估影响范围', type: 'checkbox' },
+            { name: 'impact', label: t('page.rules.create.labelImpact'), type: 'checkbox' },
           ] as ReleaseField[]
         }
       />
@@ -150,10 +175,13 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'edit'}
         onClose={() => setModal(null)}
-        title={`模拟 / 编辑规则（${row?.name ?? ''} ${row?.version ?? ''}）`}
-        submitText="保存为草稿"
-        toast="草稿已保存，等待审批发布。"
-        note="编辑不会覆盖生产版本；测试通过后另发新版本申请。"
+        title={t('page.rules.edit.titleTpl', {
+          name: row ? t(`page.rules.${row.name}`) : '',
+          version: row?.version ?? '',
+        })}
+        submitText={t('page.rules.edit.submit')}
+        toast={t('page.rules.edit.toast')}
+        note={t('page.rules.edit.note')}
         extra={
           <div className="mt-2">
             <CardGrid
@@ -169,16 +197,20 @@ export default function Rules() {
         }
         fields={
           [
-            { name: 'baseVer', label: '基线版本', type: 'text', initial: 'v1.8 Production', readOnly: true },
-            { name: 'draftTag', label: '草稿标签', type: 'text', placeholder: 'v1.9-draft-rc' },
+            { name: 'baseVer', label: t('page.rules.edit.labelBase'), type: 'text', initial: 'v1.8 Production', readOnly: true },
+            { name: 'draftTag', label: t('page.rules.edit.labelDraftTag'), type: 'text', placeholder: 'v1.9-draft-rc' },
             {
               name: 'window',
-              label: '试用窗口',
+              label: t('page.rules.edit.labelWindow'),
               type: 'select',
-              options: ['24 小时回放', '7d 影子模式', '即时生效（审核后）'],
-              initial: '24 小时回放',
+              options: [
+                t('page.rules.edit.windowReplay'),
+                t('page.rules.edit.windowShadow'),
+                t('page.rules.edit.windowInstant'),
+              ],
+              initial: t('page.rules.edit.windowReplay'),
             },
-            { name: 'metrics', label: '观察指标', type: 'text', placeholder: '命中率 / 误报率 / 客户申诉' },
+            { name: 'metrics', label: t('page.rules.edit.labelMetrics'), type: 'text', placeholder: t('page.rules.simHitRate') + ' / ' + t('page.rules.simFp') },
           ] as ReleaseField[]
         }
       />
@@ -186,10 +218,13 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'view'}
         onClose={() => setModal(null)}
-        title={`规则详情（${row?.name ?? ''} ${row?.version ?? ''}）`}
-        submitText="基于此版本起草"
-        toast="已基于该版本创建草稿。"
-        note="Production 简本只读；详情包含版本历程、命中明细、审批链与回滚日志。"
+        title={t('page.rules.view.titleTpl', {
+          name: row ? t(`page.rules.${row.name}`) : '',
+          version: row?.version ?? '',
+        })}
+        submitText={t('page.rules.view.submit')}
+        toast={t('page.rules.view.toast')}
+        note={t('page.rules.view.note')}
         onSubmit={() => {
           setModal(null);
           setTimeout(() => setModal('edit'), 0);
@@ -199,10 +234,10 @@ export default function Rules() {
           <div className="mt-2">
             <OpsTable<(typeof VERSIONS)[number]>
               columns={[
-                { title: '版本', key: 'v', render: (r) => <b>{r.v}</b> },
-                { title: '生效时间', key: 'date', render: (r) => r.date },
+                { title: t('page.rules.colVer.version'), key: 'v', render: (r) => <b>{r.v}</b> },
+                { title: t('page.rules.colEffective'), key: 'date', render: (r) => r.date },
                 {
-                  title: '状态',
+                  title: t('page.rules.colVer.status'),
                   key: 'state',
                   render: (r) => {
                     const colorMap: Record<string, string> = {
@@ -223,8 +258,8 @@ export default function Rules() {
                     );
                   },
                 },
-                { title: '最近命中', key: 'hits', render: (r) => r.hits },
-                { title: '审批', key: 'approval', render: (r) => r.approval },
+                { title: t('page.rules.colHits'), key: 'hits', render: (r) => r.hits },
+                { title: t('page.rules.colApproval'), key: 'approval', render: (r) => r.approval },
               ]}
               data={VERSIONS}
             />
@@ -236,20 +271,19 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'approve'}
         onClose={() => setModal(null)}
-        title={`规则审批 · ${row?.name ?? ''}`}
-        submitText="同意并发布"
-        cols={3}
-        toast="规则已同意并发布至生产。"
-        note="规则变更需二次 MFA + 强制审批意见；同意后进入灰度发布，驳回需提供修改要求。"
+        title={t('page.rules.approve.titleTpl', { name: row ? t(`page.rules.${row.name}`) : '' })}
+        submitText={t('page.rules.approve.submit')}
+        toast={t('page.rules.approve.toast')}
+        note={t('page.rules.approve.note')}
         summary={[
-          { label: '版本', value: row?.version ?? 'v2.1' },
-          { label: '状态', value: '灰度' },
-          { label: '命中', value: String(row?.hits ?? 18) },
+          { label: t('page.rules.approve.sumVersion'), value: row?.version ?? 'v2.1' },
+          { label: t('page.rules.approve.sumStatus'), value: t('page.rules.approve.statusCanary') },
+          { label: t('page.rules.approve.sumHits'), value: String(row?.hits ?? 18) },
         ]}
         fields={
           [
-            { name: 'comment', label: '审批意见', type: 'textarea' },
-            { name: 'mfa', label: '已通过 MFA 二次确认', type: 'checkbox' },
+            { name: 'comment', label: t('page.rules.approve.labelComment'), type: 'textarea' },
+            { name: 'mfa', label: t('page.rules.approve.labelMfa'), type: 'checkbox' },
           ] as ReleaseField[]
         }
       />

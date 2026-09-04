@@ -1,47 +1,50 @@
 import { Col, Row, Button, Tag } from 'antd';
-
-const SETTINGS_CARDS = [
-  {
-    title: '限额档',
-    desc: '按企业 / KYC 等级 / 通道 / 风险等级配置。',
-    btn: '申报变更',
-    count: '5 active',
-  },
-  {
-    title: '地区与行业',
-    desc: '准入、禁入、风险因子与产品套餐。',
-    btn: '查看版本',
-    count: '12 regions',
-  },
-  {
-    title: '数据留存',
-    desc: '5 年路线，法律保全与区域化配置。',
-    btn: '配置',
-    count: '7 categories',
-  },
-];
-
-const QUICK_LINKS = [
-  { label: '业务参数',  desc: '费率、限额、节假日、币种、地区' },
-  { label: '审批矩阵',  desc: '双人复核 · 升级到负责人 · 跨部门' },
-  { label: '通知模板',  desc: '邮件 · SMS · 站内信' },
-  { label: '审计菜单',  desc: '关键操作的可审计追溯设计' },
-];
+import { useI18n } from '@/i18n';
 
 export default function SettingsCenter() {
+  const { t } = useI18n();
+
+  const SETTINGS_CARDS = [
+    {
+      title: t('page.settings.cardLimit.title'),
+      desc: t('page.settings.cardLimit.desc'),
+      btn: t('page.settings.cardLimit.btn'),
+      count: '5 active',
+    },
+    {
+      title: t('page.settings.cardRegion.title'),
+      desc: t('page.settings.cardRegion.desc'),
+      btn: t('page.settings.cardRegion.btn'),
+      count: '12 regions',
+    },
+    {
+      title: t('page.settings.cardRetention.title'),
+      desc: t('page.settings.cardRetention.desc'),
+      btn: t('page.settings.cardRetention.btn'),
+      count: '7 categories',
+    },
+  ];
+
+  const QUICK_LINKS = [
+    { label: t('page.settings.qlParams.label'), desc: t('page.settings.qlParams.desc') },
+    { label: t('page.settings.qlApproval.label'), desc: t('page.settings.qlApproval.desc') },
+    { label: t('page.settings.qlNotify.label'), desc: t('page.settings.qlNotify.desc') },
+    { label: t('page.settings.qlAudit.label'), desc: t('page.settings.qlAudit.desc') },
+  ];
+
   return (
     <div>
       <div className="mb-4">
-        <div className="text-[22px] font-bold">配置中心</div>
+        <div className="text-[22px] font-bold">{t('page.settings.title')}</div>
         <div className="text-[13px] text-[#8c8c8c]">
-          参数、费率、限额、地区、功能开关与变更治理
+          {t('page.settings.subtitle')}
         </div>
       </div>
 
       <div className="section-card mb-4">
-        <div className="section-title">配置中心</div>
+        <div className="section-title">{t('page.settings.title')}</div>
         <div className="section-subtitle">
-          业务参数、费率、限额、节假日、币种、地区、功能开关、数据留存与报告模板与限额版本。审批、生效时间、回溯与审计。
+          {t('page.settings.sectionSubtitle')}
         </div>
         <Row gutter={[16, 16]} className="mt-2">
           {SETTINGS_CARDS.map((c) => (
@@ -64,7 +67,7 @@ export default function SettingsCenter() {
       </div>
 
       <div className="section-card">
-        <div className="section-title">常用入口</div>
+        <div className="section-title">{t('page.settings.quickTitle')}</div>
         <Row gutter={[16, 16]} className="mt-2">
           {QUICK_LINKS.map((q) => (
             <Col key={q.label} xs={24} sm={12} md={6}>

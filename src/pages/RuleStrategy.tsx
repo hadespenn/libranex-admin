@@ -1,10 +1,14 @@
 import Stub from './Stub';
+import { useI18n } from '@/i18n';
+
 export default function RuleStrategy() {
+  const { t } = useI18n();
+
   return (
     <Stub
-      title="规则策略"
-      desc="风控规则引擎 · 黑白名单 · 阈值策略 · 决策表编辑"
-      primaryBtn="配置规则"
+      title={t('page.ruleStrategy.title')}
+      desc={t('page.ruleStrategy.desc')}
+      primaryBtn={t('page.ruleStrategy.primaryBtn')}
     />
   );
 }

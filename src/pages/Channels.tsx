@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, App as AntdApp } from "antd";
 import { Panel, Chip, OpsTable, DataList } from "@/components/OpsUI";
 import { ReleaseModal, type ReleaseField } from "@/drawers";
+import { useI18n } from "@/i18n";
 
 type Row = {
   key: string;
@@ -23,7 +24,7 @@ const DATA: Row[] = [
     tone: "green",
     weight: "55%",
     cycle: "T+1",
-    action: "查看",
+    action: "view",
   },
   {
     key: "2",
@@ -33,7 +34,7 @@ const DATA: Row[] = [
     tone: "yellow",
     weight: "25%",
     cycle: "Same day",
-    action: "调整路由",
+    action: "route",
   },
   {
     key: "3",
@@ -43,45 +44,46 @@ const DATA: Row[] = [
     tone: "green",
     weight: "20%",
     cycle: "On-chain",
-    action: "查看",
+    action: "view",
   },
 ];
 
 export default function Channels() {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
   const [modal, setModal] = useState<null | "view" | "route">(null);
   const [row, setRow] = useState<Row | null>(null);
 
   return (
     <>
-      <Panel title="通道、路由与流动性">
+      <Panel title={t("page.channels.panelTitle")}>
         <OpsTable<Row>
           columns={[
             {
-              title: "合作方 / 通道",
+              title: t("page.channels.colPartner"),
               key: "partner",
               render: (r) => <b>{r.partner}</b>,
             },
-            { title: "能力", key: "capability", render: (r) => r.capability },
+            { title: t("page.channels.colCapability"), key: "capability", render: (r) => r.capability },
             {
-              title: "健康度",
+              title: t("page.channels.col.health"),
               key: "health",
               render: (r) => <Chip tone={r.tone}>{r.health}</Chip>,
             },
-            { title: "权重", key: "weight", render: (r) => r.weight },
-            { title: "结算周期", key: "cycle", render: (r) => r.cycle },
+            { title: t("page.channels.colWeight"), key: "weight", render: (r) => r.weight },
+            { title: t("page.channels.col.settleCycle"), key: "cycle", render: (r) => r.cycle },
             {
-              title: "操作",
+              title: t("page.channels.col.action"),
               key: "action",
               render: (r) => (
                 <button
                   className="link"
                   onClick={() => {
                     setRow(r);
-                    setModal(r.action === "调整路由" ? "route" : "view");
+                    setModal(r.action === "route" ? "route" : "view");
                   }}
                 >
-                  {r.action}
+                  {r.action === "route" ? t("page.channels.actionRoute") : t("action.view")}
                 </button>
               ),
             },
@@ -93,10 +95,10 @@ export default function Channels() {
       <ReleaseModal
         open={modal === "view"}
         onClose={() => setModal(null)}
-        title={`通道详情（${row?.partner ?? ""}）`}
-        submitText="调整路由权重"
-        toast="已进入路由权重调整流程。"
-        note="含健康度曲线、路由权重、结算周期、合作方协议要点与限额。"
+        title={t("page.channels.view.titleTpl", { partner: row?.partner ?? "" })}
+        submitText={t("page.channels.view.submit")}
+        toast={t("page.channels.view.toast")}
+        note={t("page.channels.view.note")}
         onSubmit={() => {
           setModal(null);
           setTimeout(() => setModal('route'), 0);
@@ -105,10 +107,10 @@ export default function Channels() {
           <div className="mt-2">
             <div className="grid grid-cols-4 gap-3">
               {[
-                { label: "成功", value: row?.health ?? "99.92%" },
-                { label: "权重", value: row?.weight ?? "55%" },
-                { label: "结算", value: row?.cycle ?? "T+1" },
-                { label: "限额", value: "CAD 5M / 日" },
+                { label: t("page.channels.view.cardSuccess"), value: row?.health ?? "99.92%" },
+                { label: t("page.channels.view.cardWeight"), value: row?.weight ?? "55%" },
+                { label: t("page.channels.view.cardSettle"), value: row?.cycle ?? "T+1" },
+                { label: t("page.channels.view.cardLimit"), value: t("page.channels.view.cardLimitValue") },
               ].map((c) => (
                 <div
                   key={c.label}
@@ -123,12 +125,12 @@ export default function Channels() {
             </div>
             <div className="mt-3">
               <p className="mb-1.5 text-sm font-medium text-[#142d42]">
-                合作方备注
+                {t("page.channels.partnerNote")}
               </p>
               <textarea
                 readOnly
                 rows={3}
-                defaultValue="SLA 99.9%；特殊场景需双人书面授权"
+                defaultValue={t("page.channels.view.noteDefault")}
                 className="w-full rounded-lg border border-[#e6edf2] bg-[#f6f9fb] px-3 py-2 text-sm text-[#2d3748] outline-none focus:border-[#b8932e]"
               />
             </div>
@@ -140,83 +142,67 @@ export default function Channels() {
       <ReleaseModal
         open={modal === "route"}
         onClose={() => setModal(null)}
-        title={`调整路由权重（${row?.partner ?? ""}）`}
-        submitText="提交进入双人复核"
-        toast="路由变更已提交，进入双人复核。"
-        note="权重合计必须为 100%。变更需双重 MFA；急停可保留生产路由直到生效时间。"
+        title={t("page.channels.route.titleTpl", { partner: row?.partner ?? "" })}
+        submitText={t("page.channels.route.submit")}
+        toast={t("page.channels.route.toast")}
+        note={t("page.channels.route.note")}
         width={560}
-        // extra={
-        //   <div className="mt-2">
-        //     <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-        //       {[
-        //         { label: 'Canada ACH', value: '55' },
-        //         { label: 'SG FAST', value: '25' },
-        //         { label: 'Qualified Exchange', value: '20' },
-        //         { label: '权重合计', value: '100', bold: true },
-        //       ].map((c) => (
-        //         <div key={c.label} className="flex items-center justify-between">
-        //           <span className={`text-sm ${c.bold ? 'font-semibold text-[#142d42]' : 'text-[#748493]'}`}>{c.label}</span>
-        //           <input
-        //             type="text"
-        //             readOnly
-        //             defaultValue={c.value}
-        //             className="w-24 rounded-lg border border-[#e6edf2] bg-white px-3 py-1.5 text-right text-sm font-medium text-[#142d42] outline-none focus:border-[#b8932e]"
-        //           />
-        //         </div>
-        //       ))}
-        //     </div>
-        //   </div>
-        // }
         fields={
           [
             {
               name: "Canada ACH",
               label: "Canada ACH",
-              type: "input",
+              type: "text",
               initial: "55",
-              readonly: true,
+              readOnly: true,
             },
             {
               name: "SG FAST",
               label: "SG FAST",
-              type: "input",
+              type: "text",
               placeholder: "25",
             },
             {
               name: "Qualified Exchange",
               label: "Qualified Exchange",
-              type: "input",
+              type: "text",
               initial: "20",
-              readonly: true,
+              readOnly: true,
             },
             {
               name: "total",
-              label: "权重合计",
-              type: "input",
+              label: t("page.channels.route.labelTotal"),
+              type: "text",
               initial: "100",
-              readonly: true,
+              readOnly: true,
             },
             {
               name: "effective",
-              label: "生效时间",
+              label: t("page.channels.route.labelEffective"),
               type: "select",
-              options: ["立即生效", "下一个工作日"],
-              initial: "立即生效",
+              options: [
+                t("page.channels.route.effectiveNow"),
+                t("page.channels.route.effectiveNextDay"),
+              ],
+              initial: t("page.channels.route.effectiveNow"),
             },
             {
               name: "killSwitch",
-              label: "急停保留",
+              label: t("page.channels.route.labelKillSwitch"),
               type: "select",
-              options: ["保持生产路由直到生效", "立刻切换"],
-              initial: "保持生产路由直到生效",
+              options: [
+                t("page.channels.route.killKeep"),
+                t("page.channels.route.killSwitchNow"),
+              ],
+              initial: t("page.channels.route.killKeep"),
             },
             {
               name: "reason",
-              label: "变更说明",
+              label: t("page.channels.route.labelReason"),
               type: "textarea",
-              placeholder: "例：SG FAST 健康度回升",
+              placeholder: t("page.channels.route.labelReason"),
             },
-            { name: "mfa", label: "已二次 MFA 确认", type: "checkbox" },
+            { name: "mfa", label: t("page.channels.route.labelMfa"), type: "checkbox" },
           ] as ReleaseField[]
         }
       />

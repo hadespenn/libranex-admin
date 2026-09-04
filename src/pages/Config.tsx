@@ -2,27 +2,7 @@ import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, OpsTable, CardGrid, NoteBox } from '@/components/OpsUI';
 import { ReleaseModal, type ReleaseField } from '@/drawers';
-
-const CARDS = [
-  {
-    title: '限额包',
-    desc: '按企业 / KYC 等级 / 通道 / 风险等级配置。',
-    btn: '申请变更',
-    kind: 'request' as const,
-  },
-  {
-    title: '地区与行业',
-    desc: '准入、禁入、风险因子与产品资格。',
-    btn: '查看版本',
-    kind: 'version' as const,
-  },
-  {
-    title: '数据留存',
-    desc: '5 年基线、法律保全与区域化配置。',
-    btn: '配置',
-    kind: 'retention' as const,
-  },
-];
+import { useI18n } from '@/i18n';
 
 const REGION_VERSIONS = [
   { key: 'v24', v: 'v2.4', date: '2026-07-30', region: 'APAC', markets: 'CN / HK / SG / JP', approval: 'CCO approved' },
@@ -31,14 +11,34 @@ const REGION_VERSIONS = [
 ];
 
 export default function Config() {
+  const { t } = useI18n();
   const [modal, setModal] = useState<null | 'request' | 'version' | 'retention'>(null);
+
+  const CARDS = [
+    {
+      title: t('page.config.cardLimit.title'),
+      desc: t('page.config.cardLimit.desc'),
+      btn: t('page.config.cardLimit.btn'),
+      kind: 'request' as const,
+    },
+    {
+      title: t('page.config.cardRegion.title'),
+      desc: t('page.config.cardRegion.desc'),
+      btn: t('page.config.cardRegion.btn'),
+      kind: 'version' as const,
+    },
+    {
+      title: t('page.config.cardRetention.title'),
+      desc: t('page.config.cardRetention.desc'),
+      btn: t('page.config.cardRetention.btn'),
+      kind: 'retention' as const,
+    },
+  ];
 
   return (
     <>
-      <Panel title="配置中心">
-        <p>
-          业务参数、费率、限额、节假日、币种、地区、功能开关、数据留存与报告模板均需版本化、审批、生效时间、回滚与审计。
-        </p>
+      <Panel title={t('page.config.title')}>
+        <p>{t('page.config.intro')}</p>
 
         <CardGrid
           cards={CARDS}
@@ -62,30 +62,37 @@ export default function Config() {
       <ReleaseModal
         open={modal === 'request'}
         onClose={() => setModal(null)}
-        title="限额包变更申请"
-        submitText="提交申请"
-        toast="限额变更已提交，等待审批。"
-        note="限额包变更影响风控拦截范围；变更需影响评估、审批与生效时间。"
+        title={t('page.config.request.title')}
+        submitText={t('page.config.request.submit')}
+        toast={t('page.config.request.toast')}
+        note={t('page.config.request.note')}
         fields={
           [
             {
               name: 'level',
-              label: '目标级别',
+              label: t('page.config.request.labelLevel'),
               type: 'select',
-              options: ['按企业', '按 KYC 等级', '按通道'],
-              initial: '按企业'
+              options: [
+                t('page.config.request.levelEntity'),
+                t('page.config.request.levelKyc'),
+                t('page.config.request.levelChannel'),
+              ],
+              initial: t('page.config.request.levelEntity'),
             },
-            { name: 'caseId', label: '关联案件', type: 'text', placeholder: 'RC-' },
-            { name: 'perTxn', label: '单笔限额', type: 'text', placeholder: '例： 50,000' },
-            { name: 'perDay', label: '单日限额', type: 'text', placeholder: '例： 200,000' },
+            { name: 'caseId', label: t('page.config.request.labelCase'), type: 'text', placeholder: 'RC-' },
+            { name: 'perTxn', label: t('page.config.request.labelPerTxn'), type: 'text', placeholder: '例： 50,000' },
+            { name: 'perDay', label: t('page.config.request.labelPerDay'), type: 'text', placeholder: '例： 200,000' },
             {
               name: 'effective',
-              label: '生效时间',
+              label: t('page.config.request.labelEffective'),
               type: 'select',
-              options: ['立即', '下个营业日'],
-              initial: '立即',
+              options: [
+                t('page.config.request.effectiveNow'),
+                t('page.config.request.effectiveNextDay'),
+              ],
+              initial: t('page.config.request.effectiveNow'),
             },
-            { name: 'reason', label: '变更说明', type: 'textarea', placeholder: '背景与影响' },
+            { name: 'reason', label: t('page.config.request.labelReason'), type: 'textarea', placeholder: t('page.channels.route.labelReason') },
           ] as ReleaseField[]
         }
       />
@@ -93,66 +100,87 @@ export default function Config() {
       <ReleaseModal
         open={modal === 'version'}
         onClose={() => setModal(null)}
-        title="地区与行业准入版本"
-        submitText="申请切换版本"
-        toast="版本切换申请已提交，需 CCO 审批。"
-        note="版本变化会立即影响新客户准入；切换版本需双重审批与生效时间。"
+        title={t('page.config.version.title')}
+        submitText={t('page.config.version.submit')}
+        toast={t('page.config.version.toast')}
+        note={t('page.config.version.note')}
         width={680}
         extra={
           <div className="mt-2">
             <OpsTable<(typeof REGION_VERSIONS)[number]>
               columns={[
-                { title: '版本', key: 'v', render: (r) => <b>{r.v}</b> },
-                { title: '生效日期', key: 'date', render: (r) => r.date },
-                { title: '地区', key: 'region', render: (r) => r.region },
-                { title: '准入市场', key: 'markets', render: (r) => r.markets },
-                { title: '审批', key: 'approval', render: (r) => r.approval },
+                { title: t('page.config.colRegions.status'), key: 'v', render: (r) => <b>{r.v}</b> },
+                { title: t('page.config.colEffectiveDate'), key: 'date', render: (r) => r.date },
+                { title: t('page.config.colRegions.region'), key: 'region', render: (r) => r.region },
+                { title: t('page.config.colMarkets'), key: 'markets', render: (r) => r.markets },
+                { title: t('page.rules.colApproval'), key: 'approval', render: (r) => r.approval },
               ]}
               data={REGION_VERSIONS}
             />
           </div>
         }
         fields={
-          [{ name: 'target', label: '目标版本', type: 'select', options: ['v2.4', 'v2.3', 'v2.2'], initial: 'v2.4' }] as ReleaseField[]
+          [
+            {
+              name: 'target',
+              label: t('page.config.version.labelTarget'),
+              type: 'select',
+              options: ['v2.4', 'v2.3', 'v2.2'],
+              initial: 'v2.4',
+            },
+          ] as ReleaseField[]
         }
       />
 
       <ReleaseModal
         open={modal === 'retention'}
         onClose={() => setModal(null)}
-        title="数据留存与 Legal Hold 配置"
-        submitText="保存配置"
-        toast="留存配置已保存，缩短留存不可回退。"
-        note="缩短留存不可回退；Legal Hold 范围内记录暂停自动删除；变更双人审批。"
+        title={t('page.config.retention.title')}
+        submitText={t('page.config.retention.submit')}
+        toast={t('page.config.retention.toast')}
+        note={t('page.config.retention.note')}
         fields={
           [
             {
               name: 'baseline',
-              label: '基础留存',
+              label: t('page.config.retention.labelBaseline'),
               type: 'select',
-              options: ['5 年基线', '7 年', '10 年'],
-              initial: '5 年基线',
+              options: [
+                t('page.config.retention.baseline5'),
+                t('page.config.retention.baseline7'),
+                t('page.config.retention.baseline10'),
+              ],
+              initial: t('page.config.retention.baseline5'),
             },
             {
               name: 'regional',
-              label: '区域化',
+              label: t('page.config.retention.labelRegional'),
               type: 'select',
-              options: ['按区域逐项', '关闭'],
-              initial: '按区域逐项',
+              options: [
+                t('page.config.retention.regionalPer'),
+                t('page.config.retention.regionalOff'),
+              ],
+              initial: t('page.config.retention.regionalPer'),
             },
             {
               name: 'legalHold',
-              label: 'Legal Hold 范围',
+              label: t('page.config.retention.labelLegalHold'),
               type: 'select',
-              options: ['该案件相关', '客户级所有'],
-              initial: '该案件相关',
+              options: [
+                t('page.config.retention.holdCase'),
+                t('page.config.retention.holdCustomer'),
+              ],
+              initial: t('page.config.retention.holdCase'),
             },
             {
               name: 'effective',
-              label: '生效时间',
+              label: t('page.config.retention.labelEffective'),
               type: 'select',
-              options: ['立即', '下个营业日'],
-              initial: '立即',
+              options: [
+                t('page.config.request.effectiveNow'),
+                t('page.config.request.effectiveNextDay'),
+              ],
+              initial: t('page.config.request.effectiveNow'),
             },
           ] as ReleaseField[]
         }

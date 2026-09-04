@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, Chip, OpsTable, CardGrid, NoteBox } from '@/components/OpsUI';
 import { SettlementDrawer, ReleaseModal, type ReleaseField } from '@/drawers';
+import { useI18n } from '@/i18n';
 
 type Row = {
   key: string;
@@ -21,9 +22,9 @@ const DATA: Row[] = [
     partner: 'Canada ACH Partner',
     ccy: 'CAD',
     amount: '1,280,300.00',
-    status: '金额差异',
+    status: 'diff',
     tone: 'yellow',
-    action: '调查',
+    action: 'investigate',
   },
   {
     key: '2',
@@ -31,9 +32,9 @@ const DATA: Row[] = [
     partner: 'SG FAST Partner',
     ccy: 'SGD',
     amount: '920,411.00',
-    status: 'Matched',
+    status: 'matched',
     tone: 'green',
-    action: '查看',
+    action: 'view',
   },
 ];
 
@@ -45,119 +46,119 @@ const LIQUIDITY = [
 
 const RELEASE = [
   {
-    title: '法币结算',
-    count: '2 笔待放行',
-    desc: '法币多批次结算放行与回退',
-    btn: '运营放行',
-    tip: '系统将选择合规 Provider 并进行预检查与开户。',
-    toast: '结算放行已提交，进入双人复核。',
+    key: 'fiat',
+    countN: 2,
+    countKey: 'page.settlement.countPendingRelease',
     fields: [
       {
         name: 'batch',
-        label: '结算批次',
+        labelKey: 'page.settlement.labelBatch',
         type: 'select',
         options: ['STL-20260811-01', 'STL-20260810-07'],
         initial: 'STL-20260811-01',
       },
       {
         name: 'target',
-        label: '目标',
+        labelKey: 'page.settlement.labelTarget',
         type: 'select',
         options: ['Payment Account', 'Safeguarding', 'Downstream', 'Bank'],
         initial: 'Payment Account',
       },
-      { name: 'amount', label: '金额', type: 'number', initial: 120000 },
-    ] as ReleaseField[],
+      { name: 'amount', labelKey: 'page.settlement.labelAmount', type: 'number', initial: 120000 },
+    ],
   },
   {
-    title: '资金隔离',
-    count: '1 笔待释放',
-    desc: '客户隔离账户资金释放',
-    btn: '释放申请',
-    tip: '系统将校验隔离账户的释放条件与监管留存要求，并记录客户级流水。',
-    toast: '隔离资金释放申请已提交，进入双人复核。',
+    key: 'seg',
+    countN: 1,
+    countKey: 'page.settlement.countPendingFree',
     fields: [
       {
         name: 'reason',
-        label: '原因',
+        labelKey: 'page.settlement.labelReason',
         type: 'select',
         options: ['Customer settlement completed', 'Account closure', 'Regulatory release'],
         initial: 'Customer settlement completed',
       },
-      { name: 'amount', label: '金额', type: 'number', initial: 80000 },
-    ] as ReleaseField[],
+      { name: 'amount', labelKey: 'page.settlement.labelAmount', type: 'number', initial: 80000 },
+    ],
   },
   {
-    title: 'Crypto 结算',
-    count: '1 笔待放行',
-    desc: 'Crypto 多批次放行与回退',
-    btn: '结算放行',
-    tip: '系统将校验链上余额、Gas 预算与合规地址名单，并执行广播前复核。',
-    toast: 'Crypto 结算放行已提交，进入双人复核。',
+    key: 'crypto',
+    countN: 1,
+    countKey: 'page.settlement.countPendingRelease',
     fields: [
       {
         name: 'batch',
-        label: '批次',
+        labelKey: 'page.settlement.labelBatchShort',
         type: 'select',
         options: ['CSTL-20260811-03', 'CSTL-20260810-02'],
         initial: 'CSTL-20260811-03',
       },
       {
         name: 'target',
-        label: '目标',
+        labelKey: 'page.settlement.labelTarget',
         type: 'select',
         options: ['Crypto Payment', 'Crypto Safeguarding', 'Downstream'],
         initial: 'Crypto Payment',
       },
-      { name: 'amount', label: '金额', type: 'number', initial: 85000 },
-    ] as ReleaseField[],
+      { name: 'amount', labelKey: 'page.settlement.labelAmount', type: 'number', initial: 85000 },
+    ],
   },
   {
-    title: 'Crypto 隔离',
-    count: '1 笔待释放',
-    desc: '受托 Crypto 资金释放',
-    btn: '释放申请',
-    tip: '系统将校验托管地址白名单与解锁条件，并生成可追溯的释放凭证。',
-    toast: 'Crypto 隔离资金释放申请已提交，进入双人复核。',
+    key: 'cryptoSafe',
+    countN: 1,
+    countKey: 'page.settlement.countPendingFree',
     fields: [
-      { name: 'asset', label: '资产', type: 'select', options: ['USDT', 'USDC'], initial: 'USDT' },
-      { name: 'network', label: '网络', type: 'select', options: ['TRC20', 'ERC20'], initial: 'TRC20' },
+      { name: 'asset', labelKey: 'page.settlement.labelAsset', type: 'select', options: ['USDT', 'USDC'], initial: 'USDT' },
+      { name: 'network', labelKey: 'page.settlement.labelNetwork', type: 'select', options: ['TRC20', 'ERC20'], initial: 'TRC20' },
       {
         name: 'reason',
-        label: '原因',
+        labelKey: 'page.settlement.labelReason',
         type: 'select',
         options: ['Release condition met', 'Client withdrawal', 'Treasury rebalance'],
         initial: 'Release condition met',
       },
-    ] as ReleaseField[],
+    ],
   },
 ];
 
 export default function Settlement() {
+  const { t } = useI18n();
   const [detail, setDetail] = useState<Row | null>(null);
   const [release, setRelease] = useState<(typeof RELEASE)[number] | null>(null);
+
+  const releaseItems = RELEASE.map((r) => ({
+    ...r,
+    title: t(`page.settlement.release.${r.key}.title`),
+    desc: t(`page.settlement.release.${r.key}.desc`),
+    btn: t(`page.settlement.release.${r.key}.btn`),
+    tip: t(`page.settlement.release.${r.key}.tip`),
+    toast: t(`page.settlement.release.${r.key}.toast`),
+    count: t(r.countKey, { n: r.countN }),
+    fields: r.fields.map((f) => ({ ...f, label: t(f.labelKey) })) as unknown as ReleaseField[],
+  }));
 
   return (
     <>
       <div className="ops-layout">
-        <Panel title="清结算与对账">
+        <Panel title={t('page.settlement.title')}>
           <OpsTable<Row>
             columns={[
-              { title: '批次', key: 'batch', render: (r) => <b>{r.batch}</b> },
-              { title: '合作方', key: 'partner', render: (r) => r.partner },
-              { title: '币种', key: 'ccy', render: (r) => r.ccy },
-              { title: '净额', key: 'amount', render: (r) => r.amount },
+              { title: t('page.settlement.colBatch.batch'), key: 'batch', render: (r) => <b>{r.batch}</b> },
+              { title: t('page.settlement.colBatch.partner'), key: 'partner', render: (r) => r.partner },
+              { title: t('page.settlement.colBatch.ccy'), key: 'ccy', render: (r) => r.ccy },
+              { title: t('page.settlement.colBatch.net'), key: 'amount', render: (r) => r.amount },
               {
-                title: '对账状态',
+                title: t('page.settlement.colBatch.status'),
                 key: 'status',
-                render: (r) => <Chip tone={r.tone}>{r.status}</Chip>,
+                render: (r) => <Chip tone={r.tone}>{t(`page.settlement.reconStatus.${r.status}`)}</Chip>,
               },
               {
-                title: '操作',
+                title: t('page.settlement.colBatch.action'),
                 key: 'action',
                 render: (r) => (
                   <button className="link" onClick={() => setDetail(r)}>
-                    {r.action}
+                    {r.action === 'view' ? t('action.view') : t('page.settlement.actionInvestigate')}
                   </button>
                 ),
               },
@@ -166,7 +167,7 @@ export default function Settlement() {
           />
         </Panel>
 
-        <Panel title="流动性监控">
+        <Panel title={t('page.settlement.liquidityTitle')}>
           <CardGrid
             cards={LIQUIDITY}
             render={(c) => (
@@ -185,14 +186,14 @@ export default function Settlement() {
       </div>
 
       <Panel
-        title="资金放行与释放"
+        title={t('page.settlement.releaseTitle')}
         desc=""
-        actions={<Chip tone="blue">对结算、隔离与 Crypto 资金执行放行 / 释放，受双人复核与审计约束。</Chip>}
+        actions={<Chip tone="blue">{t('page.settlement.releaseChip')}</Chip>}
         wide
       >
         <CardGrid
           cols={4}
-          cards={RELEASE}
+          cards={releaseItems}
           render={(c) => (
             <>
               <div className="flex items-center justify-between gap-2">
@@ -211,7 +212,7 @@ export default function Settlement() {
           )}
         />
 
-        <NoteBox tone="info">所有放行 / 释放操作均记录审计轨迹，并触发双人复核。</NoteBox>
+        <NoteBox tone="info">{t('page.settlement.releaseNote')}</NoteBox>
       </Panel>
 
       <SettlementDrawer open={!!detail} onClose={() => setDetail(null)} batch={detail?.batch} />
@@ -221,7 +222,7 @@ export default function Settlement() {
         onClose={() => setRelease(null)}
         title={`${release?.title ?? ''} · ${release?.btn ?? ''}`}
         fields={release?.fields ?? []}
-        submitText={release?.btn ?? '提交'}
+        submitText={release?.btn ?? t('common.submit')}
         toast={release?.toast ?? ''}
         note={release?.tip}
       />

@@ -2,27 +2,7 @@ import { useState } from 'react';
 import { Button } from 'antd';
 import { Panel, Chip, OpsTable, CardGrid } from '@/components/OpsUI';
 import { ReleaseModal, type ReleaseField } from '@/drawers';
-
-const CARDS = [
-  {
-    title: '合规与风险报告',
-    desc: 'KYC、筛查、案件、处置时效、STR 候选。',
-    btn: '生成',
-    kind: 'create' as const,
-  },
-  {
-    title: '运营交易大盘',
-    desc: '笔数、金额、成功率、通道、币种、地区。',
-    btn: '查看',
-    kind: 'view' as const,
-  },
-  {
-    title: '审计与法律保全',
-    desc: '操作日志、证据包、Legal Hold、导出审批。',
-    btn: '访问',
-    kind: 'access' as const,
-  },
-];
+import { useI18n } from '@/i18n';
 
 type Row = {
   key: string;
@@ -42,7 +22,7 @@ const DATA: Row[] = [
     due: 'Priority',
     status: 'Decision needed',
     tone: 'red',
-    action: '处理',
+    action: 'handle',
   },
   {
     key: '2',
@@ -51,12 +31,34 @@ const DATA: Row[] = [
     due: '5 business days',
     status: 'Draft',
     tone: 'yellow',
-    action: '审核',
+    action: 'review',
   },
 ];
 
 export default function Reports() {
+  const { t } = useI18n();
   const [modal, setModal] = useState<null | 'create' | 'view' | 'access' | 'handle' | 'review'>(null);
+
+  const CARDS = [
+    {
+      title: t('page.reports.cardCompliance.title'),
+      desc: t('page.reports.cardCompliance.desc'),
+      btn: t('page.reports.cardCompliance.btn'),
+      kind: 'create' as const,
+    },
+    {
+      title: t('page.reports.cardOps.title'),
+      desc: t('page.reports.cardOps.desc'),
+      btn: t('page.reports.cardOps.btn'),
+      kind: 'view' as const,
+    },
+    {
+      title: t('page.reports.cardAudit.title'),
+      desc: t('page.reports.cardAudit.desc'),
+      btn: t('page.reports.cardAudit.btn'),
+      kind: 'access' as const,
+    },
+  ];
 
   return (
     <>
@@ -78,22 +80,22 @@ export default function Reports() {
         )}
       />
 
-      <Panel title="监管报告任务">
+      <Panel title={t('page.reports.regTaskTitle')}>
         <OpsTable<Row>
           columns={[
-            { title: '报告类型', key: 'type', render: (r) => <b>{r.type}</b> },
-            { title: '触发条件', key: 'trigger', render: (r) => r.trigger },
-            { title: '截止时间', key: 'due', render: (r) => r.due },
-            { title: '状态', key: 'status', render: (r) => <Chip tone={r.tone}>{r.status}</Chip> },
+            { title: t('page.reports.colType'), key: 'type', render: (r) => <b>{r.type}</b> },
+            { title: t('page.reports.colTrigger'), key: 'trigger', render: (r) => r.trigger },
+            { title: t('page.reports.colDue'), key: 'due', render: (r) => r.due },
+            { title: t('page.reports.col.status'), key: 'status', render: (r) => <Chip tone={r.tone}>{r.status}</Chip> },
             {
-              title: '操作',
+              title: t('page.reports.col.action'),
               key: 'action',
               render: (r) => (
                 <button
                   className="link"
-                  onClick={() => setModal(r.action === '处理' ? 'handle' : 'review')}
+                  onClick={() => setModal(r.action === 'handle' ? 'handle' : 'review')}
                 >
-                  {r.action}
+                  {r.action === 'handle' ? t('action.handle') : t('common.audit')}
                 </button>
               ),
             },
@@ -105,22 +107,42 @@ export default function Reports() {
       <ReleaseModal
         open={modal === 'create'}
         onClose={() => setModal(null)}
-        title="生成合规与风险报告"
-        submitText="生成"
-        toast="报告生成任务已提交，完成后将通知。"
-        note="报告生成需选择模板与时间窗，提交后进入双人复核与下载授权。"
+        title={t('page.reports.create.title')}
+        submitText={t('page.reports.create.submit')}
+        toast={t('page.reports.create.toast')}
+        note={t('page.reports.create.note')}
         fields={
           [
             {
               name: 'type',
-              label: '报告类型',
+              label: t('page.reports.create.labelType'),
               type: 'select',
-              options: ['KYC 月度汇总', '筛查命中率', '案件处置时效', 'STR 候选清单'],
-              initial: 'KYC月度汇总'
+              options: [
+                t('page.reports.create.typeKyc'),
+                t('page.reports.create.typeScreen'),
+                t('page.reports.create.typeCase'),
+                t('page.reports.create.typeStr'),
+              ],
+              initial: t('page.reports.create.typeKyc'),
             },
-            { name: 'window', label: '时间窗', type: 'input', 'placeholder': '2026-07-01 ~ 7-31' },
-            { name: 'region', label: '区域', type: 'select', options: ['全部', 'APAC', 'EMEA', 'AMER'], initial: '全部' },
-            { name: 'granularity', label: '粒度', type: 'select', options: ['逐笔', '客户级'], initial: '逐笔' },
+            { name: 'window', label: t('page.reports.create.labelWindow'), type: 'text', placeholder: '2026-07-01 ~ 7-31' },
+            {
+              name: 'region',
+              label: t('page.reports.create.labelRegion'),
+              type: 'select',
+              options: [t('page.reports.create.regionAll'), 'APAC', 'EMEA', 'AMER'],
+              initial: t('page.reports.create.regionAll'),
+            },
+            {
+              name: 'granularity',
+              label: t('page.reports.create.labelGranularity'),
+              type: 'select',
+              options: [
+                t('page.reports.create.granularityTxn'),
+                t('page.reports.create.granularityCustomer'),
+              ],
+              initial: t('page.reports.create.granularityTxn'),
+            },
           ] as ReleaseField[]
         }
       />
@@ -128,33 +150,47 @@ export default function Reports() {
       <ReleaseModal
         open={modal === 'view'}
         onClose={() => setModal(null)}
-        title="运营交易大盘"
-        submitText="应用"
-        toast="大盘视图已刷新。"
-        note="参数用于自定义视图与导出；导出需二次授权。"
+        title={t('page.reports.view.title')}
+        submitText={t('page.reports.view.submit')}
+        toast={t('page.reports.view.toast')}
+        note={t('page.reports.view.note')}
         fields={
           [
             {
               name: 'metric',
-              label: '指标',
+              label: t('page.reports.view.labelMetric'),
               type: 'select',
-              options: ['笔数', '金额', '成功率', '通道分布'],
-              initial: "笔数"
+              options: [
+                t('page.reports.view.metricCount'),
+                t('page.reports.view.metricAmount'),
+                t('page.reports.view.metricSuccess'),
+                t('page.reports.view.metricChannel'),
+              ],
+              initial: t('page.reports.view.metricCount'),
             },
             {
               name: 'groupBy',
-              label: '分组',
+              label: t('page.reports.view.labelGroupBy'),
               type: 'select',
-              options: ['通道', '币种', '地区', 'KYC 等级'],
-              initial: "通道"
+              options: [
+                t('page.reports.view.groupChannel'),
+                t('page.reports.view.groupCcy'),
+                t('page.reports.view.groupRegion'),
+                t('page.reports.view.groupKyc'),
+              ],
+              initial: t('page.reports.view.groupChannel'),
             },
-            { name: 'window', label: '时间窗', type: 'input', placeholder: '最近24小时'},
+            { name: 'window', label: t('page.reports.view.labelWindow'), type: 'text', placeholder: t('page.reports.view.refreshManual') },
             {
               name: 'refresh',
-              label: '刷新频率',
+              label: t('page.reports.view.labelRefresh'),
               type: 'select',
-              options: ['实时', '5 分钟', '手动'],
-              initial: '实时',
+              options: [
+                t('page.reports.view.refreshRealTime'),
+                t('page.reports.view.refresh5m'),
+                t('page.reports.view.refreshManual'),
+              ],
+              initial: t('page.reports.view.refreshRealTime'),
             },
           ] as ReleaseField[]
         }
@@ -163,22 +199,32 @@ export default function Reports() {
       <ReleaseModal
         open={modal === 'access'}
         onClose={() => setModal(null)}
-        title="审计与法律保全"
-        submitText="提交访问请求"
-        toast="操作已提交，需双人复核。"
-        note="所有访问记录留痕；标记 Legal Hold 后相关记录暂停自动删除。"
+        title={t('page.reports.access.title')}
+        submitText={t('page.reports.access.submit')}
+        toast={t('page.reports.access.toast')}
+        note={t('page.reports.access.note')}
         fields={
           [
             {
               name: 'operation',
-              label: '操作',
+              label: t('page.reports.access.labelOperation'),
               type: 'select',
-              options: ['查看证据包', '导出证据包', '标记 Legal Hold', '解除 Legal Hold'],
-              initial: "查看证据包"
+              options: [
+                t('page.reports.access.opView'),
+                t('page.reports.access.opExport'),
+                t('page.reports.access.opMarkHold'),
+                t('page.reports.access.opReleaseHold'),
+              ],
+              initial: t('page.reports.access.opView'),
             },
-            { name: 'caseId', label: '案件 ID', type: 'text', placeholder: 'RC-202607-1009' },
-            { name: 'reason', label: '理由', type: 'textarea', placeholder: '监管请求/内部审计/诉讼' },
-            { name: 'dual', label: '确认双人复核与审计留痕', type: 'checkbox' },
+            { name: 'caseId', label: t('page.reports.access.labelCase'), type: 'text', placeholder: 'RC-202607-1009' },
+            {
+              name: 'reason',
+              label: t('page.reports.access.labelReason'),
+              type: 'textarea',
+              placeholder: t('page.reports.access.reasonPlaceholder'),
+            },
+            { name: 'dual', label: t('page.reports.access.labelDual'), type: 'checkbox' },
           ] as ReleaseField[]
         }
       />
@@ -186,22 +232,32 @@ export default function Reports() {
       <ReleaseModal
         open={modal === 'handle'}
         onClose={() => setModal(null)}
-        title={`STR Candidate 决策(RC-202607-1009)`}
-        submitText="提交决策"
-        toast="STR 决策已记录并进入报送队列。"
-        note="处理 STR 候选直接影响上报，必须二次 MFA 与审计理由。"
+        title={t('page.reports.handle.title')}
+        submitText={t('page.reports.handle.submit')}
+        toast={t('page.reports.handle.toast')}
+        note={t('page.reports.handle.note')}
         fields={
           [
             {
               name: 'decision',
-              label: '决策',
+              label: t('page.reports.handle.labelDecision'),
               type: 'select',
-              options: ['上报 STR', '缓报 + 加强监控', '驳回', '升级 CCO'],
-              initial: '上报 STR' 
+              options: [
+                t('page.reports.handle.decisionReport'),
+                t('page.reports.handle.decisionDefer'),
+                t('page.reports.handle.decisionReject'),
+                t('page.reports.handle.decisionEscalate'),
+              ],
+              initial: t('page.reports.handle.decisionReport'),
             },
-            { name: 'time', label: '截止时间', type: 'input', initial: 'Priority', readonly: true },
-            { name: 'reason', label: '理由', type: 'textarea', placeholder: '命中模式、可疑模式、客户背景' },
-            { name: 'mfa', label: '已确认二次 MFA', type: 'checkbox' },
+            { name: 'time', label: t('page.reports.handle.labelDue'), type: 'text', initial: 'Priority', readOnly: true },
+            {
+              name: 'reason',
+              label: t('page.reports.handle.labelReason'),
+              type: 'textarea',
+              placeholder: t('page.reports.handle.reasonPlaceholder'),
+            },
+            { name: 'mfa', label: t('page.reports.handle.labelMfa'), type: 'checkbox' },
           ] as ReleaseField[]
         }
       />
@@ -209,16 +265,27 @@ export default function Reports() {
       <ReleaseModal
         open={modal === 'review'}
         onClose={() => setModal(null)}
-        title="EFTR 审核"
-        submitText="签字确认"
-        toast="EFTR 审核意见已签字确认。"
-        note="草案审核需签字确认通过后才可提交；驳回必须说明修改要求。"
+        title={t('page.reports.review.title')}
+        submitText={t('page.reports.review.submit')}
+        toast={t('page.reports.review.toast')}
+        note={t('page.reports.review.note')}
         fields={
           [
-            { name: 'type', label: '类型', type: 'input', initial: 'EFTR', readonly: true },
-            { name: 'trigger', label: '触发', type: 'input', initial: '跨境阈值超额', readonly: true },
-            { name: 'comment', label: '审核意见', type: 'textarea', placeholder: '同意/需补字段/需重做' },
-            { name: 'sign', label: '签字确认', type: 'checkbox' },
+            { name: 'type', label: t('page.reports.review.labelType'), type: 'text', initial: 'EFTR', readOnly: true },
+            {
+              name: 'trigger',
+              label: t('page.reports.review.labelTrigger'),
+              type: 'text',
+              initial: t('page.reports.review.triggerValue'),
+              readOnly: true,
+            },
+            {
+              name: 'comment',
+              label: t('page.reports.review.labelComment'),
+              type: 'textarea',
+              placeholder: t('page.reports.review.commentPlaceholder'),
+            },
+            { name: 'sign', label: t('page.reports.review.labelSign'), type: 'checkbox' },
           ] as ReleaseField[]
         }
       />

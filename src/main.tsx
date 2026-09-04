@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider, App as AntdApp } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
+import zhTW from 'antd/locale/zh_TW';
+import enUS from 'antd/locale/en_US';
+import { I18nProvider, useI18n } from './i18n';
+import type { Lang } from './i18n';
 // 引入顺序有讲究：Tailwind（全部位于 @layer 内）→ antd reset（未分层，可覆盖
 // Tailwind preflight 对 button/table/svg 等基础标签的重置）→ 项目自有样式。
 import './styles/tailwind.css';
@@ -10,10 +14,17 @@ import 'antd/dist/reset.css';
 import './styles/global.css';
 import App from './App';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+const ANTD_LOCALE: Record<Lang, typeof zhCN> = {
+  'zh-CN': zhCN,
+  'zh-TW': zhTW,
+  en: enUS,
+};
+
+function Root() {
+  const { lang } = useI18n();
+  return (
     <ConfigProvider
-      locale={zhCN}
+      locale={ANTD_LOCALE[lang]}
       theme={{
         token: {
           colorPrimary: '#b8932e',
@@ -52,5 +63,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </AntdApp>
     </ConfigProvider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <I18nProvider>
+      <Root />
+    </I18nProvider>
   </React.StrictMode>,
 );

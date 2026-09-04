@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Empty } from 'antd';
 import type { ChipTone } from '@/theme';
+import { useI18n } from '@/i18n';
 
 /* ---------------- 指标行 ---------------- */
 export function Metrics({
@@ -69,13 +70,15 @@ export type OpsColumn<T> = {
 export function OpsTable<T extends { key: string }>({
   columns,
   data,
-  empty = '暂无记录',
+  empty,
 }: {
   columns: OpsColumn<T>[];
   data: T[];
   empty?: string;
 }) {
-  if (!data.length) return <div className="ops-empty">{empty}</div>;
+  const { t } = useI18n();
+  const emptyText = empty ?? t('ops.noRecord');
+  if (!data.length) return <div className="ops-empty">{emptyText}</div>;
   return (
     <table className="ops-table">
       <thead>
@@ -186,10 +189,12 @@ export function NoteBox({
   return <div className={`ops-note-box${tone === 'default' ? '' : ` ${tone}`}`}>{children}</div>;
 }
 
-export function EmptyBox({ text = '暂无数据' }: { text?: string }) {
+export function EmptyBox({ text }: { text?: string }) {
+  const { t } = useI18n();
+  const emptyText = text ?? t('ops.emptyData');
   return (
     <div className="ops-empty">
-      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={text} />
+      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={emptyText} />
     </div>
   );
 }

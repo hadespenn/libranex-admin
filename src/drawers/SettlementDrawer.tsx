@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Drawer, Button, App as AntdApp } from "antd";
 import { DataList, NoteBox } from "@/components/OpsUI";
 import { TabPills } from "./shared";
+import { useI18n } from "@/i18n";
 
-/** 结算差异抽屉：交易配对 / 调账审批 / 对账文件 */
 export function SettlementDrawer({
   open,
   onClose,
@@ -14,17 +14,18 @@ export function SettlementDrawer({
   batch?: string;
 }) {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
   const [tab, setTab] = useState("s-match");
 
   const tabs = [
-    { key: "s-match", label: "交易配对" },
-    { key: "s-adjust", label: "调账审批" },
-    { key: "s-evidence", label: "对账文件" },
+    { key: "s-match", label: t("drawer.settlement.tabMatch") },
+    { key: "s-adjust", label: t("drawer.settlement.tabAdjust") },
+    { key: "s-evidence", label: t("drawer.settlement.tabFile") },
   ];
 
   return (
     <Drawer
-      title={`结算差异 · ${batch}`}
+      title={t("drawer.settlement.diffTitleTpl", { batch })}
       open={open}
       onClose={onClose}
       width={620}
@@ -43,21 +44,19 @@ export function SettlementDrawer({
 
       <TabPills items={tabs} value={tab} onChange={setTab} />
 
-      {tab === "s-match" && (
-        <p>系统已将内部总账、通道回执与合作方账单进行三方对账。缺失记录与金额差异已自动生成调查任务。</p>
-      )}
+      {tab === "s-match" && <p>{t("drawer.settlement.matchText")}</p>}
 
       {tab === "s-adjust" && (
         <>
-          <p>
-            任何调账须关联差异原因、审批链、账务凭证和前后余额，且不得由同一人员发起与批准。
-          </p>
+          <p>{t("drawer.settlement.adjustText")}</p>
           <Button
             type="primary"
             className="mini btn-primary"
-            onClick={() => message.success("调账审批已发起，需双人复核。")}
+            onClick={() =>
+              message.success(t("drawer.settlement.btnAdjustApprovalMsg"))
+            }
           >
-            发起调账审批
+            {t("drawer.settlement.btnAdjustApproval")}
           </Button>
         </>
       )}

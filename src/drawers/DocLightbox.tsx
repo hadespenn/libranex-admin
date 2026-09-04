@@ -1,4 +1,5 @@
 import { Button } from "antd";
+import { useI18n } from '@/i18n';
 
 export type DocField = { label: string; value: string };
 
@@ -19,6 +20,7 @@ export function DocLightbox({
   doc: DocView;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <div
       className="kyc-lightbox fixed inset-0 z-[500] flex items-center justify-center"
@@ -32,7 +34,7 @@ export function DocLightbox({
         <div className="kyc-lightbox-head flex items-center gap-2.5 border-b border-[#dde6ed] px-4 py-[13px]">
           <b className="mr-auto text-sm text-[#142d42]">{doc.title}</b>
           <Button className="mini btn-ghost" onClick={onClose}>
-            下载
+            {t('ops.download')}
           </Button>
           <button
             aria-label="close"

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, App as AntdApp } from 'antd';
 import { Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
 import { RiskDrawer } from '@/drawers';
+import { useI18n } from '@/i18n';
 
 type Row = {
   key: string;
@@ -17,44 +18,45 @@ const DATA: Row[] = [
   {
     key: '1',
     id: 'TX-849201',
-    type: '银行付款',
+    type: 'typeBank',
     amount: 'USD 98,500',
-    reason: '潜在制裁匹配',
-    status: '冻结',
+    reason: 'reasonSanctions',
+    status: 'frozen',
     tone: 'red',
   },
   {
     key: '2',
     id: 'TX-849166',
-    type: '兑换',
+    type: 'typeFx',
     amount: 'EUR 65,000',
-    reason: '异常路径 / 新收款人',
-    status: '待风控',
+    reason: 'reasonPath',
+    status: 'pendingRisk',
     tone: 'yellow',
   },
 ];
 
 export default function TxReview() {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
   const [detail, setDetail] = useState<Row | null>(null);
 
   return (
     <>
     <div className="ops-layout">
-      <Panel title="交易复核队列">
+      <Panel title={t('page.txReview.queueTitle')}>
         <OpsTable<Row>
           columns={[
-            { title: '交易', key: 'id', render: (r) => <b>{r.id}</b> },
-            { title: '类型', key: 'type', render: (r) => r.type },
-            { title: '金额', key: 'amount', render: (r) => r.amount },
-            { title: '触发原因', key: 'reason', render: (r) => r.reason },
-            { title: '状态', key: 'status', render: (r) => <Chip tone={r.tone}>{r.status}</Chip> },
+            { title: t('page.txReview.col.id'), key: 'id', render: (r) => <b>{r.id}</b> },
+            { title: t('page.txReview.col.ccy'), key: 'type', render: (r) => t(`page.txReview.${r.type}`) },
+            { title: t('page.txReview.col.amount'), key: 'amount', render: (r) => r.amount },
+            { title: t('page.txReview.col.reason'), key: 'reason', render: (r) => t(`page.txReview.${r.reason}`) },
+            { title: t('page.txReview.col.status'), key: 'status', render: (r) => <Chip tone={r.tone}>{t(`page.txReview.status${r.status.charAt(0).toUpperCase()}${r.status.slice(1)}`)}</Chip> },
             {
-              title: '操作',
+              title: t('page.txReview.col.action'),
               key: 'action',
               render: (r) => (
                 <button className="link" onClick={() => setDetail(r)}>
-                  复核
+                  {t('action.review')}
                 </button>
               ),
             },
@@ -63,26 +65,26 @@ export default function TxReview() {
         />
       </Panel>
 
-      <Panel title="复核动作">
-        <NoteBox>展示资金来源去向、对手方、规则命中、名单/链上筛查和客户 KYC 资料。</NoteBox>
+      <Panel title={t('page.txReview.reviewTitle')}>
+        <NoteBox>{t('page.txReview.reviewNote')}</NoteBox>
         <div className="flex flex-wrap gap-2.5">
           <Button
             className="mini btn-success"
-            onClick={() => message.success('放行需要满足规则与权限校验；已生成待审批决定。')}
+            onClick={() => message.success(t('page.txReview.btnReleaseMsg'))}
           >
-            放行
+            {t('page.txReview.btnRelease')}
           </Button>
           <Button
             className="mini btn-danger"
-            onClick={() => message.info('交易保持冻结，已记录处置理由与证据要求。')}
+            onClick={() => message.info(t('page.txReview.btnRejectMsg'))}
           >
-            拒绝 / 冻结
+            {t('page.txReview.btnReject')}
           </Button>
           <Button
             className="mini btn-ghost"
-            onClick={() => message.info('案件已升级至 CCO / 法务队列。')}
+            onClick={() => message.info(t('page.txReview.btnEscalateMsg'))}
           >
-            升级案件
+            {t('page.txReview.btnEscalate')}
           </Button>
         </div>
       </Panel>

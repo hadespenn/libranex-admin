@@ -228,6 +228,12 @@ a {
 
 .lang-select.ant-select {
   height: 44px !important;
+  background: #fffdf8;
+  border-radius: 999px !important;
+  color: #12283d;
+  padding: 10px 14px;
+  box-shadow: 0 4px 14px rgba(6, 45, 83, .04);
+  border: 1px solid #d8e0e5
 }
 
 .top-dropdown {
@@ -235,8 +241,7 @@ a {
   box-shadow: 0 4px 14px rgba(6,45,83,.04) !important;   /* 去掉 focus 发光框 */
   background: #fffdf8 !important; 
   border-radius: 999px !important;
-  padding: 10px 14px !important;    /* 强制调整 padding */
-
+  padding: 10px 14px !important;    /* 强制调整 padding 
 }
 
 .lang-select .ant-select-selection-item {
@@ -250,6 +255,17 @@ a {
 }
 .ops-page {
   animation: opsFade 0.2s;
+}
+
+.ops-search {
+  display: flex;
+    width: calc(100% - 60px);
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.ops-search .ant-select, .ops-search .ant-input {
+  width: 100% !important;
 }
 
 /* ============================================================
@@ -330,7 +346,7 @@ a {
 
 .ops-filter {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 12px;
   min-width: 0;

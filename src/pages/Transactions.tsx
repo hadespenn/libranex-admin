@@ -5,6 +5,7 @@ import {
   TxReceiptModal,
   RiskDrawer,
 } from "@/drawers";
+import { useI18n } from "@/i18n";
 
 type Row = {
   key: string;
@@ -53,14 +54,15 @@ const DATA: Row[] = [
 ];
 
 const METRICS = [
-  { label: "处理笔数", value: "12,482", note: "Last 24h" },
-  { label: "处理中", value: "184", note: "Queue healthy" },
-  { label: "失败率", value: "0.82%", note: "Within threshold" },
-  { label: "异常交易", value: "37", note: "Needs triage", tone: "bad" as const },
-  { label: "通道健康", value: "94%", note: "1 degraded", tone: "warn" as const },
+  { labelKey: "page.transactions.metricCount", value: "12,482", note: "Last 24h" },
+  { labelKey: "page.transactions.metricProcessing", value: "184", note: "Queue healthy" },
+  { labelKey: "page.transactions.metricFailRate", value: "0.82%", note: "Within threshold" },
+  { labelKey: "page.transactions.metricAbnormal", value: "37", note: "Needs triage", tone: "bad" as const },
+  { labelKey: "page.transactions.metricHealth", value: "94%", note: "1 degraded", tone: "warn" as const },
 ];
 
 export default function Transactions() {
+  const { t } = useI18n();
   const [chainOpen, setChainOpen] = useState(false);
   const [chainTx, setChainTx] = useState<Row | null>(null);
   const [receiptOpen, setReceiptOpen] = useState(false);
@@ -78,18 +80,18 @@ export default function Transactions() {
 
   return (
     <>
-      <Metrics items={METRICS} />
+      <Metrics items={METRICS.map((m) => ({ ...m, label: t(m.labelKey) }))} />
 
-      <Panel title="实时交易监控">
+      <Panel title={t("page.transactions.title")}>
         <OpsTable<Row>
           columns={[
-            { title: "时间", key: "time", render: (r) => r.time },
-            { title: "交易号", key: "id", render: (r) => <b>{r.id}</b> },
-            { title: "客户", key: "client", render: (r) => r.client },
-            { title: "金额", key: "amount", render: (r) => r.amount },
-            { title: "通道", key: "channel", render: (r) => r.channel },
+            { title: t("page.transactions.col.time"), key: "time", render: (r) => r.time },
+            { title: t("page.transactions.col.id"), key: "id", render: (r) => <b>{r.id}</b> },
+            { title: t("page.transactions.col.cust"), key: "client", render: (r) => r.client },
+            { title: t("page.transactions.col.amount"), key: "amount", render: (r) => r.amount },
+            { title: t("page.transactions.col.channel"), key: "channel", render: (r) => r.channel },
             {
-              title: "状态",
+              title: t("page.transactions.col.status"),
               key: "status",
               render: (r) => <Chip tone={r.tone}>{r.status}</Chip>,
             },
@@ -99,11 +101,11 @@ export default function Transactions() {
               render: (r) =>
                 r.action === "chain" ? (
                   <button className="link" onClick={() => openChain(r)}>
-                    查看链路
+                    {t("action.chain")}
                   </button>
                 ) : (
                   <button className="link" onClick={() => openReceipt(r)}>
-                    查看回执
+                    {t("action.receipt")}
                   </button>
                 ),
             },

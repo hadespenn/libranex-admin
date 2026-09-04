@@ -4,6 +4,7 @@ import { NoteBox } from "@/components/OpsUI";
 import type { ChipTone } from "@/theme";
 import { DocLightbox, type DocView } from "./DocLightbox";
 import { TabPills } from "./shared";
+import { useI18n } from "@/i18n";
 
 /** 材料状态圆点配色，与 ops-chip 的语义色保持一致 */
 const DOT_TONE: Record<ChipTone, string> = {
@@ -41,6 +42,7 @@ export function KycDrawer({
   screening?: string;
 }) {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
   const [tab, setTab] = useState("kyc-docs");
   const [decision, setDecision] = useState("approve");
   const [notes, setNotes] = useState("");
@@ -57,18 +59,16 @@ export function KycDrawer({
   const buildCompose = (stageTitle: string, type: "supply" | "fix") => {
     const subject =
       type === "supply"
-        ? `[KYC 补件] ${name}（${kyId}）· 需补充「${stageTitle}」`
-        : `[KYC 资料修改] ${name}（${kyId}）· 请修改「${stageTitle}」`;
-    const greet = `尊敬的 ${contact}：`;
+        ? t("kyc.composeSupply.subject", { name, kyId, stage: stageTitle })
+        : t("kyc.composeFix.subject", { name, kyId, stage: stageTitle });
+    const greet = t("kyc.compose.greet", { contact });
     const intro =
       type === "supply"
-        ? `为保证 ${name}（${kyId}）的 KYC 审核顺利进行，请补充以下「${stageTitle}」环节的资料：`
-        : `在审核 ${name}（${kyId}）的「${stageTitle}」资料时，以下文件需修改后重新提交：`;
+        ? t("kyc.composeSupply.intro", { name, kyId, stage: stageTitle })
+        : t("kyc.composeFix.intro", { name, kyId, stage: stageTitle });
     const items =
-      type === "supply"
-        ? "• 所需文件列表 — 请在 5 个工作日内通过企业控制台上传，或回复本邮件附上文件。如有疑问请联系合规团队。"
-        : "• 待修改文件 — 请更正后通过企业控制台重新上传。";
-    const body = `${greet}\n\n${intro}\n\n${items}\n\nLibranex 合规部`;
+      type === "supply" ? t("kyc.composeSupply.items") : t("kyc.composeFix.items");
+    const body = `${greet}\n\n${intro}\n\n${items}\n\n${t("kyc.compose.sign")}`;
     return { subject, body };
   };
 
@@ -85,9 +85,7 @@ export function KycDrawer({
       },
       ...prev,
     ]);
-    message.success(
-      type === "supply" ? "补件通知已发送。" : "资料修改通知已发送。",
-    );
+    message.success(type === "supply" ? t("kyc.sendSupply") : t("kyc.sendFix"));
     setCompose(null);
   };
 
@@ -95,7 +93,7 @@ export function KycDrawer({
   const DOCS: Record<string, DocView> = {
     ci: {
       badge: "PDF",
-      title: "公司注册证书 (Certificate of Incorporation)",
+      title: t("kyc.material.ci.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-28 · Atlas · 1.2 MB",
       fields: [
         { label: "Company Name", value: name },
@@ -108,7 +106,7 @@ export function KycDrawer({
     },
     br: {
       badge: "PDF",
-      title: "商业登记证 (Business Registration)",
+      title: t("kyc.material.br.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-28 · Atlas · 0.8 MB",
       fields: [
         { label: "BR No.", value: "BR-558821" },
@@ -118,7 +116,7 @@ export function KycDrawer({
     },
     ma: {
       badge: "PDF",
-      title: "公司章程 (M&A)",
+      title: t("kyc.material.ma.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-28 · Atlas · 2.1 MB",
       fields: [
         { label: "Article", value: "12 — Shareholders" },
@@ -129,7 +127,7 @@ export function KycDrawer({
     },
     add1: {
       badge: "PDF",
-      title: "注册地址单据样本",
+      title: t("kyc.material.add1.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-25 · Atlas · 0.6 MB",
       fields: [
         { label: "Address", value: "60 Anson Road, #14-01, Singapore 079914" },
@@ -140,7 +138,7 @@ export function KycDrawer({
     },
     g1: {
       badge: "PDF",
-      title: "变更登记表",
+      title: t("kyc.material.g1.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-21 · Atlas · 0.4 MB",
       fields: [
         { label: "Change Type", value: "Director appointment" },
@@ -150,7 +148,7 @@ export function KycDrawer({
     },
     g2: {
       badge: "PDF",
-      title: "同名公司公告",
+      title: t("kyc.material.g2.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-22 · Atlas · 0.3 MB",
       fields: [
         { label: "Publication", value: "The Straits Times" },
@@ -166,79 +164,79 @@ export function KycDrawer({
   };
 
   const tabs = [
-    { key: "kyc-docs", label: "资料核验" },
-    { key: "kyc-decision", label: "审核决定" },
-    { key: "kyc-log", label: "补件与通知", count: notifyLog.length },
+    { key: "kyc-docs", label: t("kyc.tabDocs") },
+    { key: "kyc-decision", label: t("kyc.tabDecision") },
+    { key: "kyc-log", label: t("kyc.tabLog"), count: notifyLog.length },
   ];
 
-  // 原型：3 个企业主体资料阶段块（证书 / 章程 / 地址证）
+  // 企业主体资料阶段块（证书 / 章程 / 地址证）
   const companyStage = {
-    title: "企业主体资料",
-    sub: "公司注册与法律主体文件",
-    chip: "待核验",
+    title: t("kyc.stageCompany.key"),
+    sub: t("kyc.stageCompany.sub"),
+    chip: t("kyc.stageCompany.chip"),
     chipTone: "yellow" as ChipTone,
     materials: [
       {
         key: "ci",
-        name: "公司注册证书 (Certificate of Incorporation)",
-        status: "已提交",
+        name: t("kyc.material.ci.key"),
+        status: t("kyc.status.submitted"),
         tone: "green" as ChipTone,
-        note: "",
+        note: t("kyc.material.ci.note"),
       },
       {
         key: "br",
-        name: "商业登记证 (Business Registration)",
-        status: "已提交",
+        name: t("kyc.material.br.key"),
+        status: t("kyc.status.submitted"),
         tone: "green" as ChipTone,
-        note: "",
+        note: t("kyc.material.br.note"),
       },
       {
         key: "ma",
-        name: "公司章程 (M&A)",
-        status: "待修改",
+        name: t("kyc.material.ma.key"),
+        status: t("kyc.status.toFix"),
         tone: "yellow" as ChipTone,
-        note: "19 条股东多数与 UBO 持股的股东名称不一致，请更换并重新上传。",
+        note: t("kyc.material.ma.note"),
       },
     ],
     extra: ["补发补件通知", "要求修改资料"],
   };
 
   const addressStage = {
-    title: "注册地址证明",
-    sub: "注册地址在过去 3 个月内单据",
-    chip: "待补件",
+    title: t("kyc.stageAddress.key"),
+    sub: t("kyc.stageAddress.sub"),
+    chip: t("kyc.stageAddress.chip"),
     chipTone: "red" as ChipTone,
     materials: [
       {
         key: "add1",
-        name: "注册地址单据样本",
-        status: "已提交",
+        name: t("kyc.material.add1.key"),
+        status: t("kyc.status.submitted"),
         tone: "green" as ChipTone,
-        note: "",
+        note: t("kyc.material.add1.note"),
       },
     ],
     extra: ["补发补件通知", "要求修改资料"],
   };
 
   const govStage = {
-    title: "公告与登记",
-    sub: "同名公司、变更登记与公告条款",
-    chip: "进行中",
+    title: t("kyc.stageGov.key"),
+    sub: t("kyc.stageGov.sub"),
+    chip: t("kyc.stageGov.chip"),
     chipTone: "blue" as ChipTone,
     materials: [
       {
         key: "g1",
-        name: "变更登记表",
-        status: "已提交",
+        name: t("kyc.material.g1.key"),
+        status: t("kyc.status.submitted"),
         tone: "green" as ChipTone,
-        note: "",
+        note: t("kyc.material.g1.note"),
       },
       {
         key: "g2",
-        name: "同名公司公告",
-        status: "需补件",
+        name: t("kyc.material.g2.key"),
+        status: t("kyc.status.needSupply"),
         tone: "yellow" as ChipTone,
-        note: "",
+        note: t("kyc.material.g2.note"),
       },
     ],
     extra: ["补发补件通知", "要求修改资料"],
@@ -246,7 +244,7 @@ export function KycDrawer({
 
   return (
     <Modal
-      title={`KYC 审核 · ${name}`}
+      title={t("kyc.title", { name })}
       open={open}
       onCancel={onClose}
       width={720}
@@ -260,22 +258,22 @@ export function KycDrawer({
         <div>
           <div className="text-[19px] font-bold text-[#142d42]">{name}</div>
           <div className="mt-0.5 text-xs text-[#748493]">
-            {kyId} · {jurisdiction} · 联系人 {contact}
+            {kyId} · {jurisdiction} · {t("common.contact")} {contact}
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap gap-1.5">
-          <span className="ops-chip blue">审核中</span>
-          <span className="ops-chip red">高</span>
-          <span className="ops-chip yellow">PEP potential</span>
+          <span className="ops-chip blue">{t("kyc.chipReviewing")}</span>
+          <span className="ops-chip red">{risk}</span>
+          <span className="ops-chip yellow">{screening}</span>
         </div>
       </div>
 
       {/* SLA / 材料 / 邮箱 三联 */}
       <div className="my-3 grid grid-cols-3 gap-2.5">
         {[
-          { label: "SLA", value: sla },
-          { label: "材料", value: docsLabel },
-          { label: "客户邮箱", value: email },
+          { label: t("kyc.sla"), value: sla },
+          { label: t("kyc.docs"), value: docsLabel },
+          { label: t("kyc.email"), value: email },
         ].map((c) => (
           <div
             key={c.label}
@@ -296,7 +294,7 @@ export function KycDrawer({
           {[companyStage, addressStage, govStage].map((stage, idx) => {
             const showing = compose && compose.stage === idx;
             const composeData = showing
-              ? buildCompose(stage.title, compose.type)
+              ? buildCompose(stage.title, compose!.type)
               : null;
 
             return (
@@ -335,7 +333,8 @@ export function KycDrawer({
                           <b className="text-[13px] text-[#1c2c3a]">{m.name}</b>
                           {m.note && (
                             <span className="text-[11px] text-[#b06a00]">
-                              注：{m.note}
+                              {t("kyc.notePrefix")}
+                              {m.note}
                             </span>
                           )}
                         </div>
@@ -343,7 +342,7 @@ export function KycDrawer({
                       <div className="flex shrink-0 items-center gap-2">
                         <span className={`ops-chip ${m.tone}`}>{m.status}</span>
                         <button className="link" onClick={() => openDoc(m.key)}>
-                          在线查看
+                          {t("common.onlineView")}
                         </button>
                       </div>
                     </div>
@@ -355,13 +354,13 @@ export function KycDrawer({
                     className="mini btn-ghost"
                     onClick={() => setCompose({ stage: idx, type: "supply" })}
                   >
-                    补发补件通知
+                    {t("kyc.btnResupply")}
                   </Button>
                   <Button
                     className="mini btn-ghost"
                     onClick={() => setCompose({ stage: idx, type: "fix" })}
                   >
-                    要求修改资料
+                    {t("kyc.btnRequestFix")}
                   </Button>
                 </div>
 
@@ -370,20 +369,20 @@ export function KycDrawer({
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
-                          收件人
+                          {t("common.recipient")}
                         </label>
                         <Input value={email} readOnly />
                       </div>
                       <div>
                         <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
-                          主题
+                          {t("common.subject")}
                         </label>
                         <Input value={composeData.subject} readOnly />
                       </div>
                     </div>
 
                     <label className="mb-1.5 mt-3 block text-xs font-semibold text-[#354454]">
-                      正文
+                      {t("common.body")}
                     </label>
                     <Input.TextArea defaultValue={composeData.body} rows={6} />
 
@@ -393,18 +392,18 @@ export function KycDrawer({
                         className="mini btn-primary"
                         onClick={() => onSend(idx)}
                       >
-                        发送通知
+                        {t("common.send")}
                       </Button>
                       <Button
                         className="mini btn-ghost"
                         onClick={() => setCompose(null)}
                       >
-                        取消
+                        {t("common.cancel")}
                       </Button>
                       <span className="text-[11px] text-[#748493]">
                         {compose!.type === "supply"
-                          ? "向客户发送补件请求，并自动记录至通知与案件。"
-                          : "向客户说明需修改的资料，并自动记录。"}
+                          ? t("kyc.composeSupply.hint")
+                          : t("kyc.composeFix.hint")}
                       </span>
                     </div>
                   </div>
@@ -417,30 +416,27 @@ export function KycDrawer({
 
       {tab === "kyc-decision" && (
         <>
-          <NoteBox>
-            审核人可结合在线资料与名单 / 交易筛查作出最终决定。驳回或转 EDD
-            需填写理由。
-          </NoteBox>
+          <NoteBox>{t("kyc.decisionNote")}</NoteBox>
 
           <Radio.Group
             value={decision}
             onChange={(e) => setDecision(e.target.value)}
             className="my-2 flex flex-wrap gap-3.5"
           >
-            <Radio value="approve">通过</Radio>
-            <Radio value="reject">驳回</Radio>
-            <Radio value="edd">转 EDD（加强尽调）</Radio>
+            <Radio value="approve">{t("kyc.radio.approve")}</Radio>
+            <Radio value="reject">{t("kyc.radio.reject")}</Radio>
+            <Radio value="edd">{t("kyc.radio.edd")}</Radio>
           </Radio.Group>
 
           <div className="mt-1.5">
             <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
-              审核意见 *
+              {t("kyc.opinion")}
             </label>
             <Input.TextArea
               rows={4}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="通过 / 驳回 / 加强尽调的理由与后续动作"
+              placeholder={t("kyc.opinion.placeholder")}
             />
           </div>
 
@@ -451,17 +447,17 @@ export function KycDrawer({
               onClick={() =>
                 message.success(
                   decision === "reject"
-                    ? "已驳回该 KYC 申请。"
+                    ? t("kyc.rejectMsg")
                     : decision === "edd"
-                      ? "已升级至 EDD（加强尽调）。"
-                      : "KYC 审核决定已提交。",
+                      ? t("kyc.eddMsg")
+                      : t("kyc.approveMsg"),
                 )
               }
             >
-              提交审核决定
+              {t("kyc.submitDecision")}
             </Button>
             <Button className="mini btn-ghost" onClick={onClose}>
-              关闭
+              {t("common.close")}
             </Button>
           </div>
         </>
@@ -470,9 +466,7 @@ export function KycDrawer({
       {tab === "kyc-log" && (
         <>
           {notifyLog.length === 0 ? (
-            <NoteBox>
-              暂无补件或通知记录。当您使用「补发补件通知」或「要求修改资料」时，操作会自动记录到此日志。
-            </NoteBox>
+            <NoteBox>{t("kyc.logEmpty")}</NoteBox>
           ) : (
             <div className="grid gap-2.5">
               {notifyLog.map((n, i) => (
@@ -484,7 +478,7 @@ export function KycDrawer({
                     <span
                       className={`ops-chip ${n.type === "supply" ? "blue" : "yellow"}`}
                     >
-                      {n.type === "supply" ? "补件" : "修改"}
+                      {n.type === "supply" ? t("kyc.logSupply") : t("kyc.logFix")}
                     </span>
                     <b className="text-[#142d42]">{n.stage}</b>
                     <small className="ml-auto text-[11px] text-[#748493]">
@@ -492,7 +486,8 @@ export function KycDrawer({
                     </small>
                   </div>
                   <div className="mt-1 text-xs text-[#3a4a5a]">
-                    收件人：{n.to}
+                    {t("kyc.logRecipient")}
+                    {n.to}
                   </div>
                 </div>
               ))}

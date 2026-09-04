@@ -1,7 +1,7 @@
 import { Drawer, Button, Input, App as AntdApp } from "antd";
 import { DataList, NoteBox } from "@/components/OpsUI";
+import { useI18n } from "@/i18n";
 
-/** 客服工单抽屉 */
 export function TicketDrawer({
   open,
   onClose,
@@ -16,10 +16,14 @@ export function TicketDrawer({
   sla?: string;
 }) {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
 
   return (
     <Drawer
-      title={`工单 ${ticketId} · Settlement delay`}
+      title={t("drawer.ticket.titleTpl", {
+        id: ticketId,
+        subject: t("page.tickets.categorySettleDelay"),
+      })}
       open={open}
       onClose={onClose}
       width={620}
@@ -37,10 +41,12 @@ export function TicketDrawer({
       />
 
       <div className="mt-4">
-        <label className="mb-1.5 block text-xs text-muted">客户回复</label>
+        <label className="mb-1.5 block text-xs text-muted">
+          {t("drawer.ticket.replyLabel")}
+        </label>
         <Input.TextArea
           rows={4}
-          defaultValue="我们正在核实结算状态，将在收到通道回执后第一时间更新您。"
+          defaultValue={t("drawer.ticket.replyDefault")}
         />
       </div>
 
@@ -48,21 +54,19 @@ export function TicketDrawer({
         <Button
           type="primary"
           className="mini btn-primary"
-          onClick={() => message.success("回复已发送。")}
+          onClick={() => message.success(t("drawer.ticket.btnSendMsg"))}
         >
-          发送回复
+          {t("drawer.ticket.btnSend")}
         </Button>
         <Button
           className="mini btn-ghost"
-          onClick={() => message.info("工单已分派。")}
+          onClick={() => message.info(t("drawer.ticket.btnDispatchMsg"))}
         >
-          分派
+          {t("drawer.ticket.btnDispatchShort")}
         </Button>
       </div>
 
-      <NoteBox tone="warn">
-        客服界面不展示制裁、STR、内部调查等敏感状态；仅使用经过授权的客户可见信息。
-      </NoteBox>
+      <NoteBox tone="warn">{t("drawer.ticket.note")}</NoteBox>
     </Drawer>
   );
 }

@@ -11,19 +11,20 @@ import {
   BarChart,
 } from "@/components/OpsUI";
 import { KycDrawer, RiskDrawer, SettlementDrawer } from "@/drawers";
+import { useI18n } from "@/i18n";
 
 const METRICS = [
-  { label: "实时 TPV", value: "$1.82M", note: "▲ 14.2% today" },
-  { label: "交易成功率", value: "99.18%", note: "SLA healthy" },
-  { label: "KYC 待审核", value: "42", note: "11 due today" },
+  { label: "page.overview.metricTpv", value: "$1.82M", note: "▲ 14.2% today", tone: 'ok' },
+  { label: "page.overview.metricSuccess", value: "99.18%", note: "SLA healthy", tone: 'ok' },
+  { label: "page.overview.metricKyc", value: "42", note: "11 due today", tone: 'ok' },
   {
-    label: "风险案件",
+    label: "page.overview.metricRisk",
     value: "18",
     note: "5 Red · immediate",
     tone: "bad" as const,
   },
   {
-    label: "对账差异",
+    label: "page.overview.metricRecon",
     value: "7",
     note: "$24.6K exposure",
     tone: "warn" as const,
@@ -55,10 +56,10 @@ const QUEUE: QueueRow[] = [
     key: "1",
     type: "KYC",
     subject: "Atlas Commerce",
-    reason: "UBO 穿透不完整",
+    reason: "page.overview.queueReasonUbo",
     priority: "Yellow",
     tone: "yellow",
-    action: "审核",
+    action: "page.overview.queueActionReview",
   },
   {
     key: "2",
@@ -67,42 +68,43 @@ const QUEUE: QueueRow[] = [
     reason: "Potential sanctions match",
     priority: "Red",
     tone: "red",
-    action: "处置",
+    action: "page.overview.queueActionHandle",
   },
   {
     key: "3",
     type: "Settlement",
     subject: "CAN-ACH-07",
-    reason: "金额差异",
+    reason: "page.overview.queueReasonDiff",
     priority: "Medium",
     tone: "yellow",
-    action: "清结算与对账",
+    action: "page.overview.queueActionSettle",
   },
 ];
 
 const ALERTS = [
   {
-    title: "Payment Gateway · Elevated error rate",
-    desc: "5xx 从 0.2% 上升至 1.9% · 已通知值班人员",
+    title: "page.overview.alertGw",
+    desc: "page.overview.alertGwDesc",
   },
   {
-    title: "Screening provider · Healthy",
-    desc: "名单更新完成 · 42,108 个对象已重筛",
+    title: "page.overview.alertScreen",
+    desc: "page.overview.alertScreenDesc",
   },
   {
-    title: "SGD liquidity · Threshold warning",
-    desc: "可用头寸低于预警线 18%",
+    title: "page.overview.alertLiq",
+    desc: "page.overview.alertLiqDesc",
   },
 ];
 
 const COMPLIANCE = [
-  { title: "11", sub: "今日 KYC SLA" },
-  { title: "3", sub: "EDD 高级审批" },
-  { title: "2", sub: "报告截止提醒" },
+  { title: "11", sub: "page.overview.complianceKycSla" },
+  { title: "3", sub: "page.overview.complianceEdd" },
+  { title: "2", sub: "page.overview.complianceReport" },
 ];
 
 export default function Overview() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [drawer, setDrawer] = useState<null | "kyc" | "risk" | "settlement">(
     null,
   );
@@ -115,44 +117,44 @@ export default function Overview() {
 
   return (
     <>
-      <Metrics items={METRICS} />
+      <Metrics items={METRICS.map((m) => ({ ...m, label: t(m.label) }))} />
 
       <div className="ops-layout">
         <div>
-          <Panel title="实时交易与通道状态">
+          <Panel title={t("page.overview.txStatusTitle")}>
             <BarChart bars={BARS} />
           </Panel>
           <Panel
-            title="优先处理队列"
+            title={t("page.overview.prioQueueTitle")}
             actions={
               <Button
-                className="mini btn-ghost"
+                className="mini link"
                 onClick={() => navigate("/risk")}
               >
-                风险案件
+                ⚑ {t("nav.opsRisk.key")}
               </Button>
             }
           >
             <OpsTable<QueueRow>
               columns={[
-                { title: "类型", key: "type", render: (r) => r.type },
+                { title: t("page.overview.col.type"), key: "type", render: (r) => r.type },
                 {
-                  title: "对象",
+                  title: t("page.overview.col.subject"),
                   key: "subject",
                   render: (r) => <b>{r.subject}</b>,
                 },
-                { title: "原因", key: "reason", render: (r) => r.reason },
+                { title: t("page.overview.col.reason"), key: "reason", render: (r) => t(r.reason) },
                 {
-                  title: "优先级",
+                  title: t("page.overview.col.priority"),
                   key: "priority",
                   render: (r) => <Chip tone={r.tone}>{r.priority}</Chip>,
                 },
                 {
-                  title: "动作",
+                  title: t("page.overview.col.action"),
                   key: "action",
                   render: (r) => (
                     <button className="link" onClick={() => openDrawer(r)}>
-                      {r.action}
+                      {t(r.action)}
                     </button>
                   ),
                 },
@@ -162,13 +164,13 @@ export default function Overview() {
           </Panel>
         </div>
         <div>
-          <Panel title="系统与通道告警">
-            <Timeline items={ALERTS} />
+          <Panel title={t("page.overview.sysAlertTitle")}>
+            <Timeline items={ALERTS.map((a) => ({ title: t(a.title), desc: t(a.desc) }))} />
           </Panel>
 
-          <Panel title="合规待办">
+          <Panel title={t("page.overview.complianceTitle")}>
             <CardGrid
-              cards={COMPLIANCE}
+              cards={COMPLIANCE.map((c) => ({ ...c, sub: t(c.sub) }))}
               render={(c) => (
                 <>
                   <b className="text-2xl text-[#142d42]">{c.title}</b>

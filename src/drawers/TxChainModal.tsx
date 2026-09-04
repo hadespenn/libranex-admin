@@ -1,5 +1,6 @@
 import { Modal, Button } from "antd";
 import { Timeline } from "@/components/OpsUI";
+import { useI18n } from '@/i18n';
 
 /** 实时交易监控 · 交易链路弹框 */
 export function TxChainModal({
@@ -27,7 +28,7 @@ export function TxChainModal({
       desc: "Release requires authorized operations decision.",
     },
   ];
-
+  const { t } = useI18n();
   return (
     <Modal
       open={open}
@@ -36,16 +37,16 @@ export function TxChainModal({
       width={520}
       centered
       destroyOnHidden
-      title={`交易链路 · ${txId}`}
+      title={`${t('txChain.chain')} · ${txId}`}
       closable
     >
       <Timeline items={steps} />
       <div className="mt-4 flex justify-end gap-2">
         <Button className="mini btn-ghost" onClick={onOpenCase}>
-          打开风险案件
+          {t('txChain.openCase')}
         </Button>
         <Button type="primary" className="mini btn-primary" onClick={onClose}>
-          关闭
+          {t('common.close')}
         </Button>
       </div>
     </Modal>

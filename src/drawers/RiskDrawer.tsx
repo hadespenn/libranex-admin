@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Drawer, Button, App as AntdApp } from "antd";
 import { Chip, DataList, NoteBox, Timeline } from "@/components/OpsUI";
 import { TabPills } from "./shared";
+import { useI18n } from "@/i18n";
 
-/** 风险案件抽屉：事实时间线 / 证据 / 处置 / 报告决定 */
 export function RiskDrawer({
   open,
   onClose,
@@ -14,18 +14,19 @@ export function RiskDrawer({
   caseId?: string;
 }) {
   const { message } = AntdApp.useApp();
+  const { t } = useI18n();
   const [tab, setTab] = useState("r-facts");
 
   const tabs = [
-    { key: "r-facts", label: "事实与时间线" },
-    { key: "r-evidence", label: "证据" },
-    { key: "r-actions", label: "处置" },
-    { key: "r-report", label: "报告决定" },
+    { key: "r-facts", label: t("drawer.risk.tabFacts") },
+    { key: "r-evidence", label: t("drawer.risk.tabEvidenceShort") },
+    { key: "r-actions", label: t("drawer.risk.tabAction") },
+    { key: "r-report", label: t("drawer.risk.tabReportDecision") },
   ];
 
   return (
     <Drawer
-      title={`风险案件 · ${caseId}`}
+      title={t("drawer.risk.title", { id: caseId })}
       open={open}
       onClose={onClose}
       width={720}
@@ -42,9 +43,9 @@ export function RiskDrawer({
       <DataList
         cols={3}
         items={[
-          { label: "Red", value: "潜在制裁匹配" },
-          { label: "即时措施", value: "Reversible operations paused" },
-          { label: "权限", value: "CCO / MLRO + Legal" },
+          { label: "Red", value: t("drawer.risk.valueSanctions") },
+          { label: t("page.riskCases.colMeasure"), value: t("drawer.risk.measurePaused") },
+          { label: t("drawer.risk.permission"), value: "CCO / MLRO + Legal" },
         ]}
       />
 
@@ -85,27 +86,25 @@ export function RiskDrawer({
 
       {tab === "r-actions" && (
         <>
-          <NoteBox>
-            制裁可能匹配默认禁止释放。运营仅可补充材料、保全证据与升级；不允许以名称轻微差异自行关闭。
-          </NoteBox>
+          <NoteBox>{t("drawer.risk.actionNote")}</NoteBox>
           <div className="mt-3.5 flex flex-wrap gap-2">
             <Button
               className="mini btn-danger"
-              onClick={() => message.info("交易保持冻结。")}
+              onClick={() => message.info(t("drawer.risk.btnKeepFrozenMsg"))}
             >
-              保持冻结
+              {t("drawer.risk.btnKeepFrozen")}
             </Button>
             <Button
               className="mini btn-ghost"
-              onClick={() => message.info("已升级至法务 / CCO 队列。")}
+              onClick={() => message.info(t("drawer.risk.btnEscalateLegalMsg"))}
             >
-              升级法务 CCO
+              {t("drawer.risk.btnEscalateLegal")}
             </Button>
             <Button
               className="mini btn-ghost"
-              onClick={() => message.success("已向客户请求交易资料。")}
+              onClick={() => message.success(t("drawer.risk.btnRequestDocsMsg"))}
             >
-              向客户请求交易资料
+              {t("drawer.risk.btnRequestDocs")}
             </Button>
           </div>
         </>
@@ -113,16 +112,13 @@ export function RiskDrawer({
 
       {tab === "r-report" && (
         <>
-          <NoteBox tone="warn">
-            STR
-            候选案件访问受“需要知悉”控制。不得向客户或无业务必要人员披露报告已提交、正在准备或拟提交。
-          </NoteBox>
+          <NoteBox tone="warn">{t("drawer.risk.reportNote")}</NoteBox>
           <Button
             type="primary"
             className="mini btn-primary mt-3.5"
-            onClick={() => message.success("已创建报告决策任务。")}
+            onClick={() => message.success(t("drawer.risk.btnReportTaskMsg"))}
           >
-            创建报告决策任务
+            {t("drawer.risk.btnReportTask")}
           </Button>
         </>
       )}

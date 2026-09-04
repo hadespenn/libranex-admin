@@ -1,5 +1,6 @@
 import { Modal, Button, App as AntdApp } from "antd";
 import { DataList } from "@/components/OpsUI";
+import { useI18n } from "@/i18n";
 
 /** 实时交易监控 · 交易回执弹框 */
 export function TxReceiptModal({
@@ -17,6 +18,7 @@ export function TxReceiptModal({
   settlementStatus?: string;
   valueDate?: string;
 }) {
+  const { t } = useI18n();
   const { message } = AntdApp.useApp();
 
   const handleDownload = () => {
@@ -50,7 +52,7 @@ export function TxReceiptModal({
       width={520}
       centered
       destroyOnHidden
-      title={`交易回执 · ${txId}`}
+      title={`${t("page.transactions.receipt")} · ${txId}`}
       closable
     >
       <DataList
@@ -63,10 +65,10 @@ export function TxReceiptModal({
       />
       <div className="mt-4 flex justify-end gap-2">
         <Button className="mini btn-ghost" onClick={handleDownload}>
-          下载回执
+          {t("page.transactions.xzreceipt")}
         </Button>
         <Button type="primary" className="mini btn-primary" onClick={onClose}>
-          关闭
+          {t("common.close")}
         </Button>
       </div>
     </Modal>
