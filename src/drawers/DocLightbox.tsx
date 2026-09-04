@@ -21,167 +21,57 @@ export function DocLightbox({
 }) {
   return (
     <div
-      className="kyc-lightbox"
+      className="kyc-lightbox fixed inset-0 z-[500] flex items-center justify-center"
       onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 500,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
     >
       <div className="kyc-lightbox-backdrop" />
       <div
-        className="kyc-lightbox-panel"
-        style={{
-          position: "relative",
-          width: "min(760px, 92vw)",
-          maxHeight: "88vh",
-          background: "#fff",
-          borderRadius: 16,
-          boxShadow: "0 24px 60px rgba(16,36,53,.4)",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          zIndex: 1,
-        }}
+        className="kyc-lightbox-panel relative z-[1] flex max-h-[88vh] w-[min(760px,92vw)] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_24px_60px_rgba(16,36,53,.4)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div
-          className="kyc-lightbox-head"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "13px 16px",
-            borderBottom: "1px solid #dde6ed",
-          }}
-        >
-          <b style={{ fontSize: 14, color: "#142d42", marginRight: "auto" }}>
-            {doc.title}
-          </b>
-          <Button
-            className="mini btn-ghost"
-            style={{ borderRadius: 999 }}
-            onClick={onClose}
-          >
+        <div className="kyc-lightbox-head flex items-center gap-2.5 border-b border-[#dde6ed] px-4 py-[13px]">
+          <b className="mr-auto text-sm text-[#142d42]">{doc.title}</b>
+          <Button className="mini btn-ghost" onClick={onClose}>
             下载
           </Button>
           <button
             aria-label="close"
             onClick={onClose}
-            style={{
-              border: 0,
-              background: "transparent",
-              fontSize: 20,
-              color: "#748493",
-              cursor: "pointer",
-              padding: "0 4px",
-            }}
+            className="cursor-pointer border-0 bg-transparent px-1 text-xl text-[#748493]"
           >
             ×
           </button>
         </div>
 
-        <div
-          className="kyc-lightbox-body"
-          style={{ padding: 20, overflow: "auto", background: "#eef2f6" }}
-        >
-          <div
-            className="kyc-doc"
-            style={{
-              background: "#fff",
-              borderRadius: 8,
-              padding: "26px 28px",
-              boxShadow: "0 2px 10px rgba(16,36,53,.12)",
-              maxWidth: 560,
-              margin: "0 auto",
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                borderBottom: "2px solid #102435",
-                paddingBottom: 10,
-                marginBottom: 14,
-              }}
-            >
-              <span
-                style={{
-                  background: "#102435",
-                  color: "#fff",
-                  fontSize: 10,
-                  padding: "2px 8px",
-                  borderRadius: 6,
-                  letterSpacing: "0.05em",
-                }}
-              >
+        <div className="kyc-lightbox-body overflow-auto bg-[#eef2f6] p-5">
+          <div className="kyc-doc relative mx-auto max-w-[560px] rounded-lg bg-white px-7 py-[26px] shadow-[0_2px_10px_rgba(16,36,53,.12)]">
+            <div className="mb-3.5 flex items-center gap-2.5 border-b-2 border-[#102435] pb-2.5">
+              <span className="rounded-md bg-[#102435] px-2 py-0.5 text-[10px] tracking-[0.05em] text-white">
                 {doc.badge}
               </span>
-              <b style={{ fontSize: 15, color: "#102435" }}>{doc.title}</b>
+              <b className="text-[15px] text-[#102435]">{doc.title}</b>
             </div>
 
-            <div style={{ color: "#748493", fontSize: 11, marginBottom: 14 }}>
-              {doc.meta}
-            </div>
+            <div className="mb-3.5 text-[11px] text-[#748493]">{doc.meta}</div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "8px 18px",
-                marginBottom: 14,
-              }}
-            >
+            <div className="mb-3.5 grid grid-cols-2 gap-x-[18px] gap-y-2">
               {doc.fields.map((f) => (
                 <div
                   key={f.label}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    borderBottom: "1px dotted #d6dee5",
-                    paddingBottom: 5,
-                  }}
+                  className="flex flex-col border-b border-dotted border-[#d6dee5] pb-[5px]"
                 >
-                  <span style={{ fontSize: 10, color: "#9aa7b3" }}>
-                    {f.label}
-                  </span>
-                  <b style={{ fontSize: 13, color: "#1c2c3a" }}>{f.value}</b>
+                  <span className="text-[10px] text-[#9aa7b3]">{f.label}</span>
+                  <b className="text-[13px] text-[#1c2c3a]">{f.value}</b>
                 </div>
               ))}
             </div>
 
-            <div
-              style={{
-                fontSize: 12.5,
-                lineHeight: 1.7,
-                color: "#33414f",
-                whiteSpace: "pre-wrap",
-              }}
-            >
+            <div className="whitespace-pre-wrap text-[12.5px] leading-[1.7] text-[#33414f]">
               {doc.body}
             </div>
 
             {doc.stamp && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: 18,
-                  right: 22,
-                  border: "2px solid #2fa36b",
-                  color: "#2fa36b",
-                  borderRadius: 8,
-                  padding: "3px 10px",
-                  fontSize: 12,
-                  transform: "rotate(-8deg)",
-                  opacity: 0.85,
-                }}
-              >
+              <div className="absolute right-[22px] top-[18px] rotate-[-8deg] rounded-lg border-2 border-[#2fa36b] px-2.5 py-[3px] text-xs text-[#2fa36b] opacity-85">
                 {doc.stamp}
               </div>
             )}

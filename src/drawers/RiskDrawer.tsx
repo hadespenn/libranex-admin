@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Drawer, Button, App as AntdApp } from "antd";
 import { Chip, DataList, NoteBox, Timeline } from "@/components/OpsUI";
-import { BTN, BTN_PRIMARY, TabPills } from "./shared";
+import { TabPills } from "./shared";
 
 /** 风险案件抽屉：事实时间线 / 证据 / 处置 / 报告决定 */
 export function RiskDrawer({
@@ -31,13 +31,11 @@ export function RiskDrawer({
       width={720}
       className="ops-drawer"
       styles={{ body: { padding: 22 } }}
-      destroyOnClose
+      destroyOnHidden
     >
-      <div
-        style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}
-      >
+      <div className="mb-3.5 flex flex-wrap items-center gap-2">
         <Chip tone="red">Red</Chip>
-        <span style={{ fontSize: 13, color: "#142d42" }}>
+        <span className="text-[13px] text-[#142d42]">
           Potential sanctions match
         </span>
       </div>
@@ -90,25 +88,21 @@ export function RiskDrawer({
           <NoteBox>
             制裁可能匹配默认禁止释放。运营仅可补充材料、保全证据与升级；不允许以名称轻微差异自行关闭。
           </NoteBox>
-          <div
-            style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}
-          >
+          <div className="mt-3.5 flex flex-wrap gap-2">
             <Button
-              className="btn-danger"
-              style={BTN}
+              className="mini btn-danger"
               onClick={() => message.info("交易保持冻结。")}
             >
               保持冻结
             </Button>
             <Button
-              className="btn-ghost"
-              style={BTN}
+              className="mini btn-ghost"
               onClick={() => message.info("已升级至法务 / CCO 队列。")}
             >
               升级法务 CCO
             </Button>
             <Button
-              style={BTN}
+              className="mini btn-ghost"
               onClick={() => message.success("已向客户请求交易资料。")}
             >
               向客户请求交易资料
@@ -125,7 +119,7 @@ export function RiskDrawer({
           </NoteBox>
           <Button
             type="primary"
-            style={{ ...BTN_PRIMARY, marginTop: 14 }}
+            className="mini btn-primary mt-3.5"
             onClick={() => message.success("已创建报告决策任务。")}
           >
             创建报告决策任务

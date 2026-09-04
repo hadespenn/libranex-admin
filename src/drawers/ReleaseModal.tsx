@@ -21,15 +21,33 @@ export type ReleaseField =
       type: "select";
       options: string[];
       initial?: string;
+      /** 占位提示（非初始值，提交时为空） */
+      placeholder?: string;
+      /** 只读字段：展示 initial 值，不可编辑 */
+      readOnly?: boolean;
       /** 占用的列数（两列栅格，1 或 2），默认 1 */
       span?: 1 | 2;
     }
-  | { name: string; label: string; type: "text"; initial?: string; span?: 1 | 2 }
+  | {
+      name: string;
+      label: string;
+      type: "text";
+      initial?: string;
+      /** 占位提示（非初始值，提交时为空） */
+      placeholder?: string;
+      /** 只读字段：展示 initial 值，不可编辑 */
+      readOnly?: boolean;
+      span?: 1 | 2;
+    }
   | {
       name: string;
       label: string;
       type: "textarea";
       initial?: string;
+      /** 占位提示（非初始值，提交时为空） */
+      placeholder?: string;
+      /** 只读字段：展示 initial 值，不可编辑 */
+      readOnly?: boolean;
       span?: 1 | 2;
     }
   | {
@@ -37,6 +55,10 @@ export type ReleaseField =
       label: string;
       type: "number";
       initial?: number;
+      /** 占位提示（非初始值，提交时为空） */
+      placeholder?: string;
+      /** 只读字段：展示 initial 值，不可编辑 */
+      readOnly?: boolean;
       span?: 1 | 2;
     }
   | {
@@ -44,6 +66,10 @@ export type ReleaseField =
       label: string;
       type: "checkbox";
       initial?: boolean;
+      /** 占位提示（非初始值，提交时为空） */
+      placeholder?: string;
+      /** 只读字段：展示 initial 值，不可编辑 */
+      readOnly?: boolean;
       span?: 1 | 2;
     };
 
@@ -57,7 +83,9 @@ export function ReleaseModal({
   note,
   summary,
   extra,
+  cols,
   width = 620,
+  onSubmit,
 }: {
   open: boolean;
   onClose: () => void;
@@ -69,6 +97,8 @@ export function ReleaseModal({
   summary?: { label: string; value: string }[];
   extra?: ReactNode;
   width?: number;
+  cols?: number;
+  onSubmit?: () => void;
 }) {
   const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
@@ -79,6 +109,10 @@ export function ReleaseModal({
       open={open}
       onCancel={onClose}
       onOk={() => {
+        if (onSubmit) {
+          onSubmit();
+          return;
+        }
         form.validateFields().then(() => {
           message.success(toast);
           onClose();
@@ -88,26 +122,22 @@ export function ReleaseModal({
       cancelText="取消"
       width={width}
     >
-      {note && <NoteBox tone="info">{note}</NoteBox>}
-      {summary && <DataList items={summary} />}
+      {summary && <DataList items={summary} cols={cols} />}
 
-      <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: "0 16px",
-          }}
-        >
+      <Form form={form} layout="vertical" className="mt-4">
+        <div className="grid grid-cols-2 gap-x-4">
           {fields.map((f) => {
             // 将类型断言，避免 TypeScript 判断联合类型时报错
             const selectField = f as Extract<ReleaseField, { type: "select" }>;
-            const span = f.span ?? 1;
+            // textarea 默认占满整行：多行说明类字段在两列栅格里压成 1 列既不美观
+            // 也难阅读，span=2 与原型排版一致；其他类型维持 1 列默认值。
+            const span =
+              f.type === "textarea" ? 2 : f.span ?? 1;
 
             return (
               <div
                 key={f.name}
-                style={{ gridColumn: `span ${span}`, minWidth: 0 }}
+                className={span === 2 ? "col-span-2 min-w-0" : "min-w-0"}
               >
                 {f.type === "checkbox" ? (
                   // checkbox 的 label 直接作为勾选框文案，不再额外渲染一遍 Form.Item label
@@ -126,6 +156,10 @@ export function ReleaseModal({
                   >
                     <Checkbox>{f.label}</Checkbox>
                   </Form.Item>
+                ) : f.readOnly ? (
+                  <Form.Item label={f.label}>
+                    <Input value={f.initial} readOnly />
+                  </Form.Item>
                 ) : (
                   <Form.Item
                     name={f.name}
@@ -135,17 +169,21 @@ export function ReleaseModal({
                   >
                     {f.type === "select" ? (
                       <Select
+                        placeholder={f.placeholder}
                         options={selectField.options.map((o) => ({
                           value: o,
                           label: o,
                         }))}
                       />
                     ) : f.type === "number" ? (
-                      <InputNumber style={{ width: "100%" }} />
+                      <InputNumber
+                        className="ops-input-full"
+                        placeholder={f.placeholder}
+                      />
                     ) : f.type === "textarea" ? (
-                      <Input.TextArea rows={4} />
+                      <Input.TextArea rows={4} placeholder={f.placeholder} />
                     ) : (
-                      <Input />
+                      <Input placeholder={f.placeholder} />
                     )}
                   </Form.Item>
                 )}
@@ -156,6 +194,7 @@ export function ReleaseModal({
       </Form>
 
       {extra}
+      {note && <NoteBox tone="info">{note}</NoteBox>}
     </Modal>
   );
 }

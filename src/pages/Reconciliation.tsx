@@ -45,9 +45,9 @@ const RELEASE = [
 export default function Reconciliation() {
   return (
     <div>
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 22, fontWeight: 700 }}>清结算与对账</div>
-        <div style={{ color: '#8c8c8c', fontSize: 13 }}>
+      <div className="mb-4">
+        <div className="text-[22px] font-bold">清结算与对账</div>
+        <div className="text-[13px] text-[#8c8c8c]">
           结算批次、合作方对账数据、清算与流动性
         </div>
       </div>
@@ -67,20 +67,11 @@ export default function Reconciliation() {
             <Row gutter={12}>
               {LIQUIDITY.map((l) => (
                 <Col key={l.ccy} span={8}>
-                  <div
-                    style={{
-                      background: '#F6F7FB',
-                      borderRadius: 10,
-                      padding: 16,
-                      textAlign: 'center',
-                    }}
-                  >
-                    <div style={{ fontSize: 12, color: '#6b7280' }}>{l.ccy}</div>
-                    <div className="kpi-number" style={{ marginTop: 4 }}>
-                      {l.value}
-                    </div>
+                  <div className="rounded-[10px] bg-[#F6F7FB] p-4 text-center">
+                    <div className="text-xs text-[#6b7280]">{l.ccy}</div>
+                    <div className="kpi-number mt-1">{l.value}</div>
                     <Tag
-                      style={{ marginTop: 6 }}
+                      className="mt-1.5"
                       color={l.status === 'Healthy' ? 'green' : 'gold'}
                     >
                       {l.status}
@@ -93,7 +84,7 @@ export default function Reconciliation() {
         </Col>
       </Row>
 
-      <div className="section-card" style={{ marginTop: 16 }}>
+      <div className="section-card mt-4">
         <div className="section-title">资金放行与释放</div>
         <div className="section-subtitle">
           对账错账，隔离 Crypto 资金放行对账，常规资金隔账对账，放出入复核与放账对账。
@@ -101,45 +92,20 @@ export default function Reconciliation() {
         <Row gutter={[16, 16]}>
           {RELEASE.map((r) => (
             <Col key={r.title} xs={24} sm={12} md={6}>
-              <div
-                style={{
-                  border: '1px solid #eef0f5',
-                  borderRadius: 12,
-                  padding: 16,
-                  background: '#fff',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontWeight: 600 }}>{r.title}</div>
+              <div className="rounded-xl border border-[#eef0f5] bg-white p-4">
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold">{r.title}</div>
                   <Tag color="warning">{r.pending} 待放行</Tag>
                 </div>
-                <div style={{ color: '#6b7280', fontSize: 12, marginTop: 6 }}>{r.desc}</div>
-                <Button
-                  block
-                  style={{
-                    marginTop: 14,
-                    background: '#C9A24B',
-                    borderColor: '#C9A24B',
-                    color: '#fff',
-                  }}
-                >
+                <div className="mt-1.5 text-xs text-[#6b7280]">{r.desc}</div>
+                <Button block className="ops-btn-gold mt-3.5">
                   {r.btn}
                 </Button>
               </div>
             </Col>
           ))}
         </Row>
-        <div
-          style={{
-            marginTop: 14,
-            padding: '10px 14px',
-            background: '#E6F4FF',
-            border: '1px solid #91CAFF',
-            borderRadius: 8,
-            color: '#0050B3',
-            fontSize: 13,
-          }}
-        >
+        <div className="mt-3.5 rounded-lg border border-[#91CAFF] bg-[#E6F4FF] px-3.5 py-2.5 text-[13px] text-[#0050B3]">
           所有放行 / 释放操作均记录审计痕迹，并触发双人复核。
         </div>
       </div>

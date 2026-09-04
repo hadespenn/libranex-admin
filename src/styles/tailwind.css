@@ -1,0 +1,55 @@
+/**
+ * Tailwind CSS v4 入口
+ *
+ * 层级设计的理由：
+ * - antd 的 reset.css 与运行时注入的组件样式都是「未分层(unlayered)」样式，
+ *   按 CSS 规范，未分层样式优先级高于任何 @layer 内的样式。
+ * - 因此把 Tailwind 全部放进 @layer，可确保：
+ *   1. antd/dist/reset.css 能覆盖 Tailwind preflight（否则 preflight 会重置
+ *      button/table/svg 等基础标签，导致 antd 组件错位、图标下移）；
+ *   2. 现有 global.css 的 ops-* 语义类优先级不受影响；
+ *   3. Tailwind utilities 仍可用于自有 DOM 的布局（flex/grid/gap/spacing）。
+ * - 代价：Tailwind 工具类无法覆盖 antd 组件「内部」样式，
+ *   组件级定制仍应走 ConfigProvider theme token（见 main.tsx）。
+ * - 硬规则：给自有 <button>/<a> 等被 antd reset.css 重置过 color 的标签设
+ *   文字/背景色时，禁止用 @layer utilities 里的 Tailwind 工具类（如 text-white /
+ *   bg-xxx / text-[#xxx]），因为未分层的 antd reset 会压过它们，导致颜色不生效。
+ *   必须改用 global.css 里未分层的组合类，例如：
+ *     · .is-on        —— TabPills 选中态白字（.is-on 覆盖）
+ *     · .link              —— 表格「操作」链接（已定义 color:#12283d）
+ *     · .ops-chip.xxx      —— 状态徽标
+ *     · .ant-btn.xxx       —— antd <Button> 变体（特异性 0,2,0）
+ *   布局/间距类（rounded/flex/gap/px-/py-）不受影响，仍可随意用 Tailwind。
+ */
+
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* 显式声明扫描范围，确保 src 下的 tsx/ts 中的类名都被收集 */
+@source '../**/*.{ts,tsx}';
+
+/**
+ * 把项目既有设计变量接入 Tailwind，
+ * 之后即可使用 bg-navy / text-gold / border-line 等工具类。
+ */
+@theme {
+  --color-navy: #062d53;
+  --color-navy-2: #0c447c;
+  --color-ink: #12283d;
+  --color-muted: #66788b;
+  --color-gold: #b8932e;
+  --color-gold-bright: #d9b95d;
+  --color-cream: #f7f5ef;
+  --color-paper: #fffdf8;
+  --color-line: #d8e0e5;
+  --color-success: #16825d;
+  --color-warn: #b7791f;
+  --color-danger: #b42318;
+  --color-blue: #378add;
+
+  --font-sans:
+    Inter, 'DM Sans', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}

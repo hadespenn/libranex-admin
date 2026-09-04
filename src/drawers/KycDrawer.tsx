@@ -3,7 +3,16 @@ import { Button, Modal, Input, Radio, App as AntdApp } from "antd";
 import { NoteBox } from "@/components/OpsUI";
 import type { ChipTone } from "@/theme";
 import { DocLightbox, type DocView } from "./DocLightbox";
-import { BTN_PRIMARY, TabPills } from "./shared";
+import { TabPills } from "./shared";
+
+/** 材料状态圆点配色，与 ops-chip 的语义色保持一致 */
+const DOT_TONE: Record<ChipTone, string> = {
+  green: "bg-[#2fa36b]",
+  red: "bg-[#bb352d]",
+  yellow: "bg-[#e0a83c]",
+  blue: "bg-[#378add]",
+  gray: "bg-[#94a3b8]",
+};
 
 /** KYC 客户 360：资料核验 / 审核决定 / 补件与通知 */
 export function KycDrawer({
@@ -243,29 +252,18 @@ export function KycDrawer({
       width={720}
       footer={null}
       centered
-      destroyOnClose
+      destroyOnHidden
       className="kyc-modal"
     >
       {/* 头部：名称 + meta + chip */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: 12,
-        }}
-      >
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <div style={{ fontSize: 19, fontWeight: 700, color: "#142d42" }}>
-            {name}
-          </div>
-          <div style={{ fontSize: 12, color: "#748493", marginTop: 2 }}>
+          <div className="text-[19px] font-bold text-[#142d42]">{name}</div>
+          <div className="mt-0.5 text-xs text-[#748493]">
             {kyId} · {jurisdiction} · 联系人 {contact}
           </div>
         </div>
-        <div
-          style={{ display: "flex", gap: 6, flexWrap: "wrap", flexShrink: 0 }}
-        >
+        <div className="flex shrink-0 flex-wrap gap-1.5">
           <span className="ops-chip blue">审核中</span>
           <span className="ops-chip red">高</span>
           <span className="ops-chip yellow">PEP potential</span>
@@ -273,14 +271,7 @@ export function KycDrawer({
       </div>
 
       {/* SLA / 材料 / 邮箱 三联 */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: 10,
-          margin: "12px 0",
-        }}
-      >
+      <div className="my-3 grid grid-cols-3 gap-2.5">
         {[
           { label: "SLA", value: sla },
           { label: "材料", value: docsLabel },
@@ -288,22 +279,10 @@ export function KycDrawer({
         ].map((c) => (
           <div
             key={c.label}
-            style={{
-              border: "1px solid #dde6ed",
-              borderRadius: 12,
-              padding: "10px 12px",
-              background: "#fbfdff",
-            }}
+            className="rounded-xl border border-[#dde6ed] bg-[#fbfdff] px-3 py-2.5"
           >
-            <div style={{ fontSize: 11, color: "#748493" }}>{c.label}</div>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#142d42",
-                marginTop: 2,
-              }}
-            >
+            <div className="text-[11px] text-[#748493]">{c.label}</div>
+            <div className="mt-0.5 text-sm font-semibold text-[#142d42]">
               {c.value}
             </div>
           </div>
@@ -323,34 +302,14 @@ export function KycDrawer({
             return (
               <div
                 key={idx}
-                style={{
-                  border: "1px solid #dde6ed",
-                  borderRadius: 14,
-                  padding: 14,
-                  marginBottom: 12,
-                  background: "#fff",
-                }}
+                className="mb-3 rounded-2xl border border-[#dde6ed] bg-white p-3.5"
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                  }}
-                >
+                <div className="flex items-start justify-between">
                   <div>
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 700,
-                        color: "#142d42",
-                      }}
-                    >
+                    <div className="text-[15px] font-bold text-[#142d42]">
                       {stage.title}
                     </div>
-                    <div
-                      style={{ fontSize: 12, color: "#748493", marginTop: 2 }}
-                    >
+                    <div className="mt-0.5 text-xs text-[#748493]">
                       {stage.sub}
                     </div>
                   </div>
@@ -359,74 +318,29 @@ export function KycDrawer({
                   </span>
                 </div>
 
-                <div style={{ display: "grid", gap: 8, marginTop: 10 }}>
+                <div className="mt-2.5 grid gap-2">
                   {stage.materials.map((m) => (
                     <div
                       key={m.key}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: 10,
-                        padding: "9px 11px",
-                        border: "1px solid #dde6ed",
-                        borderRadius: 11,
-                        background: "#fbfdff",
-                      }}
+                      className="flex items-center justify-between gap-2.5 rounded-[11px] border border-[#dde6ed] bg-[#fbfdff] px-[11px] py-[9px]"
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: 8,
-                          minWidth: 0,
-                          flex: 1,
-                        }}
-                      >
+                      <div className="flex min-w-0 flex-1 items-start gap-2">
                         <span
                           aria-hidden
-                          style={{
-                            width: 9,
-                            height: 9,
-                            borderRadius: "50%",
-                            marginTop: 4,
-                            flexShrink: 0,
-                            background:
-                              m.tone === "green"
-                                ? "#2fa36b"
-                                : m.tone === "red"
-                                  ? "#bb352d"
-                                  : m.tone === "yellow"
-                                    ? "#e0a83c"
-                                    : "#378add",
-                          }}
+                          className={`mt-1 size-[9px] shrink-0 rounded-full ${
+                            DOT_TONE[m.tone]
+                          }`}
                         />
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 2,
-                            minWidth: 0,
-                          }}
-                        >
-                          <b style={{ fontSize: 13, color: "#1c2c3a" }}>
-                            {m.name}
-                          </b>
+                        <div className="flex min-w-0 flex-col gap-0.5">
+                          <b className="text-[13px] text-[#1c2c3a]">{m.name}</b>
                           {m.note && (
-                            <span style={{ fontSize: 11, color: "#b06a00" }}>
+                            <span className="text-[11px] text-[#b06a00]">
                               注：{m.note}
                             </span>
                           )}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          flexShrink: 0,
-                        }}
-                      >
+                      <div className="flex shrink-0 items-center gap-2">
                         <span className={`ops-chip ${m.tone}`}>{m.status}</span>
                         <button className="link" onClick={() => openDoc(m.key)}>
                           在线查看
@@ -436,17 +350,15 @@ export function KycDrawer({
                   ))}
                 </div>
 
-                <div style={{ display: "flex", gap: 8, marginTop: 11 }}>
+                <div className="mt-[11px] flex gap-2">
                   <Button
                     className="mini btn-ghost"
-                    style={{ borderRadius: 999 }}
                     onClick={() => setCompose({ stage: idx, type: "supply" })}
                   >
                     补发补件通知
                   </Button>
                   <Button
                     className="mini btn-ghost"
-                    style={{ borderRadius: 999 }}
                     onClick={() => setCompose({ stage: idx, type: "fix" })}
                   >
                     要求修改资料
@@ -454,89 +366,42 @@ export function KycDrawer({
                 </div>
 
                 {showing && composeData && (
-                  <div
-                    style={{
-                      marginTop: 10,
-                      border: "1px dashed #9cc3e6",
-                      background: "#f3f9ff",
-                      borderRadius: 12,
-                      padding: 12,
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: 12,
-                      }}
-                    >
+                  <div className="mt-2.5 rounded-xl border border-dashed border-[#9cc3e6] bg-[#f3f9ff] p-3">
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label
-                          style={{
-                            display: "block",
-                            fontSize: 12,
-                            color: "#354454",
-                            fontWeight: 600,
-                            marginBottom: 6,
-                          }}
-                        >
+                        <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
                           收件人
                         </label>
                         <Input value={email} readOnly />
                       </div>
                       <div>
-                        <label
-                          style={{
-                            display: "block",
-                            fontSize: 12,
-                            color: "#354454",
-                            fontWeight: 600,
-                            marginBottom: 6,
-                          }}
-                        >
+                        <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
                           主题
                         </label>
                         <Input value={composeData.subject} readOnly />
                       </div>
                     </div>
 
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: 12,
-                        color: "#354454",
-                        fontWeight: 600,
-                        margin: "12px 0 6px",
-                      }}
-                    >
+                    <label className="mb-1.5 mt-3 block text-xs font-semibold text-[#354454]">
                       正文
                     </label>
                     <Input.TextArea defaultValue={composeData.body} rows={6} />
 
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        marginTop: 10,
-                        flexWrap: "wrap",
-                      }}
-                    >
+                    <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
                       <Button
                         type="primary"
-                        style={BTN_PRIMARY}
+                        className="mini btn-primary"
                         onClick={() => onSend(idx)}
                       >
                         发送通知
                       </Button>
                       <Button
-                        className="btn-ghost"
-                        style={{ borderRadius: 999 }}
+                        className="mini btn-ghost"
                         onClick={() => setCompose(null)}
                       >
                         取消
                       </Button>
-                      <span style={{ fontSize: 11, color: "#748493" }}>
+                      <span className="text-[11px] text-[#748493]">
                         {compose!.type === "supply"
                           ? "向客户发送补件请求，并自动记录至通知与案件。"
                           : "向客户说明需修改的资料，并自动记录。"}
@@ -560,28 +425,15 @@ export function KycDrawer({
           <Radio.Group
             value={decision}
             onChange={(e) => setDecision(e.target.value)}
-            style={{
-              display: "flex",
-              gap: 14,
-              flexWrap: "wrap",
-              margin: "8px 0",
-            }}
+            className="my-2 flex flex-wrap gap-3.5"
           >
             <Radio value="approve">通过</Radio>
             <Radio value="reject">驳回</Radio>
             <Radio value="edd">转 EDD（加强尽调）</Radio>
           </Radio.Group>
 
-          <div style={{ marginTop: 6 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 12,
-                color: "#354454",
-                fontWeight: 600,
-                marginBottom: 6,
-              }}
-            >
+          <div className="mt-1.5">
+            <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
               审核意见 *
             </label>
             <Input.TextArea
@@ -592,10 +444,10 @@ export function KycDrawer({
             />
           </div>
 
-          <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
+          <div className="mt-[18px] flex gap-2">
             <Button
               type="primary"
-              style={BTN_PRIMARY}
+              className="mini btn-primary"
               onClick={() =>
                 message.success(
                   decision === "reject"
@@ -608,11 +460,7 @@ export function KycDrawer({
             >
               提交审核决定
             </Button>
-            <Button
-              className="btn-ghost"
-              style={{ borderRadius: 999 }}
-              onClick={onClose}
-            >
+            <Button className="mini btn-ghost" onClick={onClose}>
               关闭
             </Button>
           </div>
@@ -626,37 +474,24 @@ export function KycDrawer({
               暂无补件或通知记录。当您使用「补发补件通知」或「要求修改资料」时，操作会自动记录到此日志。
             </NoteBox>
           ) : (
-            <div style={{ display: "grid", gap: 10 }}>
+            <div className="grid gap-2.5">
               {notifyLog.map((n, i) => (
                 <div
                   key={i}
-                  style={{
-                    border: "1px solid #dde6ed",
-                    borderRadius: 12,
-                    padding: "11px 13px",
-                    background: "#fff",
-                  }}
+                  className="rounded-xl border border-[#dde6ed] bg-white px-[13px] py-[11px]"
                 >
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: 8 }}
-                  >
+                  <div className="flex items-center gap-2">
                     <span
                       className={`ops-chip ${n.type === "supply" ? "blue" : "yellow"}`}
                     >
                       {n.type === "supply" ? "补件" : "修改"}
                     </span>
-                    <b style={{ color: "#142d42" }}>{n.stage}</b>
-                    <small
-                      style={{
-                        marginLeft: "auto",
-                        color: "#748493",
-                        fontSize: 11,
-                      }}
-                    >
+                    <b className="text-[#142d42]">{n.stage}</b>
+                    <small className="ml-auto text-[11px] text-[#748493]">
                       {n.time}
                     </small>
                   </div>
-                  <div style={{ color: "#3a4a5a", fontSize: 12, marginTop: 4 }}>
+                  <div className="mt-1 text-xs text-[#3a4a5a]">
                     收件人：{n.to}
                   </div>
                 </div>

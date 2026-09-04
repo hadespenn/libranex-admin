@@ -65,24 +65,21 @@ export default function TxReview() {
 
       <Panel title="复核动作">
         <NoteBox>展示资金来源去向、对手方、规则命中、名单/链上筛查和客户 KYC 资料。</NoteBox>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap gap-2.5">
           <Button
             className="mini btn-success"
-            style={{ borderRadius: 999 }}
             onClick={() => message.success('放行需要满足规则与权限校验；已生成待审批决定。')}
           >
             放行
           </Button>
           <Button
             className="mini btn-danger"
-            style={{ borderRadius: 999 }}
             onClick={() => message.info('交易保持冻结，已记录处置理由与证据要求。')}
           >
             拒绝 / 冻结
           </Button>
           <Button
             className="mini btn-ghost"
-            style={{ borderRadius: 999 }}
             onClick={() => message.info('案件已升级至 CCO / 法务队列。')}
           >
             升级案件

@@ -126,8 +126,7 @@ export default function Overview() {
             title="优先处理队列"
             actions={
               <Button
-                className="mini"
-                style={{ borderRadius: 999 }}
+                className="mini btn-ghost"
                 onClick={() => navigate("/risk")}
               >
                 风险案件
@@ -172,7 +171,7 @@ export default function Overview() {
               cards={COMPLIANCE}
               render={(c) => (
                 <>
-                  <b style={{ fontSize: 24, color: "#142d42" }}>{c.title}</b>
+                  <b className="text-2xl text-[#142d42]">{c.title}</b>
                   <p className="ops-card-sub">{c.sub}</p>
                 </>
               )}

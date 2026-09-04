@@ -103,7 +103,6 @@ export default function RiskCases() {
         actions={
           <Button
             className="mini btn-primary"
-            style={{ borderRadius: 999 }}
             onClick={() => message.success('已创建人工风险案件，等待关联证据与分派。')}
           >
             创建人工案件
@@ -112,27 +111,25 @@ export default function RiskCases() {
       >
         <div className="ops-filter">
           <Select
+            className="ops-w-180"
             value={severity}
             onChange={setSeverity}
-            style={{ width: 180 }}
             options={SEVERITY_OPTIONS}
           />
           <Select
+            className="ops-w-160"
             value={source}
             onChange={setSource}
-            style={{ width: 160 }}
             options={SOURCE_OPTIONS}
           />
           <Input
+            className="ops-w-240"
             value={kw}
             onChange={(e) => setKw(e.target.value)}
             placeholder="案例、交易、客户或收款人"
-            style={{ width: 240 }}
             allowClear
           />
-          <Button className="mini" style={{ borderRadius: 999 }}>
-            筛选
-          </Button>
+          <Button className="mini btn-ghost">筛选</Button>
         </div>
 
         <OpsTable<Row>
@@ -142,8 +139,8 @@ export default function RiskCases() {
               key: 'id',
               render: (r) => (
                 <>
-                  <b style={{ display: 'block', color: '#142d42' }}>{r.id}</b>
-                  <span style={{ color: '#708190', fontSize: 11 }}>{r.title}</span>
+                  <b className="block text-[#142d42]">{r.id}</b>
+                  <span className="text-[11px] text-[#708190]">{r.title}</span>
                 </>
               ),
             },

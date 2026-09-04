@@ -2,7 +2,7 @@
   "name": "libranex-admin",
   "private": true,
   "version": "0.1.0",
-  "description": "Libranex 国际支付运营管理后台 (基于 Ant Design Pro V5 风格)",
+  "description": "Libranex 国际支付运营管理后台 (Vite + AntD v6 + ProComponents v3 + Tailwind CSS)",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,19 +11,21 @@
     "lint": "echo \"lint placeholder\""
   },
   "dependencies": {
-    "@ant-design/icons": "^5.5.2",
-    "@ant-design/pro-components": "^2.7.10",
-    "antd": "^5.21.6",
+    "@ant-design/icons": "^6.3.2",
+    "@ant-design/pro-components": "3.1.14-7",
+    "antd": "^6.6.2",
     "dayjs": "^1.11.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22.7.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.6.3",
     "vite": "^5.4.10"
   }

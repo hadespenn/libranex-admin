@@ -33,35 +33,30 @@ export default function OpsDrawer({
       width={620}
       className="ops-drawer"
       styles={{ body: { padding: 22 } }}
-      destroyOnClose
+      destroyOnHidden
     >
       {summary}
 
       {tabs && tabs.length > 0 && (
         <>
-          <div
-            style={{ display: 'flex', gap: 7, flexWrap: 'wrap', margin: '14px 0' }}
-          >
+          <div className="my-3.5 flex flex-wrap gap-[7px]">
             {tabs.map((t) => (
               <button
                 key={t.key}
                 type="button"
                 onClick={() => setActive(t.key)}
-                style={{
-                  border: '1px solid #dce5eb',
-                  background: active === t.key ? '#173c59' : '#fff',
-                  color: active === t.key ? '#fff' : '#52687d',
-                  borderRadius: 999,
-                  padding: '7px 10px',
-                  fontSize: 12,
-                }}
+                className={`rounded-full border border-[#dce5eb] px-2.5 py-[7px] text-xs ${
+                  active === t.key
+                    ? 'bg-[#173c59] is-on'
+                    : 'bg-white text-[#52687d]'
+                }`}
               >
                 {t.label}
               </button>
             ))}
           </div>
           {tabs.map((t) => (
-            <div key={t.key} style={{ display: active === t.key ? 'block' : 'none' }}>
+            <div key={t.key} className={active === t.key ? 'block' : 'hidden'}>
               {t.content}
             </div>
           ))}
@@ -69,7 +64,7 @@ export default function OpsDrawer({
       )}
 
       {footer && (
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 18 }}>{footer}</div>
+        <div className="mt-[18px] flex flex-wrap gap-2">{footer}</div>
       )}
     </Drawer>
   );
@@ -85,11 +80,7 @@ export function DrawerButton({
   onClick?: () => void;
 }) {
   return (
-    <Button
-      className={`mini btn-${tone}`}
-      style={{ borderRadius: 999 }}
-      onClick={onClick}
-    >
+    <Button className={`mini btn-${tone}`} onClick={onClick}>
       {children}
     </Button>
   );

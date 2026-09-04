@@ -13,5 +13,6 @@ export { SettlementDrawer } from "./SettlementDrawer";
 export { TxChainModal } from "./TxChainModal";
 export { TxReceiptModal } from "./TxReceiptModal";
 export { ReleaseModal, type ReleaseField } from "./ReleaseModal";
+export { Customer360Drawer, type Customer360Row } from "./Customer360Drawer";
 export { DocLightbox, type DocView, type DocField } from "./DocLightbox";
 export { TabPills, type TabItem } from "./shared";

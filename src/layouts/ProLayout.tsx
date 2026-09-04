@@ -62,8 +62,7 @@ export default function ProLayout() {
             <Select
               size="small"
               defaultValue="zh"
-              style={{ width: 110}}
-              className="lang-select"
+              className="lang-select ops-w-110"
               labelRender={(props) => (
         <span>
          🌐 {props.label}
@@ -88,14 +87,13 @@ export default function ProLayout() {
                 onClick: ({ key }) => message.info(`已选择：${key}`),
               }}
             >
-              <Button className="mini btn-ghost top-dropdown" style={{ borderRadius: 999 }}>
+              <Button className="mini btn-ghost top-dropdown">
                 切换至用户平台
               </Button>
             </Dropdown>
 
             <Button
               className="mini btn-primary"
-              style={{ borderRadius: 999 }}
               onClick={() => message.success('内部平台已通过 SSO 与 MFA 验证。')}
             >
               SSO / MFA 已验证

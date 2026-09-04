@@ -10,8 +10,6 @@ export function Metrics({
   items: { label: string; value: string; note?: string; tone?: 'ok' | 'warn' | 'bad' }[];
   cols?: 4 | 5;
 }) {
-  const noteColor = (t?: string) =>
-    t === 'warn' ? '#a66d00' : t === 'bad' ? '#bb352d' : undefined;
   return (
     <div className={`ops-metrics${cols === 4 ? ' cols-4' : ''}`}>
       {items.map((m) => (
@@ -19,9 +17,7 @@ export function Metrics({
           <small>{m.label}</small>
           <strong>{m.value}</strong>
           {m.note && (
-            <div className="ops-kpi" style={noteColor(m.tone) ? { color: noteColor(m.tone) } : undefined}>
-              {m.note}
-            </div>
+            <div className={`ops-kpi${m.tone ? ` ${m.tone}` : ''}`}>{m.note}</div>
           )}
         </div>
       ))}
@@ -148,13 +144,7 @@ export function DataList({
   cols?: 2 | 3;
 }) {
   return (
-    <div
-      className="ops-data-list"
-      style={{
-        gridTemplateColumns:
-          cols === 3 ? 'repeat(3, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))',
-      }}
-    >
+    <div className={`ops-data-list ops-cols-${cols}`}>
       {items.map((it) => (
         <div className="ops-data" key={it.label}>
           <small>{it.label}</small>

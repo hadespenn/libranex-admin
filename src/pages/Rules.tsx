@@ -79,7 +79,6 @@ export default function Rules() {
         actions={
           <Button
             className="mini btn-primary"
-            style={{ borderRadius: 999 }}
             onClick={() => open('create')}
           >
             新建规则版本
@@ -151,21 +150,17 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'edit'}
         onClose={() => setModal(null)}
-        title={`模拟 / 编辑 · ${row?.name ?? ''}`}
+        title={`模拟 / 编辑规则（${row?.name ?? ''} ${row?.version ?? ''}）`}
         submitText="保存为草稿"
         toast="草稿已保存，等待审批发布。"
-        summary={[
-          { label: '基线版本', value: `${row?.version ?? 'v1.8'}（只读）` },
-          { label: '当前策略', value: row?.policy ?? 'CAD 10,000' },
-          { label: '最近命中', value: String(row?.hits ?? 24) },
-        ]}
+        note="编辑不会覆盖生产版本；测试通过后另发新版本申请。"
         extra={
-          <div style={{ marginTop: 8 }}>
+          <div className="mt-2">
             <CardGrid
               cards={SIM_METRICS}
               render={(c) => (
                 <>
-                  <b style={{ fontSize: 18, color: '#142d42' }}>{c.title}</b>
+                  <b className="text-[18px] text-[#142d42]">{c.title}</b>
                   <p className="ops-card-sub">{c.sub}</p>
                 </>
               )}
@@ -174,21 +169,16 @@ export default function Rules() {
         }
         fields={
           [
-            { name: 'draftTag', label: '草稿标签', type: 'text', initial: 'draft-20260811' },
+            { name: 'baseVer', label: '基线版本', type: 'text', initial: 'v1.8 Production', readOnly: true },
+            { name: 'draftTag', label: '草稿标签', type: 'text', placeholder: 'v1.9-draft-rc' },
             {
               name: 'window',
               label: '试用窗口',
               type: 'select',
-              options: ['24h 回放', '7d 影子', '即时'],
-              initial: '24h 回放',
+              options: ['24 小时回放', '7d 影子模式', '即时生效（审核后）'],
+              initial: '24 小时回放',
             },
-            {
-              name: 'metric',
-              label: '观察指标',
-              type: 'select',
-              options: ['命中率', '误报率', '客户影响面'],
-              initial: '命中率',
-            },
+            { name: 'metrics', label: '观察指标', type: 'text', placeholder: '命中率 / 误报率 / 客户申诉' },
           ] as ReleaseField[]
         }
       />
@@ -196,18 +186,44 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'view'}
         onClose={() => setModal(null)}
-        title={`规则版本 · ${row?.name ?? ''}`}
+        title={`规则详情（${row?.name ?? ''} ${row?.version ?? ''}）`}
         submitText="基于此版本起草"
         toast="已基于该版本创建草稿。"
+        note="Production 简本只读；详情包含版本历程、命中明细、审批链与回滚日志。"
+        onSubmit={() => {
+          setModal(null);
+          setTimeout(() => setModal('edit'), 0);
+        }}
         width={640}
         extra={
-          <div style={{ marginTop: 8 }}>
+          <div className="mt-2">
             <OpsTable<(typeof VERSIONS)[number]>
               columns={[
                 { title: '版本', key: 'v', render: (r) => <b>{r.v}</b> },
-                { title: '发布日期', key: 'date', render: (r) => r.date },
-                { title: '状态', key: 'state', render: (r) => r.state },
-                { title: '命中', key: 'hits', render: (r) => r.hits },
+                { title: '生效时间', key: 'date', render: (r) => r.date },
+                {
+                  title: '状态',
+                  key: 'state',
+                  render: (r) => {
+                    const colorMap: Record<string, string> = {
+                      Production: '#13845b',
+                      Deprecated: '#3182ce',
+                      'Rolled back': '#d69e2e',
+                    };
+                    return (
+                      <span
+                        style={{
+                          color: colorMap[r.state] ?? '#2d3748',
+                          fontWeight: 600,
+                          fontSize: 13,
+                        }}
+                      >
+                        {r.state}
+                      </span>
+                    );
+                  },
+                },
+                { title: '最近命中', key: 'hits', render: (r) => r.hits },
                 { title: '审批', key: 'approval', render: (r) => r.approval },
               ]}
               data={VERSIONS}
@@ -222,8 +238,9 @@ export default function Rules() {
         onClose={() => setModal(null)}
         title={`规则审批 · ${row?.name ?? ''}`}
         submitText="同意并发布"
+        cols={3}
         toast="规则已同意并发布至生产。"
-        note="灰度发布需审批意见与 MFA 二次确认。"
+        note="规则变更需二次 MFA + 强制审批意见；同意后进入灰度发布，驳回需提供修改要求。"
         summary={[
           { label: '版本', value: row?.version ?? 'v2.1' },
           { label: '状态', value: '灰度' },

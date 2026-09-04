@@ -99,7 +99,6 @@ export default function KycQueue() {
         actions={
           <Button
             className="mini btn-primary"
-            style={{ borderRadius: 999 }}
             onClick={() => message.success('高优先级 KYC 案件已认领，并记录操作审计。')}
           >
             认领高优先级案件
@@ -108,27 +107,25 @@ export default function KycQueue() {
       >
         <div className="ops-filter">
           <Select
+            className="ops-w-160"
             value={status}
             onChange={setStatus}
-            style={{ width: 160 }}
             options={STATUS_OPTIONS}
           />
           <Select
+            className="ops-w-160"
             value={risk}
             onChange={setRisk}
-            style={{ width: 160 }}
             options={RISK_OPTIONS}
           />
           <Input
+            className="ops-w-240"
             value={kw}
             onChange={(e) => setKw(e.target.value)}
             placeholder="企业 / 企业ID / UBO 搜索"
-            style={{ width: 240 }}
             allowClear
           />
-          <Button className="mini" style={{ borderRadius: 999 }}>
-            筛选
-          </Button>
+          <Button className="mini btn-ghost">筛选</Button>
         </div>
 
         <OpsTable<Row>
@@ -138,8 +135,8 @@ export default function KycQueue() {
               key: 'name',
               render: (r) => (
                 <>
-                  <b style={{ display: 'block', color: '#142d42' }}>{r.name}</b>
-                  <span style={{ color: '#708190', fontSize: 11 }}>{r.meta}</span>
+                  <b className="block text-[#142d42]">{r.name}</b>
+                  <span className="text-[11px] text-[#708190]">{r.meta}</span>
                 </>
               ),
             },

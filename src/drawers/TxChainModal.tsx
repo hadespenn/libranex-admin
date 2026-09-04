@@ -1,6 +1,5 @@
 import { Modal, Button } from "antd";
 import { Timeline } from "@/components/OpsUI";
-import { BTN } from "./shared";
 
 /** 实时交易监控 · 交易链路弹框 */
 export function TxChainModal({
@@ -36,23 +35,16 @@ export function TxChainModal({
       footer={null}
       width={520}
       centered
-      destroyOnClose
+      destroyOnHidden
       title={`交易链路 · ${txId}`}
       closable
     >
       <Timeline items={steps} />
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginTop: 16,
-          justifyContent: "flex-end",
-        }}
-      >
-        <Button style={BTN} onClick={onOpenCase}>
+      <div className="mt-4 flex justify-end gap-2">
+        <Button className="mini btn-ghost" onClick={onOpenCase}>
           打开风险案件
         </Button>
-        <Button type="primary" style={BTN} onClick={onClose}>
+        <Button type="primary" className="mini btn-primary" onClick={onClose}>
           关闭
         </Button>
       </div>

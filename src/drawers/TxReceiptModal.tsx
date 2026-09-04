@@ -1,6 +1,5 @@
 import { Modal, Button, App as AntdApp } from "antd";
 import { DataList } from "@/components/OpsUI";
-import { BTN } from "./shared";
 
 /** 实时交易监控 · 交易回执弹框 */
 export function TxReceiptModal({
@@ -50,7 +49,7 @@ export function TxReceiptModal({
       footer={null}
       width={520}
       centered
-      destroyOnClose
+      destroyOnHidden
       title={`交易回执 · ${txId}`}
       closable
     >
@@ -62,18 +61,11 @@ export function TxReceiptModal({
           { label: "Value date", value: valueDate },
         ]}
       />
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginTop: 16,
-          justifyContent: "flex-end",
-        }}
-      >
-        <Button style={BTN} onClick={handleDownload}>
+      <div className="mt-4 flex justify-end gap-2">
+        <Button className="mini btn-ghost" onClick={handleDownload}>
           下载回执
         </Button>
-        <Button type="primary" style={BTN} onClick={onClose}>
+        <Button type="primary" className="mini btn-primary" onClick={onClose}>
           关闭
         </Button>
       </div>

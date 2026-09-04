@@ -64,11 +64,12 @@ export default function Reports() {
         cards={CARDS}
         render={(c) => (
           <>
-            <b style={{ fontSize: 15 }}>{c.title}</b>
+            <b className="text-[15px]">{c.title}</b>
             <p className="ops-card-sub">{c.desc}</p>
             <Button
               block
               className="link"
+              style={{ width: '80px' }}
               onClick={() => setModal(c.kind)}
             >
               {c.btn}
@@ -107,17 +108,19 @@ export default function Reports() {
         title="生成合规与风险报告"
         submitText="生成"
         toast="报告生成任务已提交，完成后将通知。"
+        note="报告生成需选择模板与时间窗，提交后进入双人复核与下载授权。"
         fields={
           [
             {
               name: 'type',
               label: '报告类型',
               type: 'select',
-              options: ['KYC 月度汇总', '筛查命中率', '案件处置时效', 'STR 候选'],
+              options: ['KYC 月度汇总', '筛查命中率', '案件处置时效', 'STR 候选清单'],
+              initial: 'KYC月度汇总'
             },
-            { name: 'window', label: '时间窗', type: 'select', options: ['近 7 天', '近 30 天', '本季度', '自定义'] },
-            { name: 'region', label: '区域', type: 'select', options: ['全部', 'APAC', 'EMEA', 'AMER'] },
-            { name: 'granularity', label: '粒度', type: 'select', options: ['逐笔', '客户级'] },
+            { name: 'window', label: '时间窗', type: 'input', 'placeholder': '2026-07-01 ~ 7-31' },
+            { name: 'region', label: '区域', type: 'select', options: ['全部', 'APAC', 'EMEA', 'AMER'], initial: '全部' },
+            { name: 'granularity', label: '粒度', type: 'select', options: ['逐笔', '客户级'], initial: '逐笔' },
           ] as ReleaseField[]
         }
       />
@@ -128,6 +131,7 @@ export default function Reports() {
         title="运营交易大盘"
         submitText="应用"
         toast="大盘视图已刷新。"
+        note="参数用于自定义视图与导出；导出需二次授权。"
         fields={
           [
             {
@@ -135,14 +139,16 @@ export default function Reports() {
               label: '指标',
               type: 'select',
               options: ['笔数', '金额', '成功率', '通道分布'],
+              initial: "笔数"
             },
             {
               name: 'groupBy',
               label: '分组',
               type: 'select',
               options: ['通道', '币种', '地区', 'KYC 等级'],
+              initial: "通道"
             },
-            { name: 'window', label: '时间窗', type: 'select', options: ['今日', '近 7 天', '近 30 天'] },
+            { name: 'window', label: '时间窗', type: 'input', placeholder: '最近24小时'},
             {
               name: 'refresh',
               label: '刷新频率',
@@ -158,20 +164,21 @@ export default function Reports() {
         open={modal === 'access'}
         onClose={() => setModal(null)}
         title="审计与法律保全"
-        submitText="提交"
+        submitText="提交访问请求"
         toast="操作已提交，需双人复核。"
-        note="导出证据包与 Legal Hold 操作均记录审计轨迹。"
+        note="所有访问记录留痕；标记 Legal Hold 后相关记录暂停自动删除。"
         fields={
           [
             {
               name: 'operation',
               label: '操作',
               type: 'select',
-              options: ['查看日志', '导出证据包', '标记 Legal Hold', '解除 Legal Hold'],
+              options: ['查看证据包', '导出证据包', '标记 Legal Hold', '解除 Legal Hold'],
+              initial: "查看证据包"
             },
-            { name: 'caseId', label: '案件 ID', type: 'text', initial: 'RC-202607-1009' },
-            { name: 'reason', label: '理由', type: 'textarea' },
-            { name: 'dual', label: '已获得双人复核', type: 'checkbox' },
+            { name: 'caseId', label: '案件 ID', type: 'text', placeholder: 'RC-202607-1009' },
+            { name: 'reason', label: '理由', type: 'textarea', placeholder: '监管请求/内部审计/诉讼' },
+            { name: 'dual', label: '确认双人复核与审计留痕', type: 'checkbox' },
           ] as ReleaseField[]
         }
       />
@@ -179,14 +186,10 @@ export default function Reports() {
       <ReleaseModal
         open={modal === 'handle'}
         onClose={() => setModal(null)}
-        title="STR Candidate 决策"
+        title={`STR Candidate 决策(RC-202607-1009)`}
         submitText="提交决策"
         toast="STR 决策已记录并进入报送队列。"
-        note="STR 候选受 need-to-know 控制，不得对客披露。"
-        summary={[
-          { label: '关联案件', value: 'RC-202607-1009' },
-          { label: '截止时间', value: 'Priority（不可修改）' },
-        ]}
+        note="处理 STR 候选直接影响上报，必须二次 MFA 与审计理由。"
         fields={
           [
             {
@@ -194,9 +197,11 @@ export default function Reports() {
               label: '决策',
               type: 'select',
               options: ['上报 STR', '缓报 + 加强监控', '驳回', '升级 CCO'],
+              initial: '上报 STR' 
             },
-            { name: 'reason', label: '理由', type: 'textarea' },
-            { name: 'mfa', label: '已通过 MFA 二次确认', type: 'checkbox' },
+            { name: 'time', label: '截止时间', type: 'input', initial: 'Priority', readonly: true },
+            { name: 'reason', label: '理由', type: 'textarea', placeholder: '命中模式、可疑模式、客户背景' },
+            { name: 'mfa', label: '已确认二次 MFA', type: 'checkbox' },
           ] as ReleaseField[]
         }
       />
@@ -207,14 +212,13 @@ export default function Reports() {
         title="EFTR 审核"
         submitText="签字确认"
         toast="EFTR 审核意见已签字确认。"
-        summary={[
-          { label: '类型', value: 'EFTR（不可修改）' },
-          { label: '触发条件', value: '跨境阈值超额（不可修改）' },
-        ]}
+        note="草案审核需签字确认通过后才可提交；驳回必须说明修改要求。"
         fields={
           [
-            { name: 'comment', label: '审核意见', type: 'textarea' },
-            { name: 'sign', label: '确认签字', type: 'checkbox' },
+            { name: 'type', label: '类型', type: 'input', initial: 'EFTR', readonly: true },
+            { name: 'trigger', label: '触发', type: 'input', initial: '跨境阈值超额', readonly: true },
+            { name: 'comment', label: '审核意见', type: 'textarea', placeholder: '同意/需补字段/需重做' },
+            { name: 'sign', label: '签字确认', type: 'checkbox' },
           ] as ReleaseField[]
         }
       />

@@ -49,6 +49,7 @@ const RELEASE = [
     count: '2 笔待放行',
     desc: '法币多批次结算放行与回退',
     btn: '运营放行',
+    tip: '系统将选择合规 Provider 并进行预检查与开户。',
     toast: '结算放行已提交，进入双人复核。',
     fields: [
       {
@@ -73,6 +74,7 @@ const RELEASE = [
     count: '1 笔待释放',
     desc: '客户隔离账户资金释放',
     btn: '释放申请',
+    tip: '系统将校验隔离账户的释放条件与监管留存要求，并记录客户级流水。',
     toast: '隔离资金释放申请已提交，进入双人复核。',
     fields: [
       {
@@ -90,6 +92,7 @@ const RELEASE = [
     count: '1 笔待放行',
     desc: 'Crypto 多批次放行与回退',
     btn: '结算放行',
+    tip: '系统将校验链上余额、Gas 预算与合规地址名单，并执行广播前复核。',
     toast: 'Crypto 结算放行已提交，进入双人复核。',
     fields: [
       {
@@ -114,6 +117,7 @@ const RELEASE = [
     count: '1 笔待释放',
     desc: '受托 Crypto 资金释放',
     btn: '释放申请',
+    tip: '系统将校验托管地址白名单与解锁条件，并生成可追溯的释放凭证。',
     toast: 'Crypto 隔离资金释放申请已提交，进入双人复核。',
     fields: [
       { name: 'asset', label: '资产', type: 'select', options: ['USDT', 'USDC'], initial: 'USDT' },
@@ -167,11 +171,13 @@ export default function Settlement() {
             cards={LIQUIDITY}
             render={(c) => (
               <>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <b>{c.title}</b>
-                  <Chip tone={c.tone}>{c.status}</Chip>
+                <div className="flex items-center justify-between mb-6.5">
+                  <b>{c.title}</b>    
                 </div>
                 <p className="ops-card-sub">{c.available}</p>
+                <div>
+                <Chip tone={c.tone}>{c.status}</Chip>
+                </div>
               </>
             )}
           />
@@ -189,21 +195,14 @@ export default function Settlement() {
           cards={RELEASE}
           render={(c) => (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+              <div className="flex items-center justify-between gap-2">
                 <b>{c.title}</b>
                 <Chip tone="yellow">{c.count}</Chip>
               </div>
               <p className="ops-card-sub">{c.desc}</p>
               <Button
                 block
-                style={{
-                  marginTop: 8,
-                  borderRadius: 999,
-                  background: '#b8932e',
-                  borderColor: '#b8932e',
-                  color: '#fff',
-                  fontSize: 12,
-                }}
+                className="btn-primary mini mt-2"
                 onClick={() => setRelease(c)}
               >
                 {c.btn}
@@ -224,6 +223,7 @@ export default function Settlement() {
         fields={release?.fields ?? []}
         submitText={release?.btn ?? '提交'}
         toast={release?.toast ?? ''}
+        note={release?.tip}
       />
     </>
   );

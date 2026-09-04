@@ -284,7 +284,6 @@ a {
 }
 .ops-kpi {
   font-size: 11px;
-  color: #13845b;
 }
 
 .ops-layout {
@@ -412,12 +411,12 @@ a {
 .ops-card p {
   font-size: 12px;
   color: #708190;
-  margin: 6px 0;
+  margin: 10px 0;
 }
 .ops-card-sub {
   font-size: 12px;
   color: #708190;
-  margin: 6px 0 8px;
+  margin: 10px 0 10px;
 }
 
 .ops-timeline {
@@ -460,6 +459,7 @@ a {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
+  margin-bottom: 16px;
 }
 .ops-data {
   border: 1px solid #e5ecf1;
@@ -546,6 +546,12 @@ a {
   padding: 10px 14px;
   font-size: 12px;
 }
+/* 选中态白字：自有 <button> 上的 .text-white 会被 antd reset.css 的
+   button{color}（未分层样式）压过 @layer utilities，故用未分层组合类
+   .is-on（特异性 0,2,0）稳定覆盖。 */
+.is-on {
+  color: #fff;
+}
 .btn-primary {
   background: var(--gold);
   color: #fff;
@@ -577,9 +583,142 @@ a {
   padding: 7px 10px;
 }
 
+/* ------------------------------------------------------------
+   antd Button 贴合原型的胶囊样式
+   ------------------------------------------------------------
+   antd 的组件样式由 CSS-in-JS 在运行时注入，属于「未分层(unlayered)」样式，
+   特异性为 0,1,0（.ant-btn）。若只用 .pill / .mini（同为 0,1,0）去覆盖，
+   胜负将取决于样式注入的先后顺序，结果不稳定。
+
+   这里统一用 .ant-btn.xxx 组合选择器（特异性 0,2,0）来覆盖，不依赖注入顺序。
+   尺寸仍由 .pill / .mini 决定，以保持与原型一致的两种按钮规格。
+------------------------------------------------------------ */
+.ant-btn.pill,
+.ant-btn.btn-primary,
+.ant-btn.btn-ghost,
+.ant-btn.btn-danger,
+.ant-btn.btn-success {
+  border-radius: 999px;
+  font-size: 12px;
+  height: auto;
+  line-height: 1.55;
+}
+
+/* 尺寸：后置声明优先，.mini 覆盖 .pill 的大号内边距 */
+.ant-btn.pill {
+  padding: 10px 14px;
+}
+.ant-btn.mini {
+  padding: 7px 10px;
+}
+
+/* 主按钮 hover 态需同时覆盖 antd 的 :hover（同为 0,2,0，靠后置顺序生效） */
+.ant-btn.btn-primary:hover {
+  background: #9f7d20;
+  border-color: #9f7d20;
+  color: #fff;
+}
+.ant-btn.btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.ant-btn.btn-danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.ant-btn.btn-success:hover {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+/* 表单控件撑满容器。
+   antd 对 InputNumber 等控件设有默认宽度，属于未分层样式，
+   这里用 .ant-xxx.ops-input-full（特异性 0,2,0）确保覆盖。 */
+.ant-input.ops-input-full,
+.ant-input-number.ops-input-full,
+.ant-select.ops-input-full {
+  width: 100%;
+}
+
+/* ------------------------------------------------------------
+   筛选栏控件宽度
+   ------------------------------------------------------------
+   同样因为 antd 未分层样式的存在，用 .ant-xxx.ops-w-N（0,2,0）覆盖默认宽度。
+   仅收录项目中实际用到的几档，避免产生大量未被使用的类名。
+------------------------------------------------------------ */
+.ant-select.ops-w-160,
+.ant-input.ops-w-160,
+.ant-input-affix-wrapper.ops-w-160,
+.ant-picker.ops-w-160 {
+  width: 160px;
+}
+.ant-select.ops-w-180,
+.ant-input.ops-w-180,
+.ant-input-affix-wrapper.ops-w-180,
+.ant-picker.ops-w-180 {
+  width: 180px;
+}
+.ant-select.ops-w-240,
+.ant-input.ops-w-240,
+.ant-input-affix-wrapper.ops-w-240,
+.ant-picker.ops-w-240 {
+  width: 240px;
+}
+.ant-select.ops-w-260,
+.ant-input.ops-w-260,
+.ant-input-affix-wrapper.ops-w-260,
+.ant-picker.ops-w-260 {
+  width: 260px;
+}
+
+/* Tag 胶囊圆角（同上，需 0,2,0 特异性覆盖 antd 的 border-radius） */
+.ant-tag.ops-pill {
+  border-radius: 999px;
+}
+
+/* 旧版页面（对账 / 放行）使用的金色实底按钮。
+   注意：颜色不能用 Tailwind 的 bg-* / text-* 覆盖 antd —— Tailwind 位于
+   @layer utilities，优先级低于 antd 未分层的组件样式，故在此定义。 */
+.ant-btn.ops-btn-gold,
+.ant-btn.ops-btn-gold:hover {
+  background: #c9a24b;
+  border-color: #c9a24b;
+  color: #fff;
+}
+
+.ant-select.ops-w-110 {
+  width: 110px;
+}
+
+/* ------------------------------------------------------------
+   组件变体：沿用既有 .ops-chip.red / .ops-metrics.cols-4 的写法
+   ------------------------------------------------------------
+   这些变体要覆盖的是 .ops-data-list / .ops-kpi 自身（未分层样式），
+   因此不能改用 Tailwind 的 grid-cols-* / text-*（位于 @layer utilities，
+   优先级低于未分层样式），必须以组合类的方式在同层内覆盖。
+------------------------------------------------------------ */
+.ops-data-list.ops-cols-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.ops-data-list.ops-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ops-kpi.ok {
+  color: #13845b;
+}
+.ops-kpi.warn {
+  color: #a66d00;
+}
+.ops-kpi.bad {
+  color: #bb352d;
+}
+
 .link {
   cursor: pointer;
   font-size: 12px;
+  /* 未分层 color：自有 <button> 上的文字色不能依赖 Tailwind text-*（会被
+     antd reset.css 的 button{color} 未分层样式压过），务必在此定义。 */
   padding: 7px 10px;
   border-radius: 999px;
     border: 1px solid #d8e0e5;
@@ -653,4 +792,9 @@ background: none !important;
   border-bottom: 1px solid #d8e0e5;
   padding-bottom: 12px;
       margin-bottom: 14px !important;
+}
+
+.ant-modal-container {
+  max-height: 720px;
+    overflow: auto;
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Button, Input, Select, App as AntdApp } from 'antd';
+import { Button, Input, Select } from 'antd';
 import { Metrics, Panel, Chip, OpsTable, NoteBox } from '@/components/OpsUI';
-import { KycDrawer, ReleaseModal } from '@/drawers';
+import { KycDrawer, ReleaseModal, Customer360Drawer } from '@/drawers';
 
 const MERCHANTS = [
   { value: 'atlas', label: 'Atlas Commerce Ltd. · KY-202607-1042' },
@@ -104,13 +104,14 @@ const CUSTOMERS: CustomerRow[] = [
 ];
 
 export default function Customers() {
-  const { message } = AntdApp.useApp();
   const [merchant, setMerchant] = useState('atlas');
   const [frozen, setFrozen] = useState(false);
   const [status, setStatus] = useState('__all__');
   const [kw, setKw] = useState('');
   const [detail, setDetail] = useState<CustomerRow | null>(null);
   const [freezeOpen, setFreezeOpen] = useState(false);
+  const [freezeAccount, setFreezeAccount] = useState<AccountRow | null>(null);
+  const [c360Row, setC360Row] = useState<CustomerRow | null>(null);
 
   const rows = useMemo(() => {
     const q = kw.trim().toLowerCase();
@@ -139,19 +140,23 @@ export default function Customers() {
         title="客户资金与账户总览"
         desc="查看商户所有法币与虚拟币账户余额、资产总额估算及冻结状态。"
         actions={
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="flex flex-wrap gap-2">
             <Select
+              className="ops-w-260"
               value={merchant}
               onChange={setMerchant}
-              style={{ width: 260 }}
               options={MERCHANTS}
             />
-            <Button className="mini" style={{ borderRadius: 999 }} onClick={() => setDetail(CUSTOMERS[0])}>
+            <Button
+              className="mini btn-ghost"
+              onClick={() =>
+                setC360Row(CUSTOMERS.find((c) => c.key === merchant) ?? null)
+              }
+            >
               客户 360
             </Button>
             <Button
               className="mini btn-danger"
-              style={{ borderRadius: 999 }}
               onClick={() => setFreezeOpen(true)}
             >
               冻结商户整体
@@ -162,14 +167,14 @@ export default function Customers() {
         <Metrics
           cols={4}
           items={[
-            { label: '资产总额估算 · USD', value: '$8,420,680', note: '按参考汇率折算' },
+            { label: '资产总额估算 · USD', value: '$8,420,680', note: '按参考汇率折算', tone: 'ok'},
             { label: '法币账户余额', value: '$7,140,280', note: '4 accounts' },
             { label: '虚拟币账户余额', value: '$1,280,400', note: '2 assets' },
             {
               label: '可用 / 受限',
               value: '5 / 1',
               note: frozen ? '商户状态：已冻结' : '商户状态：正常',
-              tone: frozen ? ('bad' as const) : undefined,
+              tone: frozen ? ('bad' as const) : 'ok',
             },
           ]}
         />
@@ -189,10 +194,7 @@ export default function Customers() {
               title: '操作',
               key: 'action',
               render: (r) => (
-                <button
-                  className="link"
-                  onClick={() => message.warning(`${r.account} 冻结申请已提交，需双人复核。`)}
-                >
+                <button className="link" onClick={() => setFreezeAccount(r)}>
                   冻结账户
                 </button>
               ),
@@ -205,16 +207,16 @@ export default function Customers() {
       <Panel title="客户与账户运营">
         <div className="ops-filter">
           <Input
+            className="ops-w-240"
             value={kw}
             onChange={(e) => setKw(e.target.value)}
             placeholder="企业名称、ID、成员、账户"
-            style={{ width: 240 }}
             allowClear
           />
           <Select
+            className="ops-w-160"
             value={status}
             onChange={setStatus}
-            style={{ width: 160 }}
             options={[
               { value: '__all__', label: '所有 KYC 状态' },
               { value: '已激活', label: '已激活' },
@@ -222,9 +224,7 @@ export default function Customers() {
               { value: '冻结', label: '冻结' },
             ]}
           />
-          <Button className="mini" style={{ borderRadius: 999 }}>
-            搜索
-          </Button>
+          <Button className="mini btn-ghost">搜索</Button>
         </div>
 
         <OpsTable<CustomerRow>
@@ -303,6 +303,59 @@ export default function Customers() {
           },
         ]}
       />
+
+      <ReleaseModal
+        open={!!freezeAccount}
+        onClose={() => setFreezeAccount(null)}
+        title={
+          freezeAccount
+            ? `冻结 ${freezeAccount.account.split(' · ')[0]} ${freezeAccount.type}`
+            : '冻结账户'
+        }
+        toast="账户冻结已提交，需双人复核与跨系统生效。"
+        note="仅冻结该指定账户的出金、兑换与转账能力；其他账户不受影响。已入资金仍保留在账上。"
+        summary={
+          freezeAccount
+            ? [
+                { label: '账户', value: freezeAccount.account },
+                { label: '类型', value: freezeAccount.type },
+                { label: '网络 · 通道', value: freezeAccount.network },
+                { label: '可用余额', value: freezeAccount.balance },
+              ]
+            : undefined
+        }
+        submitText="确认冻结账户"
+        fields={[
+          {
+            name: 'scope',
+            label: '冻结范围',
+            type: 'select',
+            initial: '全面冻结',
+            options: ['全面冻结', '仅出金/兑换', '仅虚拟币转出'],
+          },
+          {
+            name: 'caseId',
+            label: '关联案件',
+            type: 'text',
+            initial: 'RC-202607-1009',
+          },
+          {
+            name: 'reason',
+            label: '冻结依据',
+            type: 'textarea',
+            initial: '',
+          },
+          {
+            name: 'confirm',
+            label: '我确认该操作仅影响上述指定账户，并已获得相应权限。',
+            type: 'checkbox',
+            initial: false,
+            span: 2,
+          },
+        ]}
+      />
+
+      <Customer360Drawer open={!!c360Row} onClose={() => setC360Row(null)} row={c360Row} />
     </>
   );
 }

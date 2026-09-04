@@ -1,0 +1,7 @@
+{
+  // Tailwind CSS v4 使用 @import / @theme / @source / @utility 等自定义 at-rule，
+  // VSCode 内置 CSS 校验器不识别，会误报 unknownAtRules。
+  "css.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore"
+}

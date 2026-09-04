@@ -31,28 +31,30 @@ const QUICK_LINKS = [
 export default function SettingsCenter() {
   return (
     <div>
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 22, fontWeight: 700 }}>配置中心</div>
-        <div style={{ color: '#8c8c8c', fontSize: 13 }}>
+      <div className="mb-4">
+        <div className="text-[22px] font-bold">配置中心</div>
+        <div className="text-[13px] text-[#8c8c8c]">
           参数、费率、限额、地区、功能开关与变更治理
         </div>
       </div>
 
-      <div className="section-card" style={{ marginBottom: 16 }}>
+      <div className="section-card mb-4">
         <div className="section-title">配置中心</div>
         <div className="section-subtitle">
           业务参数、费率、限额、节假日、币种、地区、功能开关、数据留存与报告模板与限额版本。审批、生效时间、回溯与审计。
         </div>
-        <Row gutter={[16, 16]} style={{ marginTop: 8 }}>
+        <Row gutter={[16, 16]} className="mt-2">
           {SETTINGS_CARDS.map((c) => (
             <Col key={c.title} xs={24} md={8}>
-              <div style={{ border: '1px solid #eef0f5', borderRadius: 12, padding: 18 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontWeight: 600 }}>{c.title}</div>
-                  <Tag color="default" style={{ borderRadius: 999 }}>{c.count}</Tag>
+              <div className="rounded-xl border border-[#eef0f5] p-[18px]">
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold">{c.title}</div>
+                  <Tag color="default" className="ops-pill">
+                    {c.count}
+                  </Tag>
                 </div>
-                <div style={{ color: '#6b7280', fontSize: 12, marginTop: 6 }}>{c.desc}</div>
-                <Button block style={{ marginTop: 14 }}>
+                <div className="mt-1.5 text-xs text-[#6b7280]">{c.desc}</div>
+                <Button block className="mt-3.5">
                   {c.btn}
                 </Button>
               </div>
@@ -63,19 +65,12 @@ export default function SettingsCenter() {
 
       <div className="section-card">
         <div className="section-title">常用入口</div>
-        <Row gutter={[16, 16]} style={{ marginTop: 8 }}>
+        <Row gutter={[16, 16]} className="mt-2">
           {QUICK_LINKS.map((q) => (
             <Col key={q.label} xs={24} sm={12} md={6}>
-              <div
-                style={{
-                  background: '#F6F7FB',
-                  padding: 14,
-                  borderRadius: 10,
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ fontWeight: 600 }}>{q.label}</div>
-                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>{q.desc}</div>
+              <div className="cursor-pointer rounded-[10px] bg-[#F6F7FB] p-3.5">
+                <div className="font-semibold">{q.label}</div>
+                <div className="mt-1 text-xs text-[#6b7280]">{q.desc}</div>
               </div>
             </Col>
           ))}

@@ -1,6 +1,5 @@
 import { Drawer, Button, Input, App as AntdApp } from "antd";
 import { DataList, NoteBox } from "@/components/OpsUI";
-import { BTN, BTN_PRIMARY } from "./shared";
 
 /** 客服工单抽屉 */
 export function TicketDrawer({
@@ -26,7 +25,7 @@ export function TicketDrawer({
       width={620}
       className="ops-drawer"
       styles={{ body: { padding: 22 } }}
-      destroyOnClose
+      destroyOnHidden
     >
       <DataList
         items={[
@@ -37,32 +36,26 @@ export function TicketDrawer({
         ]}
       />
 
-      <div style={{ marginTop: 16 }}>
-        <label
-          style={{
-            fontSize: 12,
-            color: "#66788b",
-            display: "block",
-            marginBottom: 6,
-          }}
-        >
-          客户回复
-        </label>
+      <div className="mt-4">
+        <label className="mb-1.5 block text-xs text-muted">客户回复</label>
         <Input.TextArea
           rows={4}
           defaultValue="我们正在核实结算状态，将在收到通道回执后第一时间更新您。"
         />
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+      <div className="mt-3 flex gap-2">
         <Button
           type="primary"
-          style={BTN_PRIMARY}
+          className="mini btn-primary"
           onClick={() => message.success("回复已发送。")}
         >
           发送回复
         </Button>
-        <Button style={BTN} onClick={() => message.info("工单已分派。")}>
+        <Button
+          className="mini btn-ghost"
+          onClick={() => message.info("工单已分派。")}
+        >
           分派
         </Button>
       </div>

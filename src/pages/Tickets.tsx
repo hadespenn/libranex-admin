@@ -64,12 +64,13 @@ export default function Tickets() {
       </Panel>
 
       <Panel title="客服安全边界">
-        <NoteBox tone="warn">
+        <p>客服仅能查看脱敏客户信息与交易摘要；无资金操作权限，且不得披露制裁、STR 或内部调查状态。</p>
+        {/* <NoteBox tone="warn">
           客服仅能查看脱敏客户信息与交易摘要；无资金操作权限，且不得披露制裁、STR 或内部调查状态。
-        </NoteBox>
+        </NoteBox> */}
         <Button
-          className="mini"
-          style={{ borderRadius: 999 }}
+          className="mini link"
+          style={{ marginBottom: 56 }}
           onClick={() => message.info('已打开知识库建议。')}
         >
           查看知识库建议
