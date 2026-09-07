@@ -54,9 +54,9 @@ const DATA: Row[] = [
 ];
 
 const METRICS = [
-  { labelKey: "page.transactions.metricCount", value: "12,482", note: "Last 24h" },
-  { labelKey: "page.transactions.metricProcessing", value: "184", note: "Queue healthy" },
-  { labelKey: "page.transactions.metricFailRate", value: "0.82%", note: "Within threshold" },
+  { labelKey: "page.transactions.metricCount", value: "12,482", note: "Last 24h", tone: 'ok' },
+  { labelKey: "page.transactions.metricProcessing", value: "184", note: "Queue healthy", tone: 'ok' },
+  { labelKey: "page.transactions.metricFailRate", value: "0.82%", note: "Within threshold", tone: 'ok' },
   { labelKey: "page.transactions.metricAbnormal", value: "37", note: "Needs triage", tone: "bad" as const },
   { labelKey: "page.transactions.metricHealth", value: "94%", note: "1 degraded", tone: "warn" as const },
 ];

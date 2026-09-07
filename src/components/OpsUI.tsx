@@ -130,6 +130,7 @@ export function Timeline({ items }: { items: { title: string; desc?: string }[] 
     <div className="ops-timeline">
       {items.map((it, i) => (
         <div key={i}>
+          <span className={i < 2 ? "" : "last"}>{i+1}</span>
           <b>{it.title}</b>
           {it.desc && <p>{it.desc}</p>}
         </div>

@@ -70,7 +70,7 @@ export default function Tickets() {
         <Button
           className="mini link"
           style={{ marginBottom: 56 }}
-          onClick={() => message.info(t('page.tickets.kbMsg'))}
+          onClick={() => setDetail(DATA[0])}
         >
           {t('page.tickets.kbBtn')}
         </Button>

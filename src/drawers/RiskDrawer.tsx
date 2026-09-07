@@ -34,12 +34,12 @@ export function RiskDrawer({
       styles={{ body: { padding: 22 } }}
       destroyOnHidden
     >
-      <div className="mb-3.5 flex flex-wrap items-center gap-2">
+      {/* <div className="mb-3.5 flex flex-wrap items-center gap-2">
         <Chip tone="red">Red</Chip>
         <span className="text-[13px] text-[#142d42]">
           Potential sanctions match
         </span>
-      </div>
+      </div> */}
       <DataList
         cols={3}
         items={[
@@ -86,7 +86,7 @@ export function RiskDrawer({
 
       {tab === "r-actions" && (
         <>
-          <NoteBox>{t("drawer.risk.actionNote")}</NoteBox>
+          <p style={{ marginTop: '12px'}}>{t("drawer.risk.actionNote")}</p>
           <div className="mt-3.5 flex flex-wrap gap-2">
             <Button
               className="mini btn-danger"

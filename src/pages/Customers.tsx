@@ -78,6 +78,12 @@ type CustomerRow = {
   name: string;
   kyc: string;
   kycTone: 'green' | 'red';
+  kycStatus: string;
+  kycStatusTone: 'blue' | 'green' | 'yellow' | 'red' | 'gray';
+  kycRisk: string;
+  kycRiskTone: 'blue' | 'green' | 'yellow' | 'red' | 'gray';
+  kycScreening: string;
+  kycScreeningTone: 'blue' | 'green' | 'yellow' | 'red' | 'gray';
   accounts: string;
   capability: string;
   lastActive: string;
@@ -89,6 +95,12 @@ const CUSTOMERS: CustomerRow[] = [
     name: 'Unity Centre Investment Ltd.',
     kyc: 'Active · Medium',
     kycTone: 'green',
+    kycStatus: '已提交',
+    kycStatusTone: 'green',
+    kycRisk: '中',
+    kycRiskTone: 'yellow',
+    kycScreening: 'Clear',
+    kycScreeningTone: 'green',
     accounts: '4 accounts',
     capability: 'Accounts, payout, FX',
     lastActive: '10:24',
@@ -98,6 +110,12 @@ const CUSTOMERS: CustomerRow[] = [
     name: 'Atlas Commerce Ltd.',
     kyc: 'EDD · High',
     kycTone: 'red',
+    kycStatus: '审核中',
+    kycStatusTone: 'blue',
+    kycRisk: '高',
+    kycRiskTone: 'red',
+    kycScreening: 'PEP potential',
+    kycScreeningTone: 'yellow',
     accounts: '1 account',
     capability: 'Restricted',
     lastActive: '09:56',
@@ -149,7 +167,7 @@ export default function Customers() {
               options={MERCHANTS}
             />
             <Button
-              className="mini btn-ghost"
+              className="mini link"
               onClick={() =>
                 setC360Row(CUSTOMERS.find((c) => c.key === merchant) ?? null)
               }
@@ -165,6 +183,7 @@ export default function Customers() {
           </div>
         }
       >
+        <p style={{height: '1px'}}></p>
         <Metrics
           cols={4}
           items={[
@@ -260,6 +279,12 @@ export default function Customers() {
         name={detail?.name}
         kyId={detail?.key === 'atlas' ? 'KY-202607-1042' : 'KY-202607-1038'}
         jurisdiction="Singapore"
+        status={detail?.kycStatus}
+        statusTone={detail?.kycStatusTone}
+        risk={detail?.kycRisk}
+        riskTone={detail?.kycRiskTone}
+        screening={detail?.kycScreening}
+        screeningTone={detail?.kycScreeningTone}
       />
 
       <ReleaseModal

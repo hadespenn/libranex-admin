@@ -35,10 +35,10 @@ export function SettlementDrawer({
     >
       <DataList
         items={[
-          { label: "Partner", value: "Canada ACH Partner" },
-          { label: "Difference", value: "CAD 24,600" },
-          { label: "Type", value: "Amount difference" },
-          { label: "Status", value: "Investigation open" },
+          { label: t("drawer.settlement.reconPartner"), value: "Canada ACH Partner" },
+          { label: t("drawer.settlement.reconDiff"), value: "CAD 24,600" },
+          { label: t("common.type"), value: "Amount difference" },
+          { label: t("drawer.settlement.liqStatus"), value: "Investigation open" },
         ]}
       />
 

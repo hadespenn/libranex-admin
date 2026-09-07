@@ -69,9 +69,9 @@ export default function Rules() {
   };
 
   const SIM_METRICS = [
-    { title: '0.14%', sub: t('page.rules.simHitRate') },
+    { title: t('page.rules.sandbox') + '0.14%', sub: t('page.rules.simHitRate') },
     { title: t('page.rules.simFpVal'), sub: t('page.rules.simFp') },
-    { title: t('page.reports.view.refresh5m'), sub: t('page.rules.simRollback') },
+    { title: "< " + t('page.reports.view.refresh5m'), sub: t('page.rules.simRollback') },
   ];
 
   return (
@@ -117,8 +117,10 @@ export default function Rules() {
         open={modal === 'create'}
         onClose={() => setModal(null)}
         title={t('page.rules.create.title')}
+        desc={t('page.rules.create.desc')}
         submitText={t('page.rules.create.submit')}
         toast={t('page.rules.create.toast')}
+        reverseFooter
         fields={
           [
             {
@@ -137,36 +139,33 @@ export default function Rules() {
             {
               name: 'scope',
               label: t('page.rules.create.labelScope'),
-              type: 'input',
-              placeholder: t('txReceipt.fieldCcy') + '/' + t('txReceipt.fieldChannel') + '/' + t('txReceipt.fieldCust')
+              type: 'text',
+              placeholder: t('page.rules.create.placeScope'),
             },
-            // {
-            //   name: 'scope',
-            //   label: t('page.rules.create.labelScope'),
-            //   type: 'select',
-            //   options: [
-            //     t('page.rules.create.scopeAll'),
-            //     t('page.rules.create.scopeFiat'),
-            //     t('page.rules.create.scopeCrypto'),
-            //     t('page.rules.create.scopeFx'),
-            //   ],
-            //   initial: t('page.rules.create.scopeAll')
-            // },
             { name: 'threshold', label: t('page.rules.create.labelThreshold'), type: 'text', placeholder: t('page.rules.create.placeThreshold') },
             {
               name: 'hitAction',
               label: t('page.rules.create.labelHitAction'),
               type: 'select',
-              options: ['Pause', 'Hold', 'Alert'],
-              initial: 'Hold',
+              options: [
+                t('page.rules.create.hitActionPause'),
+                t('page.rules.create.hitActionHold'),
+                t('page.rules.create.hitActionAlert'),
+              ],
+              initial: t('page.rules.create.hitActionPause'),
             },
             {
               name: 'chain',
               label: t('page.rules.create.labelChain'),
               type: 'select',
-              options: ['Dual approved', 'CCO approved', 'CCO / MLRO + Legal'],
-              initial: 'Dual approved',
+              options: [
+                t('page.rules.create.chainCco'),
+                t('page.rules.create.chainDual'),
+                t('page.rules.create.chainCcoLegal'),
+              ],
+              initial: t('page.rules.create.chainCco'),
             },
+            { name: 'change', label: t('page.rules.create.labelChange'), type: 'textarea', placeholder: t('page.rules.create.placeChange') },
             { name: 'impact', label: t('page.rules.create.labelImpact'), type: 'checkbox' },
           ] as ReleaseField[]
         }
@@ -188,8 +187,8 @@ export default function Rules() {
               cards={SIM_METRICS}
               render={(c) => (
                 <>
-                  <b className="text-[18px] text-[#142d42]">{c.title}</b>
                   <p className="ops-card-sub">{c.sub}</p>
+                  <b className="text-[18px] text-[#142d42]">{c.title}</b> 
                 </>
               )}
             />
@@ -271,10 +270,13 @@ export default function Rules() {
       <ReleaseModal
         open={modal === 'approve'}
         onClose={() => setModal(null)}
-        title={t('page.rules.approve.titleTpl', { name: row ? t(`page.rules.${row.name}`) : '' })}
+        title={t('page.rules.approve.titleTpl', { name: row ? t(`page.rules.${row.name}`) + ' ' + row?.version : '' })}
         submitText={t('page.rules.approve.submit')}
         toast={t('page.rules.approve.toast')}
+        rejectText={t('page.rules.approve.rejectSubmit')}
+        rejectToast={t('page.rules.approve.rejectToast')}
         note={t('page.rules.approve.note')}
+        cols={3}
         summary={[
           { label: t('page.rules.approve.sumVersion'), value: row?.version ?? 'v2.1' },
           { label: t('page.rules.approve.sumStatus'), value: t('page.rules.approve.statusCanary') },
@@ -282,7 +284,7 @@ export default function Rules() {
         ]}
         fields={
           [
-            { name: 'comment', label: t('page.rules.approve.labelComment'), type: 'textarea' },
+            { name: 'comment', label: t('page.rules.approve.labelComment'), type: 'textarea', placeholder: t('page.rules.approve.commentPlace') },
             { name: 'mfa', label: t('page.rules.approve.labelMfa'), type: 'checkbox' },
           ] as ReleaseField[]
         }

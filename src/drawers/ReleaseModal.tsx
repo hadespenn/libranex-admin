@@ -6,6 +6,7 @@ import {
   InputNumber,
   Checkbox,
   Form,
+  Button,
   App as AntdApp,
 } from "antd";
 import { DataList, NoteBox } from "@/components/OpsUI";
@@ -81,12 +82,17 @@ export function ReleaseModal({
   fields,
   submitText = "提交",
   toast,
+  rejectText,
+  rejectToast,
   note,
+  desc,
   summary,
   extra,
   cols,
   width = 620,
   onSubmit,
+  onReject,
+  reverseFooter = false,
 }: {
   open: boolean;
   onClose: () => void;
@@ -94,36 +100,93 @@ export function ReleaseModal({
   fields: ReleaseField[];
   submitText?: string;
   toast: string;
+  /** 驳回按钮文案；不传则不渲染驳回按钮 */
+  rejectText?: string;
+  /** 驳回后的成功提示文案 */
+  rejectToast?: string;
   note?: string;
+  /** 顶部蓝色说明条文案（不传则不渲染） */
+  desc?: string;
   summary?: { label: string; value: string }[];
   extra?: ReactNode;
   width?: number;
   cols?: number;
   onSubmit?: () => void;
+  onReject?: () => void;
+  /** 颠倒底部按钮顺序：主操作在左，取消在右；用于「新建」类弹框 */
+  reverseFooter?: boolean;
 }) {
   const { message } = AntdApp.useApp();
   const { t } = useI18n();
   const [form] = Form.useForm();
+
+  const handleApprove = () => {
+    if (onSubmit) {
+      onSubmit();
+      return;
+    }
+    form.validateFields().then(() => {
+      message.success(toast);
+      onClose();
+    });
+  };
+
+  const handleReject = () => {
+    if (onReject) {
+      onReject();
+      return;
+    }
+    form.validateFields().then(() => {
+      if (rejectToast) message.success(rejectToast);
+      onClose();
+    });
+  };
+
+  const renderFooter = () => {
+    const cancelBtn = (
+      <Button key="cancel" onClick={onClose}>
+        {t("common.cancel")}
+      </Button>
+    );
+    const okBtn = (
+      <Button
+        key="ok"
+        type="primary"
+        className="btn-primary"
+        onClick={handleApprove}
+      >
+        {submitText}
+      </Button>
+    );
+    if (rejectText) {
+      // 审批类：取消(左) · 驳回(ghost) · 同意并发布(右, primary)
+      return [
+        cancelBtn,
+        <Button key="reject" className="btn-ghost" onClick={handleReject}>
+          {rejectText}
+        </Button>,
+        okBtn,
+      ];
+    }
+    if (reverseFooter) {
+      // 新建类：提交(左, primary) · 取消(右)
+      return [okBtn, cancelBtn];
+    }
+    return undefined; // 走 Antd 默认：取消(左) · 确定(右, primary)
+  };
 
   return (
     <Modal
       title={title}
       open={open}
       onCancel={onClose}
-      onOk={() => {
-        if (onSubmit) {
-          onSubmit();
-          return;
-        }
-        form.validateFields().then(() => {
-          message.success(toast);
-          onClose();
-        });
-      }}
+      onOk={handleApprove}
       okText={submitText}
       cancelText={t("common.cancel")}
       width={width}
+      footer={renderFooter()}
     >
+      {desc && <NoteBox tone="info">{desc}</NoteBox>}
       {summary && <DataList items={summary} cols={cols} />}
 
       <Form form={form} layout="vertical" className="mt-4">

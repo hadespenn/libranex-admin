@@ -114,9 +114,8 @@ const RELEASE = [
       {
         name: 'reason',
         labelKey: 'page.settlement.labelReason',
-        type: 'select',
-        options: ['Release condition met', 'Client withdrawal', 'Treasury rebalance'],
-        initial: 'Release condition met',
+        type: 'input',
+        placeholder: 'Release condition met',
       },
     ],
   },

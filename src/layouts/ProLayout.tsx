@@ -87,10 +87,10 @@ export default function ProLayout() {
             <Dropdown
               menu={{
                 items: [
-                  { key: 'profile', label: t('layout.profile') },
-                  { key: 'session', label: t('layout.session') },
-                  { type: 'divider' as const },
-                  { key: 'logout', label: t('layout.logout'), danger: true },
+                  // { key: 'profile', label: t('layout.profile') },
+                  // { key: 'session', label: t('layout.session') },
+                  // { type: 'divider' as const },
+                  // { key: 'logout', label: t('layout.logout'), danger: true },
                 ],
                 onClick: ({ key }) => {
                   if (key === 'switch') navigate('/user');
@@ -98,7 +98,7 @@ export default function ProLayout() {
                 },
               }}
             >
-              <Button className="mini btn-ghost top-dropdown">
+              <Button className="mini btn-ghost top-dropdown" onClick={() => (window.location.href = 'https://libranex-deploy.pages.dev/')}>
                 {t('layout.switchUser')}
               </Button>
             </Dropdown>

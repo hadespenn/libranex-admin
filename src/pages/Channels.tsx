@@ -128,10 +128,9 @@ export default function Channels() {
                 {t("page.channels.partnerNote")}
               </p>
               <textarea
-                readOnly
                 rows={3}
                 defaultValue={t("page.channels.view.noteDefault")}
-                className="w-full rounded-lg border border-[#e6edf2] bg-[#f6f9fb] px-3 py-2 text-sm text-[#2d3748] outline-none focus:border-[#b8932e]"
+                className="w-full rounded-lg border border-[#cce8ff] bg-[#fff] px-3 py-2 text-sm text-[#27516f] outline-none focus:border-[#b8932e]"
               />
             </div>
           </div>
@@ -200,7 +199,7 @@ export default function Channels() {
               name: "reason",
               label: t("page.channels.route.labelReason"),
               type: "textarea",
-              placeholder: t("page.channels.route.labelReason"),
+              placeholder: t("page.channels.route.reasonPlace"),
             },
             { name: "mfa", label: t("page.channels.route.labelMfa"), type: "checkbox" },
           ] as ReleaseField[]

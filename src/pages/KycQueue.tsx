@@ -13,6 +13,7 @@ type Row = {
   risk: string;
   riskTone: "green" | "yellow" | "red";
   screening: string;
+  screeningTone: "green" | "yellow" | "red";
   docs: string;
   sla: string;
   action: string;
@@ -28,6 +29,7 @@ const DATA: Row[] = [
     risk: "High",
     riskTone: "red",
     screening: "PEP potential",
+    screeningTone: "yellow",
     docs: "8/10 complete",
     sla: "4h 12m",
     action: "open360",
@@ -41,6 +43,7 @@ const DATA: Row[] = [
     risk: "Medium",
     riskTone: "yellow",
     screening: "Clear",
+    screeningTone: "green",
     docs: "6/8 complete",
     sla: "1d 03h",
     action: "view",
@@ -54,6 +57,7 @@ const DATA: Row[] = [
     risk: "High",
     riskTone: "red",
     screening: "Adverse media",
+    screeningTone: "red",
     docs: "12/12 complete",
     sla: "Due today",
     action: "review",
@@ -61,7 +65,7 @@ const DATA: Row[] = [
 ];
 
 const STATUS_OPTIONS = [
-  { value: "__all__", labelKey: "ops.all" },
+  { value: "__all__", labelKey: "status.all" },
   { value: "pending", labelKey: "status.pending" },
   { value: "resupply", labelKey: "status.resupply" },
   { value: "edd", labelKey: "status.edd" },
@@ -182,6 +186,12 @@ export default function KycQueue() {
         name={detail?.name}
         kyId={detail?.key}
         jurisdiction={detail?.meta.split(" · ")[1]}
+        status={detail ? t(`status.${detail.status}`) : undefined}
+        statusTone={detail?.statusTone}
+        risk={detail ? t(`page.riskCases.level.${detail.risk.toLowerCase()}`, { defaultValue: detail.risk }) : undefined}
+        riskTone={detail?.riskTone}
+        screening={detail?.screening}
+        screeningTone={detail?.screeningTone}
       />
     </>
   );

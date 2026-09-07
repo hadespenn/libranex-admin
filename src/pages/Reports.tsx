@@ -180,7 +180,7 @@ export default function Reports() {
               ],
               initial: t('page.reports.view.groupChannel'),
             },
-            { name: 'window', label: t('page.reports.view.labelWindow'), type: 'text', placeholder: t('page.reports.view.refreshManual') },
+            { name: 'window', label: t('page.reports.view.labelWindow'), type: 'text', placeholder: t('page.reports.view.recent24') },
             {
               name: 'refresh',
               label: t('page.reports.view.labelRefresh'),

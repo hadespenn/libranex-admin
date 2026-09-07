@@ -43,9 +43,11 @@ textarea {
   max-width: 100%;
   min-width: 0;
 }
+
 button {
   cursor: pointer;
 }
+
 a {
   text-decoration: none;
   color: inherit;
@@ -55,10 +57,12 @@ a {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #d9d9d9;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #bfbfbf;
 }
@@ -68,6 +72,7 @@ a {
     opacity: 0.4;
     transform: translateY(4px);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -101,6 +106,7 @@ a {
   padding: 10px 8px 22px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
+
 .ops-brand .logo {
   width: 38px;
   height: 38px;
@@ -113,11 +119,13 @@ a {
   font-weight: 800;
   flex: 0 0 auto;
 }
+
 .ops-brand strong {
   color: #fff;
   font-size: 18px;
   display: block;
 }
+
 .ops-brand small {
   font-size: 10px;
   color: #85b7d5;
@@ -132,11 +140,13 @@ a {
   border-radius: 12px;
   padding: 10px;
 }
+
 .ops-role small {
   display: block;
   color: #9ec9e3;
   font-size: 11px;
 }
+
 .ops-role b {
   color: #fff;
   font-size: 13px;
@@ -164,15 +174,18 @@ a {
   font-size: 13px;
   transition: background 0.18s, color 0.18s;
 }
+
 .ops-nav:hover {
   background: #1b3950;
   color: #fff;
 }
+
 .ops-nav.active {
   background: #1b3950;
   color: #fff;
   box-shadow: inset 3px 0 0 #66b4e9;
 }
+
 .ops-nav .ico {
   width: 18px;
   text-align: center;
@@ -198,16 +211,19 @@ a {
   top: 0;
   z-index: 9;
 }
+
 .ops-top h1 {
   font-size: 18px;
   color: #142d42;
   margin: 0;
 }
+
 .ops-top p {
   margin: 2px 0 0;
   color: #748493;
   font-size: 12px;
 }
+
 .ops-top-right {
   display: flex;
   align-items: center;
@@ -216,11 +232,15 @@ a {
 
 /* 只针对语言选择框 */
 .lang-select .ant-select-selector {
-   border: 1px solid #d9d9d9 !important;        /* 去掉所有边框 */
-  box-shadow: 0 4px 14px rgba(6,45,83,.04) !important;   /* 去掉 focus 发光框 */
-  background: #fffdf8 !important; 
-  height: 44px !important;       /* 强制调整高度 */
-  padding: 10px 14px !important;    /* 强制调整 padding */
+  border: 1px solid #d9d9d9 !important;
+  /* 去掉所有边框 */
+  box-shadow: 0 4px 14px rgba(6, 45, 83, .04) !important;
+  /* 去掉 focus 发光框 */
+  background: #fffdf8 !important;
+  height: 44px !important;
+  /* 强制调整高度 */
+  padding: 10px 14px !important;
+  /* 强制调整 padding */
   display: flex;
   align-items: center;
   border-radius: 999px !important;
@@ -237,11 +257,14 @@ a {
 }
 
 .top-dropdown {
-  border: 1px solid #d9d9d9 !important;        /* 去掉所有边框 */
-  box-shadow: 0 4px 14px rgba(6,45,83,.04) !important;   /* 去掉 focus 发光框 */
-  background: #fffdf8 !important; 
+  border: 1px solid #d9d9d9 !important;
+  /* 去掉所有边框 */
+  box-shadow: 0 4px 14px rgba(6, 45, 83, .04) !important;
+  /* 去掉 focus 发光框 */
+  background: #fffdf8 !important;
   border-radius: 999px !important;
-  padding: 10px 14px !important;    /* 强制调整 padding 
+  padding: 10px 14px !important;
+  /* 强制调整 padding 
 }
 
 .lang-select .ant-select-selection-item {
@@ -253,18 +276,20 @@ a {
   max-width: 1600px;
   margin: auto;
 }
+
 .ops-page {
   animation: opsFade 0.2s;
 }
 
 .ops-search {
   display: flex;
-    width: calc(100% - 60px);
-    gap: 16px;
-    justify-content: space-between;
+  width: calc(100% - 60px);
+  gap: 16px;
+  justify-content: space-between;
 }
 
-.ops-search .ant-select, .ops-search .ant-input {
+.ops-search .ant-select,
+.ops-search .ant-input {
   width: 100% !important;
 }
 
@@ -277,20 +302,24 @@ a {
   gap: 13px;
   margin-bottom: 16px;
 }
+
 .ops-metrics.cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+
 .ops-metric {
   background: #fff;
   border: 1px solid #dde6ed;
   border-radius: 13px;
   padding: 14px;
 }
+
 .ops-metric small {
   display: block;
   color: #718190;
   font-size: 12px;
 }
+
 .ops-metric strong {
   display: block;
   font-size: 24px;
@@ -298,6 +327,7 @@ a {
   margin: 5px 0;
   line-height: 1.2;
 }
+
 .ops-kpi {
   font-size: 11px;
 }
@@ -317,11 +347,13 @@ a {
   margin-bottom: 16px;
   min-width: 0;
 }
+
 .ops-panel h2 {
   margin: 0 0 13px;
   font-size: 16px;
   color: #142d42;
 }
+
 .ops-panel-wide {
   grid-column: 1 / -1;
 }
@@ -334,12 +366,12 @@ a {
   margin-bottom: 13px;
   flex-wrap: wrap;
 }
+
 .ops-panel-head h2 {
   margin: 0;
 }
 
 .ops-note {
-  color: #8a94a6;
   font-size: 13px;
   margin: 0 0 12px;
 }
@@ -356,6 +388,7 @@ a {
   width: 100%;
   border-collapse: collapse;
 }
+
 .ops-table th {
   text-align: left;
   color: #6f8190;
@@ -365,12 +398,14 @@ a {
   padding: 8px;
   white-space: nowrap;
 }
+
 .ops-table td {
   padding: 11px 8px;
   border-bottom: 1px solid #eef2f5;
   font-size: 12px;
   vertical-align: middle;
 }
+
 .ops-table tr:last-child td {
   border-bottom: 0;
 }
@@ -384,22 +419,27 @@ a {
   font-weight: 700;
   white-space: nowrap;
 }
+
 .ops-chip.blue {
   background: #e8f2fc;
   color: #1a66a3;
 }
+
 .ops-chip.green {
   background: #e9f8f0;
   color: #13845b;
 }
+
 .ops-chip.yellow {
   background: #fff5da;
   color: #a66d00;
 }
+
 .ops-chip.red {
   background: #fff0ef;
   color: #bb352d;
 }
+
 .ops-chip.gray {
   background: #f1f5f9;
   color: #64748b;
@@ -411,24 +451,29 @@ a {
   gap: 12px;
   margin-bottom: 16px;
 }
+
 .ops-card-row-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+
 .ops-card {
   border: 1px solid #e1e8ed;
   border-radius: 12px;
   padding: 13px;
   background: #fff;
 }
+
 .ops-card b {
   display: block;
   color: #173c59;
 }
+
 .ops-card p {
   font-size: 12px;
   color: #708190;
   margin: 10px 0;
 }
+
 .ops-card-sub {
   font-size: 12px;
   color: #708190;
@@ -440,24 +485,38 @@ a {
   margin-left: 7px;
   padding-left: 16px;
 }
-.ops-timeline > div {
+
+.ops-timeline>div {
   position: relative;
-  padding: 0 0 14px;
+  padding: 0 14px 14px;
 }
-.ops-timeline > div::before {
+
+.ops-timeline>div>span {
+  display: block;
   content: '';
   position: absolute;
-  width: 9px;
-  height: 9px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  left: -22px;
-  top: 3px;
-  background: #378add;
+  left: -34px;
+  top: 0;
+  background: #16825d;
+  color: #FFF;
+  display: flex;
+  /* 使用 flex 居中更稳健 */
+  align-items: center;
+  justify-content: center
 }
+
+.ops-timeline>div>span.last {
+  background: #b7791f;
+}
+
 .ops-timeline b {
   display: block;
   color: #142d42;
 }
+
 .ops-timeline p {
   color: #708190;
   margin-top: 1em;
@@ -477,16 +536,19 @@ a {
   gap: 10px;
   margin-bottom: 16px;
 }
+
 .ops-data {
   border: 1px solid #e5ecf1;
   border-radius: 10px;
   padding: 10px;
 }
+
 .ops-data small {
   color: #778998;
   display: block;
   font-size: 11px;
 }
+
 .ops-data b {
   color: #173c59;
   font-size: 13px;
@@ -508,6 +570,7 @@ a {
   gap: 10px;
   padding-top: 20px;
 }
+
 .ops-bar {
   flex: 1;
   background: linear-gradient(180deg, #378add, #0c447c);
@@ -515,6 +578,7 @@ a {
   min-height: 20px;
   position: relative;
 }
+
 .ops-bar::after {
   content: attr(data-label);
   position: absolute;
@@ -524,6 +588,7 @@ a {
   font-size: 11px;
   color: #66788b;
 }
+
 .ops-chart-wrap {
   padding-bottom: 26px;
 }
@@ -533,16 +598,18 @@ a {
   margin: 14px 0;
   padding: 13px 15px;
   border-radius: 13px;
-  background: #f5f8fb;
-  border: 1px solid #dce6ee;
-  color: #708190;
+  background: #f0f8ff;
+  border: 1px solid #cce8ff;
+  color: #27516f;
   font-size: 12px;
 }
+
 .ops-note-box.info {
   background: #f0f8ff;
   border: 1px solid #cce8ff;
   color: #27516f;
 }
+
 .ops-note-box.warn {
   background: #f0f8ff;
   border: 1px solid #cce8ff;
@@ -562,38 +629,46 @@ a {
   padding: 10px 14px;
   font-size: 12px;
 }
+
 /* 选中态白字：自有 <button> 上的 .text-white 会被 antd reset.css 的
    button{color}（未分层样式）压过 @layer utilities，故用未分层组合类
    .is-on（特异性 0,2,0）稳定覆盖。 */
 .is-on {
   color: #fff;
 }
+
 .btn-primary {
   background: var(--gold);
   color: #fff;
   border-color: var(--gold);
   font-weight: 700;
 }
+
 .btn-primary:hover {
   background: #9f7d20;
 }
+
 .btn-ghost {
   background: #fff;
 }
+
 .btn-ghost:hover {
   border-color: var(--gold);
   color: var(--gold);
 }
+
 .btn-danger {
   background: #fff4f2;
   border-color: #ffd5cf;
   color: var(--danger);
 }
+
 .btn-success {
   background: #f0fff8;
   border-color: #c2f1df;
   color: var(--success);
 }
+
 .mini {
   font-size: 12px;
   padding: 7px 10px;
@@ -624,6 +699,7 @@ a {
 .ant-btn.pill {
   padding: 10px 14px;
 }
+
 .ant-btn.mini {
   padding: 7px 10px;
 }
@@ -634,14 +710,17 @@ a {
   border-color: #9f7d20;
   color: #fff;
 }
+
 .ant-btn.btn-ghost:hover {
   border-color: var(--gold);
   color: var(--gold);
 }
+
 .ant-btn.btn-danger:hover {
   border-color: var(--danger);
   color: var(--danger);
 }
+
 .ant-btn.btn-success:hover {
   border-color: var(--success);
   color: var(--success);
@@ -668,18 +747,21 @@ a {
 .ant-picker.ops-w-160 {
   width: 160px;
 }
+
 .ant-select.ops-w-180,
 .ant-input.ops-w-180,
 .ant-input-affix-wrapper.ops-w-180,
 .ant-picker.ops-w-180 {
   width: 180px;
 }
+
 .ant-select.ops-w-240,
 .ant-input.ops-w-240,
 .ant-input-affix-wrapper.ops-w-240,
 .ant-picker.ops-w-240 {
   width: 240px;
 }
+
 .ant-select.ops-w-260,
 .ant-input.ops-w-260,
 .ant-input-affix-wrapper.ops-w-260,
@@ -716,6 +798,7 @@ a {
 .ops-data-list.ops-cols-2 {
   grid-template-columns: 1fr 1fr;
 }
+
 .ops-data-list.ops-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -723,9 +806,11 @@ a {
 .ops-kpi.ok {
   color: #13845b;
 }
+
 .ops-kpi.warn {
   color: #a66d00;
 }
+
 .ops-kpi.bad {
   color: #bb352d;
 }
@@ -737,12 +822,13 @@ a {
      antd reset.css 的 button{color} 未分层样式压过），务必在此定义。 */
   padding: 7px 10px;
   border-radius: 999px;
-    border: 1px solid #d8e0e5;
-    background: #fffdf8;
-    color: #12283d;
-    box-shadow: 0 4px 14px rgba(6, 45, 83, .04);
-    
+  border: 1px solid #d8e0e5;
+  background: #fffdf8;
+  color: #12283d;
+  box-shadow: 0 4px 14px rgba(6, 45, 83, .04);
+
 }
+
 .link:hover {
   text-decoration: underline;
 }
@@ -752,28 +838,35 @@ a {
   .ops-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
   .ops-layout {
     grid-template-columns: 1fr;
   }
+
   .ops-card-row-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 900px) {
   .ops-shell {
     grid-template-columns: 1fr;
   }
+
   .ops-sidebar {
     display: none;
   }
+
   .ops-metrics,
   .ops-metrics.cols-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .ops-card-row,
   .ops-card-row-4 {
     grid-template-columns: 1fr;
   }
+
   .ops-data-list {
     grid-template-columns: 1fr;
   }
@@ -791,15 +884,21 @@ a {
   padding: 22px;
 }
 
-.ant-modal-content {
+/* 客户 360 抽屉：标题视觉对齐 .ant-modal-title（原为居中弹窗，现改为右侧抽屉） */
+.c360-drawer .ant-drawer-title {
+  color: #062d53 !important;
+  font-size: 1.5em !important;
+}
+
+.ant-modal-container {
   background: rgba(255, 253, 248, .9) !important;
-    border: 1px solid rgba(216, 224, 229, .8) !important;
-    border-radius: 20px !important;
-    box-shadow: 0 12px 35px rgba(6,45,83,.09) !important;
+  border: 1px solid rgba(216, 224, 229, .8) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 12px 35px rgba(6, 45, 83, .09) !important;
 }
 
 .ant-modal-header {
-background: none !important;
+  background: none !important;
 }
 
 .ant-modal-title {
@@ -807,10 +906,10 @@ background: none !important;
   font-size: 1.5em !important;
   border-bottom: 1px solid #d8e0e5;
   padding-bottom: 12px;
-      margin-bottom: 14px !important;
+  margin-bottom: 14px !important;
 }
 
 .ant-modal-container {
-  max-height: 720px;
-    overflow: auto;
+  max-height: calc(100vh - 140px);
+  overflow: auto;
 }

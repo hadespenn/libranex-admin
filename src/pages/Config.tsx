@@ -92,7 +92,7 @@ export default function Config() {
               ],
               initial: t('page.config.request.effectiveNow'),
             },
-            { name: 'reason', label: t('page.config.request.labelReason'), type: 'textarea', placeholder: t('page.channels.route.labelReason') },
+            { name: 'reason', label: t('page.config.request.labelReason'), type: 'textarea', placeholder: t('page.config.request.labelPlace') },
           ] as ReleaseField[]
         }
       />

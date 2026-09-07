@@ -26,8 +26,12 @@ export function KycDrawer({
   sla = "4h 12m",
   docsLabel = "12/16 complete",
   email = "compliance@atlascommerce.com",
+  status = "审核中",
+  statusTone = "blue" as ChipTone,
   risk = "High",
+  riskTone = "red" as ChipTone,
   screening = "PEP potential",
+  screeningTone = "yellow" as ChipTone,
 }: {
   open: boolean;
   onClose: () => void;
@@ -38,8 +42,12 @@ export function KycDrawer({
   sla?: string;
   docsLabel?: string;
   email?: string;
+  status?: string;
+  statusTone?: ChipTone;
   risk?: string;
+  riskTone?: ChipTone;
   screening?: string;
+  screeningTone?: ChipTone;
 }) {
   const { message } = AntdApp.useApp();
   const { t } = useI18n();
@@ -56,24 +64,49 @@ export function KycDrawer({
     { type: "supply" | "fix"; stage: string; to: string; time: string }[]
   >([]);
 
-  const buildCompose = (stageTitle: string, type: "supply" | "fix") => {
-    const subject =
-      type === "supply"
-        ? t("kyc.composeSupply.subject", { name, kyId, stage: stageTitle })
-        : t("kyc.composeFix.subject", { name, kyId, stage: stageTitle });
+  const buildCompose = (
+    stage: {
+      title: string;
+      materials: { key: string; name: string; tone: ChipTone; note: string }[];
+    },
+    type: "supply" | "fix",
+  ) => {
+    const prefix = type === "supply" ? "supply" : "fix";
+    const subject = t(`kyc.compose.${prefix}.subject`, {
+      name,
+      kyId,
+      stage: stage.title,
+    });
+    const intro = t(`kyc.compose.${prefix}.intro`, {
+      name,
+      kyId,
+      stage: stage.title,
+    });
     const greet = t("kyc.compose.greet", { contact });
-    const intro =
+    const itemLines =
       type === "supply"
-        ? t("kyc.composeSupply.intro", { name, kyId, stage: stageTitle })
-        : t("kyc.composeFix.intro", { name, kyId, stage: stageTitle });
-    const items =
-      type === "supply" ? t("kyc.composeSupply.items") : t("kyc.composeFix.items");
-    const body = `${greet}\n\n${intro}\n\n${items}\n\n${t("kyc.compose.sign")}`;
+        ? stage.materials.map(
+            (m) =>
+              `• ${m.name} — ${
+                m.note ||
+                (m.tone === "red"
+                  ? t("kyc.compose.supply.missing")
+                  : t("kyc.compose.supply.please"))
+              }`,
+          )
+        : stage.materials
+            .filter((m) => m.note)
+            .map((m) => `• ${m.name} — ${m.note}`);
+    const items = itemLines.join("\n");
+    const closing = t(`kyc.compose.${prefix}.closing`);
+    const body = `${greet}\n\n${intro}\n\n${items}\n\n${closing}\n\n${t("kyc.compose.sign")}`;
     return { subject, body };
   };
 
   const onSend = (stageIdx: number) => {
-    const stageTitle = [companyStage, addressStage, govStage][stageIdx].title;
+    const stageTitle = [companyStage, addressStage, directorsStage, uboStage][
+      stageIdx
+    ].title;
     if (!compose) return;
     const type = compose.type;
     setNotifyLog((prev) => [
@@ -136,25 +169,57 @@ export function KycDrawer({
       ],
       body: "Service address verified within last 3 months.",
     },
-    g1: {
+    dirId: {
       badge: "PDF",
-      title: t("kyc.material.g1.key"),
+      title: t("kyc.material.dirId.key"),
       meta: "Atlas Commerce Ltd. · 上传 2026-07-21 · Atlas · 0.4 MB",
       fields: [
-        { label: "Change Type", value: "Director appointment" },
-        { label: "Effective Date", value: "2026-06-30" },
+        { label: "Director Name", value: "Tan Wei Ling" },
+        { label: "ID Type", value: "Passport" },
+        { label: "ID No.", value: "E1234567A" },
       ],
-      body: "Filing accepted by ACRA.",
+      body: "Director identity document verified against the company registry.",
     },
-    g2: {
+    dirAddr: {
       badge: "PDF",
-      title: t("kyc.material.g2.key"),
-      meta: "Atlas Commerce Ltd. · 上传 2026-07-22 · Atlas · 0.3 MB",
+      title: t("kyc.material.dirAddr.key"),
+      meta: "Atlas Commerce Ltd. · 上传 2026-07-21 · Atlas · 0.3 MB",
       fields: [
-        { label: "Publication", value: "The Straits Times" },
-        { label: "Published", value: "2026-07-15" },
+        { label: "Director Name", value: "Tan Wei Ling" },
+        { label: "Address", value: "88 Marina Bay View, Singapore 018956" },
+        { label: "Issue Date", value: "2026-06-15" },
       ],
-      body: "Notice of name similarity filed in compliance with Section 17.",
+      body: "Director residential address proof issued within the last 3 months.",
+    },
+    dirRoster: {
+      badge: "PDF",
+      title: t("kyc.material.dirRoster.key"),
+      meta: "Atlas Commerce Ltd. · 上传 2026-07-22 · Atlas · 0.5 MB",
+      fields: [
+        { label: "Total Directors", value: "3" },
+        { label: "Last Updated", value: "2026-07-20" },
+      ],
+      body: "Official director roster matching the latest ACRA filing.",
+    },
+    uboList: {
+      badge: "PDF",
+      title: t("kyc.material.uboList.key"),
+      meta: "Atlas Commerce Ltd. · 上传 2026-07-22 · Atlas · 0.6 MB",
+      fields: [
+        { label: "UBO Name", value: "Lim Jia Hao" },
+        { label: "Ownership", value: "35%" },
+      ],
+      body: "Declared beneficial ownership list. Ensure Article 12 shareholders align with this list.",
+    },
+    uboStruct: {
+      badge: "PDF",
+      title: t("kyc.material.uboStruct.key"),
+      meta: "Atlas Commerce Ltd. · 上传 2026-07-23 · Atlas · 0.7 MB",
+      fields: [
+        { label: "Layers", value: "2" },
+        { label: "Ultimate Owner", value: "Lim Jia Hao" },
+      ],
+      body: "Shareholding structure chart showing natural persons holding ≥25%.",
     },
   };
 
@@ -169,7 +234,7 @@ export function KycDrawer({
     { key: "kyc-log", label: t("kyc.tabLog"), count: notifyLog.length },
   ];
 
-  // 企业主体资料阶段块（证书 / 章程 / 地址证）
+  // 企业主体资料阶段块
   const companyStage = {
     title: t("kyc.stageCompany.key"),
     sub: t("kyc.stageCompany.sub"),
@@ -201,42 +266,81 @@ export function KycDrawer({
     extra: ["补发补件通知", "要求修改资料"],
   };
 
+  // 注册地址证明阶段块
   const addressStage = {
     title: t("kyc.stageAddress.key"),
     sub: t("kyc.stageAddress.sub"),
     chip: t("kyc.stageAddress.chip"),
-    chipTone: "red" as ChipTone,
+    chipTone: "blue" as ChipTone,
     materials: [
       {
-        key: "add1",
-        name: t("kyc.material.add1.key"),
+        key: "lease",
+        name: t("kyc.material.lease.key"),
         status: t("kyc.status.submitted"),
         tone: "green" as ChipTone,
-        note: t("kyc.material.add1.note"),
+        note: t("kyc.material.lease.note"),
+      },
+      {
+        key: "util",
+        name: t("kyc.material.util.key"),
+        status: t("kyc.status.needSupply"),
+        tone: "blue" as ChipTone,
+        note: t("kyc.material.util.note"),
       },
     ],
     extra: ["补发补件通知", "要求修改资料"],
   };
 
-  const govStage = {
-    title: t("kyc.stageGov.key"),
-    sub: t("kyc.stageGov.sub"),
-    chip: t("kyc.stageGov.chip"),
-    chipTone: "blue" as ChipTone,
+  const directorsStage = {
+    title: t("kyc.stageDirectors.key"),
+    sub: t("kyc.stageDirectors.sub"),
+    chip: t("kyc.stageDirectors.chip"),
+    chipTone: "green" as ChipTone,
     materials: [
       {
-        key: "g1",
-        name: t("kyc.material.g1.key"),
+        key: "dirId",
+        name: t("kyc.material.dirId.key"),
         status: t("kyc.status.submitted"),
         tone: "green" as ChipTone,
-        note: t("kyc.material.g1.note"),
+        note: t("kyc.material.dirId.note"),
       },
       {
-        key: "g2",
-        name: t("kyc.material.g2.key"),
-        status: t("kyc.status.needSupply"),
+        key: "dirAddr",
+        name: t("kyc.material.dirAddr.key"),
+        status: t("kyc.status.submitted"),
+        tone: "green" as ChipTone,
+        note: t("kyc.material.dirAddr.note"),
+      },
+      {
+        key: "dirRoster",
+        name: t("kyc.material.dirRoster.key"),
+        status: t("kyc.status.submitted"),
+        tone: "green" as ChipTone,
+        note: t("kyc.material.dirRoster.note"),
+      },
+    ],
+    extra: ["补发补件通知", "要求修改资料"],
+  };
+
+  const uboStage = {
+    title: t("kyc.stageUbo.key"),
+    sub: t("kyc.stageUbo.sub"),
+    chip: t("kyc.stageUbo.chip"),
+    chipTone: "yellow" as ChipTone,
+    materials: [
+      {
+        key: "uboList",
+        name: t("kyc.material.uboList.key"),
+        status: t("kyc.status.toFix"),
         tone: "yellow" as ChipTone,
-        note: t("kyc.material.g2.note"),
+        note: t("kyc.material.uboList.note"),
+      },
+      {
+        key: "uboStruct",
+        name: t("kyc.material.uboStruct.key"),
+        status: t("kyc.status.needSupply"),
+        tone: "blue" as ChipTone,
+        note: t("kyc.material.uboStruct.note"),
       },
     ],
     extra: ["补发补件通知", "要求修改资料"],
@@ -262,9 +366,9 @@ export function KycDrawer({
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap gap-1.5">
-          <span className="ops-chip blue">{t("kyc.chipReviewing")}</span>
-          <span className="ops-chip red">{risk}</span>
-          <span className="ops-chip yellow">{screening}</span>
+          <span className={`ops-chip ${statusTone}`}>{status}</span>
+          <span className={`ops-chip ${riskTone}`}>{risk}</span>
+          <span className={`ops-chip ${screeningTone}`}>{screening}</span>
         </div>
       </div>
 
@@ -291,126 +395,138 @@ export function KycDrawer({
 
       {tab === "kyc-docs" && (
         <>
-          {[companyStage, addressStage, govStage].map((stage, idx) => {
-            const showing = compose && compose.stage === idx;
-            const composeData = showing
-              ? buildCompose(stage.title, compose!.type)
-              : null;
+          {[companyStage, addressStage, directorsStage, uboStage].map(
+            (stage, idx) => {
+              const showing = compose && compose.stage === idx;
+              const composeData = showing
+                ? buildCompose(stage, compose!.type)
+                : null;
 
-            return (
-              <div
-                key={idx}
-                className="mb-3 rounded-2xl border border-[#dde6ed] bg-white p-3.5"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="text-[15px] font-bold text-[#142d42]">
-                      {stage.title}
+              return (
+                <div
+                  key={idx}
+                  className="mb-3 rounded-2xl border border-[#dde6ed] bg-white p-3.5"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="text-[15px] font-bold text-[#142d42]">
+                        {stage.title}
+                      </div>
+                      <div className="mt-0.5 text-xs text-[#748493]">
+                        {stage.sub}
+                      </div>
                     </div>
-                    <div className="mt-0.5 text-xs text-[#748493]">
-                      {stage.sub}
-                    </div>
+                    <span className={`ops-chip ${stage.chipTone}`}>
+                      {stage.chip}
+                    </span>
                   </div>
-                  <span className={`ops-chip ${stage.chipTone}`}>
-                    {stage.chip}
-                  </span>
-                </div>
 
-                <div className="mt-2.5 grid gap-2">
-                  {stage.materials.map((m) => (
-                    <div
-                      key={m.key}
-                      className="flex items-center justify-between gap-2.5 rounded-[11px] border border-[#dde6ed] bg-[#fbfdff] px-[11px] py-[9px]"
-                    >
-                      <div className="flex min-w-0 flex-1 items-start gap-2">
-                        <span
-                          aria-hidden
-                          className={`mt-1 size-[9px] shrink-0 rounded-full ${
-                            DOT_TONE[m.tone]
-                          }`}
-                        />
-                        <div className="flex min-w-0 flex-col gap-0.5">
-                          <b className="text-[13px] text-[#1c2c3a]">{m.name}</b>
-                          {m.note && (
-                            <span className="text-[11px] text-[#b06a00]">
-                              {t("kyc.notePrefix")}
-                              {m.note}
-                            </span>
-                          )}
+                  <div className="mt-2.5 grid gap-2">
+                    {stage.materials.map((m) => (
+                      <div
+                        key={m.key}
+                        className="flex items-center justify-between gap-2.5 rounded-[11px] border border-[#dde6ed] bg-[#fbfdff] px-[11px] py-[9px]"
+                      >
+                        <div className="flex min-w-0 flex-1 items-start gap-2">
+                          <span
+                            aria-hidden
+                            className={`mt-1 size-[9px] shrink-0 rounded-full ${
+                              DOT_TONE[m.tone]
+                            }`}
+                          />
+                          <div className="flex min-w-0 flex-col gap-0.5">
+                            <b className="text-[13px] text-[#1c2c3a]">
+                              {m.name}
+                            </b>
+                            {m.note && (
+                              <span className="text-[11px] text-[#b06a00]">
+                                {t("kyc.notePrefix")}
+                                {m.note}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className={`ops-chip ${m.tone}`}>
+                            {m.status}
+                          </span>
+                          <button
+                            className="link"
+                            onClick={() => openDoc(m.key)}
+                          >
+                            {t("common.onlineView")}
+                          </button>
                         </div>
                       </div>
-                      <div className="flex shrink-0 items-center gap-2">
-                        <span className={`ops-chip ${m.tone}`}>{m.status}</span>
-                        <button className="link" onClick={() => openDoc(m.key)}>
-                          {t("common.onlineView")}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-[11px] flex gap-2">
-                  <Button
-                    className="mini btn-ghost"
-                    onClick={() => setCompose({ stage: idx, type: "supply" })}
-                  >
-                    {t("kyc.btnResupply")}
-                  </Button>
-                  <Button
-                    className="mini btn-ghost"
-                    onClick={() => setCompose({ stage: idx, type: "fix" })}
-                  >
-                    {t("kyc.btnRequestFix")}
-                  </Button>
-                </div>
-
-                {showing && composeData && (
-                  <div className="mt-2.5 rounded-xl border border-dashed border-[#9cc3e6] bg-[#f3f9ff] p-3">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
-                          {t("common.recipient")}
-                        </label>
-                        <Input value={email} readOnly />
-                      </div>
-                      <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
-                          {t("common.subject")}
-                        </label>
-                        <Input value={composeData.subject} readOnly />
-                      </div>
-                    </div>
-
-                    <label className="mb-1.5 mt-3 block text-xs font-semibold text-[#354454]">
-                      {t("common.body")}
-                    </label>
-                    <Input.TextArea defaultValue={composeData.body} rows={6} />
-
-                    <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
-                      <Button
-                        type="primary"
-                        className="mini btn-primary"
-                        onClick={() => onSend(idx)}
-                      >
-                        {t("common.send")}
-                      </Button>
-                      <Button
-                        className="mini btn-ghost"
-                        onClick={() => setCompose(null)}
-                      >
-                        {t("common.cancel")}
-                      </Button>
-                      <span className="text-[11px] text-[#748493]">
-                        {compose!.type === "supply"
-                          ? t("kyc.composeSupply.hint")
-                          : t("kyc.composeFix.hint")}
-                      </span>
-                    </div>
+                    ))}
                   </div>
-                )}
-              </div>
-            );
-          })}
+
+                  <div className="mt-[11px] flex gap-2">
+                    <Button
+                      className="mini btn-ghost"
+                      onClick={() => setCompose({ stage: idx, type: "supply" })}
+                    >
+                      {t("kyc.btnResupply")}
+                    </Button>
+                    <Button
+                      className="mini btn-ghost"
+                      onClick={() => setCompose({ stage: idx, type: "fix" })}
+                    >
+                      {t("kyc.btnRequestFix")}
+                    </Button>
+                  </div>
+
+                  {showing && composeData && (
+                    <div className="mt-2.5 rounded-xl border border-dashed border-[#9cc3e6] bg-[#f3f9ff] p-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
+                            {t("common.recipient")}
+                          </label>
+                          <Input value={email} readOnly />
+                        </div>
+                        <div>
+                          <label className="mb-1.5 block text-xs font-semibold text-[#354454]">
+                            {t("common.subject")}
+                          </label>
+                          <Input value={composeData.subject} readOnly />
+                        </div>
+                      </div>
+
+                      <label className="mb-1.5 mt-3 block text-xs font-semibold text-[#354454]">
+                        {t("common.body")}
+                      </label>
+                      <Input.TextArea
+                        defaultValue={composeData.body}
+                        rows={6}
+                      />
+
+                      <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
+                        <Button
+                          type="primary"
+                          className="mini btn-primary"
+                          onClick={() => onSend(idx)}
+                        >
+                          {t("common.send")}
+                        </Button>
+                        <Button
+                          className="mini btn-ghost"
+                          onClick={() => setCompose(null)}
+                        >
+                          {t("common.cancel")}
+                        </Button>
+                        <span className="text-[11px] text-[#748493]">
+                          {compose!.type === "supply"
+                            ? t("kyc.composeSupply.hint")
+                            : t("kyc.composeFix.hint")}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            },
+          )}
         </>
       )}
 
@@ -478,7 +594,9 @@ export function KycDrawer({
                     <span
                       className={`ops-chip ${n.type === "supply" ? "blue" : "yellow"}`}
                     >
-                      {n.type === "supply" ? t("kyc.logSupply") : t("kyc.logFix")}
+                      {n.type === "supply"
+                        ? t("kyc.logSupply")
+                        : t("kyc.logFix")}
                     </span>
                     <b className="text-[#142d42]">{n.stage}</b>
                     <small className="ml-auto text-[11px] text-[#748493]">
