@@ -4,3 +4,6 @@ dist
 .vite
 *.log
 .env.local
+
+# 覆盖全局 gitignore 中的 index.tsx（核心源码，必须纳入版本控制）
+!src/i18n/index.tsx
