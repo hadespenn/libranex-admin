@@ -36,6 +36,11 @@ export default {
     switchUser: "切換至用戶平台",
     ssoVerified: "SSO / MFA 已驗證",
     lang: "語言",
+    menuSelected: "已選擇：{key}",
+    toggleMenu: "選單",
+    closeMenu: "關閉選單",
+    expandMenu: "展開選單",
+    collapseMenu: "收起選單",
   },
   nav: {
     group: {
@@ -59,7 +64,10 @@ export default {
   kyc: {
     title: "KYC 審核 · {name}",
     chipReviewing: "審核中",
+    chipSubmitted: "已提交",
     chipHigh: "高",
+    chipMedium: "中",
+    chipClear: "Clear",
     chipPep: "PEP potential",
     sla: "SLA",
     docs: "材料",

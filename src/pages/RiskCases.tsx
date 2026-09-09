@@ -145,8 +145,8 @@ export default function RiskCases() {
               key: "id",
               render: (r) => (
                 <>
-                  <b className="block text-[#142d42]">{r.id}</b>
-                  <span className="text-[11px] text-[#708190]">{r.title}</span>
+                  <b className="block text-[#142d42] whitespace-nowrap">{r.id}</b>
+                  <span className="text-[11px] text-[#708190] whitespace-nowrap">{r.title}</span>
                 </>
               ),
             },
@@ -155,7 +155,14 @@ export default function RiskCases() {
               key: "source",
               render: (r) => (r.source.startsWith("Sanctions") || r.source.startsWith("24h") || r.source.startsWith("Device") ? r.source : t(`page.riskCases.source.${r.source}`)),
             },
-            { title: t("page.riskCases.colTarget"), key: "target", render: (r) => r.target },
+            { title: t("page.riskCases.colTarget"), 
+              key: "target", 
+              render: (r) => (
+                <>
+                  <b className="block text-[#142d42] whitespace-nowrap">{r.target}</b>
+                </>
+              ),
+            },
             {
               title: t("page.riskCases.col.level"),
               key: "level",

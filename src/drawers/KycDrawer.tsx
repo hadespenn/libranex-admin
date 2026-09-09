@@ -26,7 +26,9 @@ export function KycDrawer({
   sla = "4h 12m",
   docsLabel = "12/16 complete",
   email = "compliance@atlascommerce.com",
-  status = "审核中",
+  // status 不再写死中文默认值：调用方若不传则走 i18n 的「审核中 / Under review」，
+  // 避免英文版下还把 "审核中" 直接显示出来。
+  status,
   statusTone = "blue" as ChipTone,
   risk = "High",
   riskTone = "red" as ChipTone,
@@ -263,7 +265,7 @@ export function KycDrawer({
         note: t("kyc.material.ma.note"),
       },
     ],
-    extra: ["补发补件通知", "要求修改资料"],
+    extra: [t("kyc.btnResupply"), t("kyc.btnRequestFix")],
   };
 
   // 注册地址证明阶段块
@@ -288,7 +290,7 @@ export function KycDrawer({
         note: t("kyc.material.util.note"),
       },
     ],
-    extra: ["补发补件通知", "要求修改资料"],
+    extra: [t("kyc.btnResupply"), t("kyc.btnRequestFix")],
   };
 
   const directorsStage = {
@@ -319,7 +321,7 @@ export function KycDrawer({
         note: t("kyc.material.dirRoster.note"),
       },
     ],
-    extra: ["补发补件通知", "要求修改资料"],
+    extra: [t("kyc.btnResupply"), t("kyc.btnRequestFix")],
   };
 
   const uboStage = {
@@ -343,7 +345,7 @@ export function KycDrawer({
         note: t("kyc.material.uboStruct.note"),
       },
     ],
-    extra: ["补发补件通知", "要求修改资料"],
+    extra: [t("kyc.btnResupply"), t("kyc.btnRequestFix")],
   };
 
   return (
@@ -366,14 +368,18 @@ export function KycDrawer({
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap gap-1.5">
-          <span className={`ops-chip ${statusTone}`}>{status}</span>
+          <span className={`ops-chip ${statusTone}`}>
+            {/* 没传 status 时落到 i18n：英文版显示 "Reviewing"，中文版显示 "审核中"。
+                调用方已传则按调用方传入显示。 */}
+            {status ?? t("kyc.chipReviewing")}
+          </span>
           <span className={`ops-chip ${riskTone}`}>{risk}</span>
           <span className={`ops-chip ${screeningTone}`}>{screening}</span>
         </div>
       </div>
 
       {/* SLA / 材料 / 邮箱 三联 */}
-      <div className="my-3 grid grid-cols-3 gap-2.5">
+      <div className="my-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         {[
           { label: t("kyc.sla"), value: sla },
           { label: t("kyc.docs"), value: docsLabel },

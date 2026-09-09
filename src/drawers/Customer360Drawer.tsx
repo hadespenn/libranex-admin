@@ -83,27 +83,31 @@ export function Customer360Drawer({
 
       {tab === "c-docs" && (
         <div className="overflow-hidden rounded-2xl border border-[#dde6ed]">
-          <div className="grid grid-cols-[1.6fr_0.7fr_0.9fr_0.9fr] gap-2 border-b border-[#cce8ff] bg-[#f0f8ff] px-4 py-2 text-[12px] font-semibold text-[#27516f]">
-            <span>{t("c360.docs.head")}</span>
-            <span>{t("c360.docs.version")}</span>
-            <span>{t("c360.docs.verify")}</span>
-            <span>{t("c360.docs.conclusion")}</span>
-          </div>
-          {DOCS.map((d) => (
-            <div
-              key={d.name}
-              className="grid grid-cols-[1.6fr_0.7fr_0.9fr_0.9fr] items-center gap-2 px-4 py-2.5 text-[13px] text-[#1c2c3a]"
-            >
-              <span>{d.name}</span>
-              <span>{d.v}</span>
-              <span>{d.verify}</span>
-              <span>
-                <span className={`ops-chip ${CONCLUSION_TONE[d.conclusion]}`}>
-                  {t(`c360.conclusion.${d.conclusion}`)}
-                </span>
-              </span>
+          <div className="overflow-x-auto">
+            <div className="min-w-[520px]">
+              <div className="grid grid-cols-[1.6fr_0.7fr_0.9fr_0.9fr] gap-2 border-b border-[#cce8ff] bg-[#f0f8ff] px-4 py-2 text-[12px] font-semibold text-[#27516f]">
+                <span>{t("c360.docs.head")}</span>
+                <span>{t("c360.docs.version")}</span>
+                <span>{t("c360.docs.verify")}</span>
+                <span>{t("c360.docs.conclusion")}</span>
+              </div>
+              {DOCS.map((d) => (
+                <div
+                  key={d.name}
+                  className="grid grid-cols-[1.6fr_0.7fr_0.9fr_0.9fr] items-center gap-2 px-4 py-2.5 text-[13px] text-[#1c2c3a]"
+                >
+                  <span>{d.name}</span>
+                  <span>{d.v}</span>
+                  <span>{d.verify}</span>
+                  <span>
+                    <span className={`ops-chip ${CONCLUSION_TONE[d.conclusion]}`}>
+                      {t(`c360.conclusion.${d.conclusion}`)}
+                    </span>
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
           <div className="flex gap-2 border-t border-[#dde6ed] px-4 py-2.5">
             <Button
               className="mini link"
@@ -198,7 +202,7 @@ export function Customer360Drawer({
 
       {tab === "c-risk" && (
         <>
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="rounded-lg border border-[#eee] bg-white p-3">
               <p className="mb-1 text-xs text-[#748493]">{t("c360.risk.inherent.key")}</p>
               <p className="text-sm font-semibold text-[#2d3748]">{t("c360.risk.inherent.val")}</p>

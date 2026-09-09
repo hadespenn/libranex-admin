@@ -37,6 +37,10 @@ export default {
     ssoVerified: "SSO / MFA verified",
     lang: "Language",
     menuSelected: "Selected: {key}",
+    toggleMenu: "Menu",
+    closeMenu: "Close menu",
+    expandMenu: "Expand menu",
+    collapseMenu: "Collapse menu",
     langOptions: {
       zhCn: "Chinese",
       zhTw: "Traditional Chinese",
@@ -65,7 +69,10 @@ export default {
   kyc: {
     title: "KYC Review · {name}",
     chipReviewing: "Reviewing",
+    chipSubmitted: "Submitted",
     chipHigh: "High",
+    chipMedium: "Medium",
+    chipClear: "Clear",
     chipPep: "PEP potential",
     sla: "SLA",
     docs: "Documents",

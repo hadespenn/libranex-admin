@@ -49,7 +49,7 @@ export default function Config() {
               <Button
                 block
                 className="link"
-                style={{ width: '80px' }}
+                style={{ width: '120px' }}
                 onClick={() => setModal(c.kind)}
               >
                 {c.btn}

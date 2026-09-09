@@ -37,6 +37,10 @@ export default {
     ssoVerified: "SSO / MFA 已验证",
     lang: "语言",
     menuSelected: "已选择：{key}",
+    toggleMenu: "菜单",
+    closeMenu: "关闭菜单",
+    expandMenu: "展开菜单",
+    collapseMenu: "收起菜单",
     langOptions: {
       zhCn: "中文",
       zhTw: "繁體中文",
@@ -65,7 +69,10 @@ export default {
   kyc: {
     title: "KYC 审核 · {name}",
     chipReviewing: "审核中",
+    chipSubmitted: "已提交",
     chipHigh: "高",
+    chipMedium: "中",
+    chipClear: "Clear",
     chipPep: "PEP potential",
     sla: "SLA",
     docs: "材料",

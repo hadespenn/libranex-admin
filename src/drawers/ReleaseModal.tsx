@@ -190,19 +190,30 @@ export function ReleaseModal({
       {summary && <DataList items={summary} cols={cols} />}
 
       <Form form={form} layout="vertical" className="mt-4">
-        <div className="grid grid-cols-2 gap-x-4">
-          {fields.map((f) => {
+        <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
+          {fields.map((f, idx) => {
             // 将类型断言，避免 TypeScript 判断联合类型时报错
             const selectField = f as Extract<ReleaseField, { type: "select" }>;
+            // 列表最后一项（通常是「勾选确认」类的 checkbox），用于在通用层
+            // 收掉其下多余的 margin，避免与后置 NoteBox / footer 叠加出大空白。
+            const isLast = idx === fields.length - 1;
             // textarea 默认占满整行：多行说明类字段在两列栅格里压成 1 列既不美观
             // 也难阅读，span=2 与原型排版一致；其他类型维持 1 列默认值。
             const span =
-              f.type === "textarea" ? 2 : f.span ?? 1;
+              f.type === "textarea" ||  f.type == "checkbox" ? 2 : f.span ?? 1;
 
             return (
               <div
                 key={f.name}
-                className={span === 2 ? "col-span-2 min-w-0" : "min-w-0"}
+                className={
+                  (span === 2 ? "min-w-0 sm:col-span-2" : "min-w-0") +
+                  // 收掉最后一项与下方 note 之间的多余空白：
+                  // antd vertical layout 的 Form.Item 自带 margin-bottom: 24px，
+                  // 与后置 NoteBox 的 margin-top: 14px 叠加约 38px，远大于视觉间距。
+                  // 这里以 index === fields.length - 1 判定「最后一项」（通常是复选框 / 协议勾选），
+                  // 配合 CSS 中的 .ant-form-item.ops-mb-0 把它压平。
+                  (isLast ? " ops-mb-0-wrap" : "")
+                }
               >
                 {f.type === "checkbox" ? (
                   // checkbox 的 label 直接作为勾选框文案，不再额外渲染一遍 Form.Item label

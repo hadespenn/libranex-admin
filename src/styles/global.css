@@ -21,6 +21,10 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  /* 防止任何子元素的最小内容尺寸把页面撑宽导致横向滚动。
+     这里用 hidden（而非 clip）以兼容更广的浏览器；副作用是 body 变为纵向
+     滚动容器，但 .ops-top 的 position: sticky 会自动以 body 为参照，依旧有效。 */
+  overflow-x: hidden;
 }
 
 * {
@@ -85,8 +89,13 @@ a {
 .ops-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 260px 1fr;
+  /* 用 minmax(0, 1fr) 而不是 1fr，否则 1fr 等价于 minmax(auto, 1fr)，
+     会被 .ops-main 内某个不可压缩的子元素（如顶栏的胶囊按钮）撑大，
+     进而把整个网格推出视口右侧，造成横向滚动条。 */
+  grid-template-columns: 260px minmax(0, 1fr);
   background: #f4f7fa;
+  /* 侧栏收起 / 展开时的宽度过渡 */
+  transition: grid-template-columns 0.22s ease;
 }
 
 .ops-sidebar {
@@ -97,6 +106,42 @@ a {
   background: #102435;
   color: #d6e3ed;
   padding: 18px 14px;
+  scrollbar-width: thin;
+}
+
+/* ------------------------------------------------------------
+   侧边栏收起态（桌面端）
+   ------------------------------------------------------------ */
+.ops-shell.is-collapsed {
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.ops-shell.is-collapsed .ops-sidebar {
+  padding: 18px 8px;
+}
+
+.ops-shell.is-collapsed .ops-brand {
+  justify-content: center;
+  padding: 10px 0 22px;
+}
+
+.ops-shell.is-collapsed .ops-brand-text,
+.ops-shell.is-collapsed .ops-role,
+.ops-shell.is-collapsed .ops-nav-label {
+  display: none;
+}
+
+.ops-shell.is-collapsed .ops-nav {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.ops-shell.is-collapsed .ops-nav-text {
+  display: none;
+}
+
+.ops-shell.is-collapsed .ops-nav .ico {
+  font-size: 16px;
 }
 
 .ops-brand {
@@ -120,10 +165,39 @@ a {
   flex: 0 0 auto;
 }
 
+.ops-brand-text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .ops-brand strong {
   color: #fff;
   font-size: 18px;
   display: block;
+}
+
+/* 移动端抽屉内的关闭按钮 */
+.ops-nav-close {
+  flex: 0 0 auto;
+  margin-left: auto;
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd9e5;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.ops-nav-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 .ops-brand small {
@@ -212,22 +286,63 @@ a {
   z-index: 9;
 }
 
-.ops-top h1 {
+.ops-top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* 允许在窄屏收缩，标题靠 text-overflow 省略 */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ops-top-title {
+  min-width: 0;
+}
+
+.ops-top-title h1 {
   font-size: 18px;
   color: #142d42;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.ops-top p {
+.ops-top-title p {
   margin: 2px 0 0;
   color: #748493;
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 菜单收起 / 展开按钮（桌面）与汉堡按钮（移动） */
+.ops-icon-btn {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #dce4ea;
+  background: #fffdf8;
+  color: #173c59;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.ops-icon-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 .ops-top-right {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 0 0 auto;
 }
 
 /* 只针对语言选择框 */
@@ -275,10 +390,13 @@ a {
   padding: 24px;
   max-width: 1600px;
   margin: auto;
+  /* 允许内容区在父容器（主区栅格 track）收缩到比内容自然宽度更窄 */
+  min-width: 0;
 }
 
 .ops-page {
   animation: opsFade 0.2s;
+  min-width: 0;
 }
 
 .ops-search {
@@ -334,7 +452,8 @@ a {
 
 .ops-layout {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  /* 同样用 minmax(0, ...) 防止子项的最小内容宽度把栅格撑出父容器 */
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
   gap: 16px;
   align-items: start;
 }
@@ -382,6 +501,13 @@ a {
   gap: 8px;
   margin-bottom: 12px;
   min-width: 0;
+}
+
+/* 表格外层：窄屏横向滚动，避免撑破页面 */
+.ops-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .ops-table {
@@ -532,7 +658,7 @@ a {
 
 .ops-data-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 16px;
 }
@@ -784,8 +910,8 @@ a {
   color: #fff;
 }
 
-.ant-select.ops-w-110 {
-  width: 110px;
+.ant-select.ops-w-120 {
+  width: 130px;
 }
 
 /* ------------------------------------------------------------
@@ -796,7 +922,7 @@ a {
    优先级低于未分层样式），必须以组合类的方式在同层内覆盖。
 ------------------------------------------------------------ */
 .ops-data-list.ops-cols-2 {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .ops-data-list.ops-cols-3 {
@@ -826,35 +952,80 @@ a {
   background: #fffdf8;
   color: #12283d;
   box-shadow: 0 4px 14px rgba(6, 45, 83, .04);
-
+  white-space: nowrap;
 }
 
 .link:hover {
   text-decoration: underline;
 }
 
-/* 响应式 */
+/* 移动端抽屉内的侧边栏内容（复用 .ops-sidebar 的配色与内边距） */
+.ops-sidebar-inner {
+  padding: 18px 14px;
+  color: #d6e3ed;
+  background: #102435;
+  min-height: 100%;
+  padding-bottom: 36px;
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
 @media (max-width: 1200px) {
   .ops-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .ops-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ops-card-row-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .ops-data-list.ops-cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-@media (max-width: 900px) {
+/* ------------------------------------------------------------
+   平板 / 移动端：侧边栏改为抽屉（由 ProLayout 里的 useMediaQuery 控制，
+   断点需与 MOBILE_QUERY 保持一致）
+   ------------------------------------------------------------ */
+@media (max-width: 1024px) {
   .ops-shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ops-sidebar {
     display: none;
+  }
+
+  /* 顶栏：高度自适应、缩小内边距 */
+  .ops-top {
+    height: auto;
+    min-height: 58px;
+    padding: 8px 14px;
+    gap: 10px;
+  }
+
+  .ops-top-title h1 {
+    font-size: 16px;
+  }
+
+  .ops-content {
+    padding: 14px;
+  }
+
+  .ops-panel {
+    padding: 13px;
+    border-radius: 12px;
+  }
+
+  .ops-panel-head {
+    gap: 8px;
+    margin-bottom: 10px;
   }
 
   .ops-metrics,
@@ -864,11 +1035,133 @@ a {
 
   .ops-card-row,
   .ops-card-row-4 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .ops-data-list {
-    grid-template-columns: 1fr;
+  .ops-data-list,
+  .ops-data-list.ops-cols-2,
+  .ops-data-list.ops-cols-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 筛选栏改为纵向堆叠 */
+  .ops-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .ops-search {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ops-chart {
+    height: 150px;
+    gap: 6px;
+  }
+}
+
+/* 手机：进一步收紧 */
+@media (max-width: 640px) {
+  .ops-hide-sm {
+    display: none !important;
+  }
+
+  .ops-top {
+    padding: 8px 12px;
+  }
+
+  .ops-top-right {
+    gap: 6px;
+  }
+
+  /* 页面描述文字在窄屏省略 */
+  .ops-top-title p {
+    display: none;
+  }
+
+  .ops-top-title h1 {
+    font-size: 15px;
+  }
+
+  .ops-content {
+    padding: 12px;
+  }
+
+  .ops-metric {
+    padding: 12px;
+  }
+
+  .ops-metric strong {
+    font-size: 20px;
+  }
+
+  .ops-panel h2 {
+    font-size: 15px;
+  }
+
+  /* 固定宽度的筛选控件在手机上撑满一行 */
+  .ant-select.ops-w-160,
+  .ant-input.ops-w-160,
+  .ant-input-affix-wrapper.ops-w-160,
+  .ant-picker.ops-w-160,
+  .ant-select.ops-w-180,
+  .ant-input.ops-w-180,
+  .ant-input-affix-wrapper.ops-w-180,
+  .ant-picker.ops-w-180,
+  .ant-select.ops-w-240,
+  .ant-input.ops-w-240,
+  .ant-input-affix-wrapper.ops-w-240,
+  .ant-picker.ops-w-240,
+  .ant-select.ops-w-260,
+  .ant-input.ops-w-260,
+  .ant-input-affix-wrapper.ops-w-260,
+  .ant-picker.ops-w-260 {
+    width: 100%;
+  }
+
+  /* iOS 聚焦输入框时会自动放大整页，字号 ≥ 16px 可避免 */
+  .ops-content .ant-input,
+  .ops-content textarea,
+  .ops-content .ant-select-selection-search-input,
+  .ant-drawer .ant-input,
+  .ant-drawer textarea,
+  .ant-modal .ant-input,
+  .ant-modal textarea {
+    font-size: 16px !important;
+  }
+
+  /* 抽屉 / 弹窗在手机上占满宽度 */
+  .ant-drawer .ant-drawer-content-wrapper {
+    max-width: 100vw;
+  }
+
+  .ant-modal {
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px auto !important;
+  }
+
+  .ant-modal-container {
+    max-height: calc(100vh - 80px);
+  }
+
+  /* 抽屉内边距：加 !important 以覆盖部分抽屉通过 styles.body 传入的行内 padding */
+  .ops-drawer .ant-drawer-body {
+    padding: 14px !important;
+  }
+
+  .ops-timeline {
+    margin-left: 16px;
+    margin-top: 16px;
+  }
+}
+
+/* 底部安全区（iPhone 刘海屏） */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .ops-content {
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
   }
 }
 
@@ -913,3 +1206,53 @@ a {
   max-height: calc(100vh - 140px);
   overflow: auto;
 }
+
+/* ReleaseModal 等通用弹框：最后一项（典型为「勾选确认」复选框）
+   紧跟 note 提示框 / footer 时，antd Form.Item 自带 margin-bottom: 24px
+   视觉过空。这里用 0,2,0 特异度的组合类压平。 */
+.ops-mb-0-wrap .ant-form-item {
+  margin-bottom: 0 !important;
+}
+
+/* ------------------------------------------------------------
+   移动端补充覆盖（必须放在文件末尾）
+   ------------------------------------------------------------
+   上面「antd 局部覆盖」里存在同名的未分层声明（如 .ops-content .ant-input 的
+   font-size、.ops-drawer .ant-drawer-body 的 padding、.ant-modal-container 的
+   max-height）。媒体查询不增加特异性，按源码顺序后者胜出，因此这里需要在文件
+   末尾再声明一次，才能在小屏生效。
+------------------------------------------------------------ */
+@media (max-width: 640px) {
+  /* iOS 聚焦输入框时会自动放大整页，字号 ≥ 16px 可避免 */
+  .ops-content .ant-input,
+  .ops-content textarea,
+  .ops-content .ant-select-selection-search-input,
+  .ant-drawer .ant-input,
+  .ant-drawer textarea,
+  .ant-modal .ant-input,
+  .ant-modal textarea {
+    font-size: 16px !important;
+  }
+
+  /* 覆盖部分抽屉通过 styles.body 传入的行内 padding */
+  .ops-drawer .ant-drawer-body {
+    padding: 16px !important;
+  }
+
+  .ant-drawer-header, .ant-modal-container {
+    padding: 16px !important;
+  }
+
+}
+
+.ant-modal-container {
+    max-height: calc(100vh - 40px);
+  }
+
+    .ant-modal {
+    top: 0 !important;
+  }
+   .ant-modal-wrap {
+    display: flex;
+    align-items: center;
+  }

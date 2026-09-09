@@ -80,26 +80,29 @@ export function OpsTable<T extends { key: string }>({
   const emptyText = empty ?? t('ops.noRecord');
   if (!data.length) return <div className="ops-empty">{emptyText}</div>;
   return (
-    <table className="ops-table">
-      <thead>
-        <tr>
-          {columns.map((c) => (
-            <th key={c.key} style={c.width ? { width: c.width } : undefined}>
-              {c.title}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row) => (
-          <tr key={row.key}>
+    // 外层容器负责横向滚动，保证窄屏下表格不撑破页面
+    <div className="ops-table-wrap">
+      <table className="ops-table">
+        <thead>
+          <tr>
             {columns.map((c) => (
-              <td key={c.key}>{c.render(row)}</td>
+              <th key={c.key} style={c.width ? { width: c.width } : undefined}>
+                {c.title}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((row) => (
+            <tr key={row.key}>
+              {columns.map((c) => (
+                <td key={c.key} className="whitespace-nowrap">{c.render(row)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

@@ -71,7 +71,7 @@ export default function Reports() {
             <Button
               block
               className="link"
-              style={{ width: '80px' }}
+              style={{ width: '90px' }}
               onClick={() => setModal(c.kind)}
             >
               {c.btn}

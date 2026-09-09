@@ -105,7 +105,7 @@ export default function Channels() {
         }}
         extra={
           <div className="mt-2">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
                 { label: t("page.channels.view.cardSuccess"), value: row?.health ?? "99.92%" },
                 { label: t("page.channels.view.cardWeight"), value: row?.weight ?? "55%" },

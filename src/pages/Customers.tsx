@@ -95,11 +95,11 @@ const CUSTOMERS: CustomerRow[] = [
     name: 'Unity Centre Investment Ltd.',
     kyc: 'Active · Medium',
     kycTone: 'green',
-    kycStatus: '已提交',
+    kycStatus: 'submitted',
     kycStatusTone: 'green',
-    kycRisk: '中',
+    kycRisk: 'medium',
     kycRiskTone: 'yellow',
-    kycScreening: 'Clear',
+    kycScreening: 'clear',
     kycScreeningTone: 'green',
     accounts: '4 accounts',
     capability: 'Accounts, payout, FX',
@@ -110,11 +110,11 @@ const CUSTOMERS: CustomerRow[] = [
     name: 'Atlas Commerce Ltd.',
     kyc: 'EDD · High',
     kycTone: 'red',
-    kycStatus: '审核中',
+    kycStatus: 'reviewing',
     kycStatusTone: 'blue',
-    kycRisk: '高',
+    kycRisk: 'high',
     kycRiskTone: 'red',
-    kycScreening: 'PEP potential',
+    kycScreening: 'pep',
     kycScreeningTone: 'yellow',
     accounts: '1 account',
     capability: 'Restricted',
@@ -279,11 +279,14 @@ export default function Customers() {
         name={detail?.name}
         kyId={detail?.key === 'atlas' ? 'KY-202607-1042' : 'KY-202607-1038'}
         jurisdiction="Singapore"
-        status={detail?.kycStatus}
+        // 字段值已改为 enum key（submitted / reviewing / high / medium / clear / pep），
+        // 在传给 KycDrawer 前按 `kyc.chip${Pascal}` 路径做 i18n 翻译，
+        // 英文版就不会再泄漏中文字面量。
+        status={detail ? t(`kyc.chip${detail.kycStatus[0].toUpperCase()}${detail.kycStatus.slice(1)}`) : undefined}
         statusTone={detail?.kycStatusTone}
-        risk={detail?.kycRisk}
+        risk={detail ? t(`kyc.chip${detail.kycRisk[0].toUpperCase()}${detail.kycRisk.slice(1)}`) : undefined}
         riskTone={detail?.kycRiskTone}
-        screening={detail?.kycScreening}
+        screening={detail ? t(`kyc.chip${detail.kycScreening[0].toUpperCase()}${detail.kycScreening.slice(1)}`) : undefined}
         screeningTone={detail?.kycScreeningTone}
       />
 
