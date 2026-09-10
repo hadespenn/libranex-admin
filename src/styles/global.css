@@ -1002,17 +1002,33 @@ a {
     display: none;
   }
 
-  /* 顶栏：高度自适应、缩小内边距 */
+  /* 顶栏：高度自适应、缩小内边距；允许 right 换到第二行 */
   .ops-top {
+    flex-wrap: wrap;
     height: auto;
     min-height: 58px;
     padding: 8px 14px;
-    gap: 10px;
+    gap: 6px 10px;
   }
 
   .ops-top-title h1 {
     font-size: 16px;
   }
+
+  /* 顶栏右侧在移动端整体换到第二行，内部用 flex-wrap 排开 */
+  .ops-top-right {
+    flex: 0 0 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px 8px;
+  }
+
+  /* 标题描述在移动端隐藏，避免与 h1 一起换行把顶栏挤成两行以上 */
+  /* .ops-top-title p {
+    display: none;
+  } */
 
   .ops-content {
     padding: 14px;
@@ -1065,7 +1081,8 @@ a {
 
 /* 手机：进一步收紧 */
 @media (max-width: 640px) {
-  .ops-hide-sm {
+  /* 极窄屏（≤640px）下被收纳到 More 菜单的快捷按钮（Switch / SSO） */
+  .ops-hide-when-narrow {
     display: none !important;
   }
 
@@ -1075,11 +1092,6 @@ a {
 
   .ops-top-right {
     gap: 6px;
-  }
-
-  /* 页面描述文字在窄屏省略 */
-  .ops-top-title p {
-    display: none;
   }
 
   .ops-top-title h1 {

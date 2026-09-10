@@ -11,6 +11,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   CloseOutlined,
+  MoreOutlined,
 } from '@ant-design/icons';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { MENU_GROUPS, ROUTES } from '@/routes';
@@ -54,6 +55,41 @@ export default function ProLayout() {
   const { lang, setLang, t } = useI18n();
 
   const isMobile = useMediaQuery(MOBILE_QUERY);
+
+  /**
+   * 顶栏 More 菜单：
+   * - 桌面端：只放账号菜单（Switch / SSO 在顶栏单独按钮可见）
+   * - 移动端：在账号菜单前插入 Switch / SSO（因为 ≤640px 时这两个按钮
+   *   被 .ops-hide-when-narrow 收纳到这里）
+   */
+  const moreMenuItems = useMemo(() => {
+    const accountItems = [
+      // { key: 'profile', label: t('layout.profile') },
+      // { key: 'session', label: t('layout.session') },
+      { type: 'divider' as const },
+      { key: 'logout', label: t('layout.logout'), danger: true },
+    ];
+    if (!isMobile) return accountItems;
+    return [
+      { key: 'switch', label: t('layout.switchUser') },
+      { key: 'sso', label: t('layout.ssoVerified') },
+      { type: 'divider' as const },
+      ...accountItems,
+    ];
+  }, [isMobile, t]);
+
+  const handleMoreClick = useCallback(
+    ({ key }: { key: string }) => {
+      if (key === 'switch') {
+        window.location.href = 'https://libranex-deploy.pages.dev/';
+      } else if (key === 'sso') {
+        message.success(t('layout.ssoVerified'));
+      } else {
+        message.info(t('layout.menuSelected', { key: String(key) }));
+      }
+    },
+    [message, t],
+  );
 
   /** 桌面端侧边栏收起 / 展开（记忆到 localStorage） */
   const [collapsed, setCollapsed] = useState(
@@ -191,10 +227,16 @@ export default function ProLayout() {
           </div>
 
           <div className="ops-top-right">
-            <span className="ops-chip yellow ops-hide-sm">
-              ● 3 {t('layout.attention')}
+            {/* 通知 chip：常驻；≤640px 时"items need attention"文字用 .ops-hide-sm 隐藏，
+                只剩"● 3"以保证极窄屏不破布局 */}
+            <span
+              className="ops-chip yellow"
+              title={t('layout.attention')}
+            >
+              ● 3 <span className="ops-hide-sm">{t('layout.attention')}</span>
             </span>
 
+            {/* 语言切换：桌面与移动都常驻（屏幕再窄也不会丢） */}
             <Select<Lang>
               size="small"
               value={lang}
@@ -211,32 +253,42 @@ export default function ProLayout() {
                 { value: 'en', label: t('layout.langOptions.en') },
               ]}
             />
-           
-            <Dropdown
-              menu={{
-                items: [
-                  // { key: 'profile', label: t('layout.profile') },
-                  // { key: 'session', label: t('layout.session') },
-                  // { type: 'divider' as const },
-                  // { key: 'logout', label: t('layout.logout'), danger: true },
-                ],
-                onClick: ({ key }) => {
-                  if (key === 'switch') navigate('/user');
-                  else message.info(t('layout.menuSelected', { key: String(key) }));
-                },
-              }}
-            >
-              <Button className="mini btn-ghost top-dropdown ops-hide-sm" onClick={() => (window.location.href = 'https://libranex-deploy.pages.dev/')}>
-                {t('layout.switchUser')}
-              </Button>
-            </Dropdown>
 
+            {/* Switch to user platform 按钮：
+                桌面常驻；≤640px 时通过 .ops-hide-when-narrow 收纳到右侧 More 菜单 */}
             <Button
-              className="mini btn-primary ops-hide-sm"
+              className="mini btn-ghost top-dropdown ops-hide-when-narrow"
+              onClick={() => (window.location.href = 'https://libranex-deploy.pages.dev/')}
+            >
+              {t('layout.switchUser')}
+            </Button>
+
+            {/* SSO / MFA verified 按钮：同上 ≤640px 收纳到 More */}
+            <Button
+              className="mini btn-primary ops-hide-when-narrow"
               onClick={() => message.success(t('layout.ssoVerified'))}
             >
               {t('layout.ssoVerified')}
             </Button>
+
+            {/* More 按钮：仅移动端（≤1024px）渲染，
+                收纳窄屏下被折叠的 Switch / SSO 入口，加上常驻的账号菜单。
+                桌面端此处不渲染，账号相关操作通过后续业务页面提供。 */}
+            {isMobile && (
+              <Dropdown
+                menu={{ items: moreMenuItems, onClick: handleMoreClick }}
+                trigger={['click']}
+                placement="bottomRight"
+              >
+                <button
+                  type="button"
+                  className="ops-icon-btn ops-icon-more"
+                  aria-label={t('layout.more')}
+                >
+                  <MoreOutlined />
+                </button>
+              </Dropdown>
+            )}
           </div>
         </header>
 

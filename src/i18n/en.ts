@@ -36,6 +36,7 @@ export default {
     switchUser: "Switch to user platform",
     ssoVerified: "SSO / MFA verified",
     lang: "Language",
+    more: "More actions",
     menuSelected: "Selected: {key}",
     toggleMenu: "Menu",
     closeMenu: "Close menu",

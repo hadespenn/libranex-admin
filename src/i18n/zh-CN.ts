@@ -36,6 +36,7 @@ export default {
     switchUser: "切换至用户平台",
     ssoVerified: "SSO / MFA 已验证",
     lang: "语言",
+    more: "更多操作",
     menuSelected: "已选择：{key}",
     toggleMenu: "菜单",
     closeMenu: "关闭菜单",
