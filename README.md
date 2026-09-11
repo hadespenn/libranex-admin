@@ -1,13 +1,13 @@
 # Libranex · Operations Platform
 
-国际化支付运营管理后台。UI 与内容**完全对齐产品原型 `index.html`**（Libranex Enterprise Console Prototype），采用 Ant Design 5 组件体系 + 原型设计令牌。
+国际化支付运营管理后台。UI 与内容**完全对齐产品原型 `prototype.html`**（Libranex Enterprise Console Prototype），采用 Ant Design 5 组件体系 + 原型设计令牌。
 
 ## 目录说明
 
 | 路径 | 说明 |
 | --- | --- |
-| `index.html` | **产品原型**（511KB 单文件 HTML，含用户端控制台 / 开户激活 / 运营后台）。仅作设计参考，不参与构建 |
-| `admin.html` | **应用入口**（Vite entry）。因根目录 `index.html` 被原型占用，入口改为此文件 |
+| `prototype.html` | **产品原型**（511KB 单文件 HTML，含用户端控制台 / 开户激活 / 运营后台）。仅作设计参考，不参与构建 |
+| `index.html` | **应用入口**（Vite entry）。
 | `src/` | React 应用源码 |
 
 > 开发地址：`http://localhost:8000/admin.html`（`npm run dev` 会自动打开）

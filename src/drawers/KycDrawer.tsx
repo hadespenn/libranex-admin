@@ -160,6 +160,17 @@ export function KycDrawer({
       ],
       body: "Memorandum and Articles of Association. Article 12 lists shareholders, the declared UBO list must match this article.",
     },
+    lease: {
+      badge: "PDF",
+      title: t("kyc.material.lease.key"),
+      meta: "Atlas Commerce Ltd. · 上传 2026-07-27 · Atlas · 1.5 MB",
+      fields: [
+        { label: "Premises", value: "10 Marina Blvd, SG" },
+        { label: "Term", value: "3 years" },
+        { label: "Status", value: "Active" },
+      ],
+      body: "Tenancy agreement for the registered office premises.",
+    },
     add1: {
       badge: "PDF",
       title: t("kyc.material.add1.key"),
@@ -456,12 +467,18 @@ export function KycDrawer({
                           <span className={`ops-chip ${m.tone}`}>
                             {m.status}
                           </span>
-                          <button
-                            className="link"
-                            onClick={() => openDoc(m.key)}
-                          >
-                            {t("common.onlineView")}
-                          </button>
+                          {DOCS[m.key] ? (
+                            <button
+                              className="link"
+                              onClick={() => openDoc(m.key)}
+                            >
+                              {t("common.onlineView")}
+                            </button>
+                          ) : (
+                            <span className="text-[11px] text-[#94a3b8]">
+                              {t("kyc.status.notUpload")}
+                            </span>
+                          )}
                         </div>
                       </div>
                     ))}
