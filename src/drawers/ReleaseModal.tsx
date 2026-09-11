@@ -226,7 +226,7 @@ export function ReleaseModal({
                         validator: (_r, value) =>
                           value
                             ? Promise.resolve()
-                            : Promise.reject(new Error("请勾选确认")),
+                            : Promise.reject(new Error(t("common.checkConfirm"))),
                       },
                     ]}
                   >

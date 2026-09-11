@@ -26,6 +26,7 @@ export default {
     operation: "操作",
     required: "必填",
     contact: "聯絡人",
+    checkConfirm: "請勾選確認",
   },
   layout: {
     signedInAs: "登入身份",

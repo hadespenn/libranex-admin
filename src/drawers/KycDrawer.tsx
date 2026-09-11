@@ -360,7 +360,7 @@ export function KycDrawer({
       className="kyc-modal"
     >
       {/* 头部：名称 + meta + chip */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3 kyc-header">
         <div>
           <div className="text-[19px] font-bold text-[#142d42]">{name}</div>
           <div className="mt-0.5 text-xs text-[#748493]">
@@ -431,7 +431,7 @@ export function KycDrawer({
                     {stage.materials.map((m) => (
                       <div
                         key={m.key}
-                        className="flex items-center justify-between gap-2.5 rounded-[11px] border border-[#dde6ed] bg-[#fbfdff] px-[11px] py-[9px]"
+                        className="flex items-center justify-between gap-2.5 rounded-[11px] border border-[#dde6ed] bg-[#fbfdff] px-[11px] py-[9px] kyc-row"
                       >
                         <div className="flex min-w-0 flex-1 items-start gap-2">
                           <span

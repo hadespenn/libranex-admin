@@ -26,6 +26,7 @@ export default {
     operation: "Operation",
     required: "Required",
     contact: "Contact",
+    checkConfirm: "Please check to confirm",
   },
   layout: {
     signedInAs: "Signed in as",

@@ -1235,6 +1235,13 @@ a {
    末尾再声明一次，才能在小屏生效。
 ------------------------------------------------------------ */
 @media (max-width: 640px) {
+  .kyc-header, .kyc-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ant-modal-header {
+    width: calc(100% - 50px);
+  }
   /* iOS 聚焦输入框时会自动放大整页，字号 ≥ 16px 可避免 */
   .ops-content .ant-input,
   .ops-content textarea,
